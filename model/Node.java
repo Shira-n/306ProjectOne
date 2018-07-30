@@ -15,6 +15,8 @@ public class Node {
         _weight = weight;
     }
 
+    public int getWeight(){return _weight;}
+
     public void addParent(Node parent, int pathWeight){
         _parents.put(parent, pathWeight);
     }
