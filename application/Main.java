@@ -20,7 +20,6 @@ public class Main extends Application {
     private static boolean _visualisation = false;
     //By default the output file is INPUT_output.dot.
     private static String _outputFileSuffix = "_output.dot";
-    private static boolean _outputSpecified = false;
     //By default the execution run sequentially on one core.
     private static int _noOfCores = 1;
 
@@ -79,6 +78,10 @@ public class Main extends Application {
 
     }
 
+    /**
+     * Checks if the user input optional arguments are valid
+     * @param args arguments that the user inputted in command line
+     */
     private static void act(String[] args){
         for (int i=2;i<args.length;i++){
             if (args[i].equals("-p")){
@@ -94,11 +97,15 @@ public class Main extends Application {
             }else if(args[i].equals("-v")){
                 _visualisation = true;
             }else if(args[i].equals("-o")){
-                _outputSpecified = true;
                 try{
                     _outputFileSuffix=args[i+1]+".dot";
                 }catch(ArrayIndexOutOfBoundsException e1){
                     Notification.message("Error: no argument specified after -o");
+                    System.exit(1);
+                }
+            }else{
+                if (args[i-1].equals("-p")||args[i-1].equals("-o")){
+                    Notification.invalidInput();
                     System.exit(1);
                 }
             }
