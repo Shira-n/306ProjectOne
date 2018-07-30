@@ -8,7 +8,7 @@ public class Notification {
         System.out.println("\n");
         System.out.println("Optional:\n");
         System.out.println("-p N\tuse N cores for execution in parallel (default is sequential\n");
-        System.out.println("-v\tvisualise the search");
+        System.out.println("-v\tvisualise the search\n");
         System.out.println("-o OUTPUT\toutput file is named OUTPUt ( default is INPUT-output.dot");
     }
 }
