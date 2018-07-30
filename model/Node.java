@@ -19,9 +19,23 @@ public class Node {
         _parents.put(parent, pathWeight);
     }
 
-    public void addChild(Node child, int pathWeight){
+    public void addChild(Node child, int pathWeight) {
         _children.put(child, pathWeight);
     }
 
+    public boolean isParent(Node node){
+        return _parents.keySet().contains(node);
+    }
 
+    public boolean isChild(Node node){
+        return _children.keySet().contains(node);
+    }
+
+    public int getPathWeightToChild(Node child){
+        if (_children.containsKey(child)){
+            return _children.get(child);
+        }else{
+            return -1;
+        }
+    }
 }
