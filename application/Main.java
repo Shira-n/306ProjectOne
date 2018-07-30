@@ -37,6 +37,9 @@ public class Main extends Application {
         if (args.length < 2){
             Notification.message("Error: Not enough arguments");
             System.exit(1);
+        }else if (args.length>7){
+            Notification.message("Error: Too many arguments");
+            System.exit(1);
         }
 
         try {
@@ -47,9 +50,10 @@ public class Main extends Application {
             List<Node> graph = reader.getData();
             act(args);
 
-            //Reconfigure output filename according to input filename.
-            //TODO write a private method or just lines of code here. The output file name would be INPUT_output.dot
-            //TODO where INPUT is args[0] without .dot
+            if (_visualisation){
+                launch(args);
+            }
+
             //If the .dot filename is invalid, new DotFileAdapter(filepath) would throw exception
             //So you can assume the filename is valid here
             //TODO ask for overwriting if file already exists, or save as INPUT_ouput_1.dot. Can leave this for now
@@ -91,13 +95,15 @@ public class Main extends Application {
                 _visualisation = true;
             }else if(args[i].equals("-o")){
                 _outputSpecified = true;
-
+                try{
+                    _outputFileSuffix=args[i+1]+".dot";
+                }catch(ArrayIndexOutOfBoundsException e1){
+                    Notification.message("Error: no argument specified after -o");
+                    System.exit(1);
+                }
             }
         }
 
-        if (_visualisation){
-            launch(args);
-        }
     }
 
     /**
