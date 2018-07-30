@@ -5,9 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.DotFileAdapter;
 
 public class Main extends Application {
-
+    private static boolean Visualisation=false;
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
@@ -18,6 +19,12 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        launch(args);
+
+        DotFileAdapter reader = new DotFileAdapter(args[0]);
+        Object graph = reader.getData();
+        Scheduler schedule = new Scheduler();
+        if (Visualisation) {
+            launch(args);
+        }
     }
 }
