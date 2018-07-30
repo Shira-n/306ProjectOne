@@ -12,6 +12,7 @@ public class Notification {
         System.out.println("-v\tvisualise the search\n");
         System.out.println("-o OUTPUT\toutput file is named OUTPUt ( default is INPUT-output.dot");
     }
+
     public static void invalidInput(){
         message("Error: Invalid input");
     }
