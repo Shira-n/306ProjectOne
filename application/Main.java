@@ -108,6 +108,10 @@ public class Main {
             //If -o is specified, read the specified output filename
             }else if(args[i].equals("-o")) {
                 try {
+                    if (args[i+1].equals("-v")||args[i+1].equals("-p")){
+                        Notification.message("Error: filename for output is not valid please choose another name");
+                        System.exit(1);
+                    }
                     _outputFile = args[i + 1] + ".dot";
                     i++;
                 } catch (ArrayIndexOutOfBoundsException e1) {
