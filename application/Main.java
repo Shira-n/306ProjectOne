@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import model.DotFileAdapter;
 import model.Node;
+import model.Notification;
 import model.Scheduler;
 
 import java.util.List;
@@ -24,15 +25,22 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        if (args.length<2){
+        if (args.length < 2){
             System.out.println("Error: Not enough arguments");
+            Notification.message();
             System.exit(1);
         }
         //passing arguments for
         DotFileAdapter reader = new DotFileAdapter(args[0]);
         List<Node> graph = reader.getData();
-        args[1].parseInt();
-        Scheduler schedule = new Scheduler(graph, args[1]);
+        try {
+            int numberOfProcessor = Integer.parseInt(args[1]);
+            Scheduler schedule = new Scheduler(graph, numberOfProcessor);
+        }catch(NumberFormatException e){
+            System.out.println("Error: second argument must be an integer");
+            Notification.message();
+            System.exit(1);
+        }
         if (Visualisation) {
             launch(args);
         }
