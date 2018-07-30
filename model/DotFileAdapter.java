@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 //@TODO Corey
@@ -13,25 +14,19 @@ import java.util.List;
         \/                   \/          \/           \/     \/
  */
 public class  DotFileAdapter {
-    //TODO From the project description, INPUT should be the name of input dot file.
-    private String _outputFilePath = "INPUT_output.dot";
-    private List<Node> _data;
-    private File _file;
+    private List<Node> _data;;
 
-    public DotFileAdapter(String filename){
-        //TODO Check filename, throw FileNotFoundException if the filename is invalid, i.e. file doesn't exist,
-        //TODO file name doesn't end up with .dot.
-
-        _file = new File(filename);
+    public DotFileAdapter(String inputPath) throws FileNotFoundException {
+        readGraph();
     }
 
-    private void readData(){
+    private void readGraph() throws FileNotFoundException{
         //TODO Read file, populate _data. Plz refer to Node class to see available methods.
-
+        //Throw FileNotFoundException and I/O exception when needed, will be handled in Main.java
+        //See Main.java for usage of this method
     }
 
-    private void writeData(){
-        //TODO Ask for overwriting if file already exists, or save as INPUT_ouput_1.dot.
+    public void writeSchedule(List<Processor> schedule, String outputPath){
         //TODO Haven't decided on the output data structure.
         //I was thinking about passing List<Processor> from scheduler. Can leave this for now
     }
