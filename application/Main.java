@@ -5,7 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import model.DotFileAdapter;
+import model.Node;
+import model.Scheduler;
+
+import java.util.List;
 
 public class Main extends Application {
     private static boolean Visualisation=false;
@@ -19,10 +24,15 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-
+        if (args.length<2){
+            System.out.println("Error: Not enough arguments");
+            System.exit(1);
+        }
+        //passing arguments for
         DotFileAdapter reader = new DotFileAdapter(args[0]);
-        Object graph = reader.getData();
-        Scheduler schedule = new Scheduler();
+        List<Node> graph = reader.getData();
+        args[1].parseInt();
+        Scheduler schedule = new Scheduler(graph, args[1]);
         if (Visualisation) {
             launch(args);
         }
