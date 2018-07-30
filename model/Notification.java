@@ -1,7 +1,8 @@
 package model;
 
 public class Notification {
-    public static void message(){
+    public static void message(String errorMessage){
+        System.out.println(errorMessage);
         System.out.println("java -jar scheduler.jar INPUT.dot P [OPTION]\n");
         System.out.println("INPUT.dot\ta task graph with integer weights in dot format\n");
         System.out.println("\n");

@@ -11,10 +11,12 @@ import model.Node;
 import model.Notification;
 import model.Scheduler;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class Main extends Application {
-    private static boolean Visualisation=false;
+    private static boolean visualisation = false;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
@@ -23,30 +25,31 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
     public static void main(String[] args) {
         if (args.length < 2){
-            System.out.println("Error: Not enough arguments");
-            Notification.message();
+            Notification.message("Error: Not enough arguments");
             System.exit(1);
         }
-        //passing arguments for
-        DotFileAdapter reader = new DotFileAdapter(args[0]);
-        List<Node> graph = reader.getData();
+
         try {
+            String filepath = args[0];
+            DotFileAdapter reader = new DotFileAdapter(filepath);
+            List<Node> graph = reader.getData();
+
             int numberOfProcessor = Integer.parseInt(args[1]);
             Scheduler schedule = new Scheduler(graph, numberOfProcessor);
+            schedule.schedule();
         }catch(NumberFormatException e){
-            System.out.println("Error: second argument must be an integer");
-            Notification.message();
+            Notification.message("Error: second argument must be an integer");
             System.exit(1);
-        }
-        if (Visualisation) {
+        }//catch(FileNotFoundException e){ }
+
+        act(args);
+    }
+
+    private static void act(String[] args){
+        if (visualisation){
             launch(args);
         }
     }
-
-
-    //@TODO User Input @Jenny
-
 }

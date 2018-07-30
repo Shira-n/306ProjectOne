@@ -11,4 +11,7 @@ public class Scheduler {
         _numberOfProcessor=numberOfProcessor;
     }
 
+    public void schedule(){
+
+    }
 }
