@@ -1,4 +1,4 @@
-package model;
+package main.java.model;
 
 public class Notification {
     public static void message(String errorMessage){

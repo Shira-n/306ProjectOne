@@ -1,8 +1,12 @@
-package model;
+package test.java;
 
-import static org.junit.Assert.*;
 
+import main.java.model.Node;
 import org.junit.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class NodeTest {
 	
