@@ -5,10 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.DotFileAdapter;
-import model.Node;
-import model.Notification;
-import model.Scheduler;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
