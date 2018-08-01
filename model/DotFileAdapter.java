@@ -4,27 +4,69 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-//@TODO Corey
-/*
-  ________                  .___ .____                   __
- /  _____/  ____   ____   __| _/ |    |    __ __   ____ |  | __
-/   \  ___ /  _ \ /  _ \ / __ |  |    |   |  |  \_/ ___\|  |/ /
-\    \_\  (  <_> |  <_> ) /_/ |  |    |___|  |  /\  \___|    <
- \______  /\____/ \____/\____ |  |_______ \____/  \___  >__|_ \
-        \/                   \/          \/           \/     \/
- */
 public class  DotFileAdapter {
-    private List<Node> _data;;
+	  private List<Node> _data = new ArrayList<Node>();
+	  private String[] _words;
 
     public DotFileAdapter(String inputPath) throws FileNotFoundException {
-        readGraph();
+        readGraph(intputPath);
     }
 
-    private void readGraph() throws FileNotFoundException{
-        //TODO Read file, populate _data. Plz refer to Node class to see available methods.
-        //Throw FileNotFoundException and I/O exception when needed, will be handled in Main.java
-        //See Main.java for usage of this method
-    }
+	/**
+	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval from main
+	 */
+	private void readGraph(String inputPath) throws FileNotFoundException{
+		File file = new File(inputPath);
+		Scanner sc = new Scanner(file);
+
+//		Scans Dot File, converts each line to a String Array to add to _data
+		while (sc.hasNextLine()) {
+			String string = sc.nextLine(); 
+			_words = string.split("\\s+");
+
+			//			Removes all lines that aren't a node or vertex
+			if (string.toLowerCase().contains("weight=")) {		
+//				Checks if the line is a vertex
+				if (string.toLowerCase().contains("->")) {
+
+//					All of these similar blocks break the string into an array and remove all non-number characters and retrieve number of node and the weight of itself or the two nodes edge
+					String str = _words[4].toString();
+					String numberOnly = str.replaceAll("[^0-9]", "");
+					int edgeWeight = Integer.parseInt(numberOnly);
+
+					String str2 = _words[1].toString();
+					String nodeNumParent = str2.replaceAll("[^0-9]", "");
+					int parentNum = Integer.parseInt(nodeNumParent);
+
+					String str3 = _words[3].toString();
+					String nodeNumChild = str3.replaceAll("[^0-9]", "");
+					int childNum = Integer.parseInt(nodeNumChild);
+
+					_data.get(parentNum).addChild(_data.get(childNum), edgeWeight);
+
+					_data.get(childNum).addParent(_data.get(parentNum), edgeWeight);
+				}
+
+//				if not a vertex, must be a node
+				else {
+
+
+					String str = _words[2].toString();
+					String numberOnly = str.replaceAll("[^0-9]", "");
+					int weight = Integer.parseInt(numberOnly);
+
+					Node e = new Node(weight);
+
+					String str2 = _words[1].toString();
+					String nodeNum = str2.replaceAll("[^0-9]", "");
+					int nodePlace = Integer.parseInt(nodeNum);
+
+					_data.add(nodePlace , e);
+				}
+			}
+		}
+		sc.close();
+	}
 
     public void writeSchedule(List<Processor> schedule, String outputPath){
         //TODO Haven't decided on the output data structure.
