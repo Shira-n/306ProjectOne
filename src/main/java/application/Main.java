@@ -11,6 +11,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import model.DotFileAdapter;
+import model.Node;
+import model.Notification;
+import model.Scheduler;
+
 public class Main {
         // extends Application {
 
