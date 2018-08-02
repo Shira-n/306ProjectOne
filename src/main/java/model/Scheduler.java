@@ -1,7 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Scheduler {
     private List<Node> _graph;
@@ -9,7 +8,7 @@ public class Scheduler {
     private List<Processor> _processors;
 
     public Scheduler(List<Node> graph, int numberOfProcessor){
-        _graph = graph;
+        _graph = topoligicalSort(graph);
         _numberOfProcessor = numberOfProcessor;
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++){
@@ -47,11 +46,40 @@ public class Scheduler {
         return -1;
     }
 
-    private void topologicalSort(){
-        for (Node n : _graph){
-            //...
+
+    private List<Node> topoligicalSort(List<Node> graph){
+        //Find the start nodes in the graph
+        List<Node> startNodes = new ArrayList<>();
+        for (Node n : graph){
+            if (n.parentsSorted()){
+                startNodes.add(n);
+            }
+        }
+
+        //Recursively sort the rest of nodes
+        return recursiveSort(startNodes);
+    }
+
+    private List<Node> recursiveSort(List<Node> startNodes){
+        if (startNodes.size() < 1){
+            return null;
+        }else {
+            List<Node> sortedQueue = new ArrayList<>();
+            List<Node> newStartNodes = new ArrayList<>();
+            for (Node n : startNodes) {
+                sortedQueue.add(n);
+                for (Node child : n.getChildren().keySet()) {
+                    child.sortParent();
+                    if (child.parentsSorted()) {
+                        newStartNodes.add(child);
+                    }
+                }
+            }
+            sortedQueue.addAll(recursiveSort(newStartNodes));
+            return sortedQueue;
         }
     }
+
     /**
      * Return a list of scheduled processors
      */
