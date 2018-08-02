@@ -2,7 +2,9 @@ package model;
 
 //@TODO @Suying
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a processor in the algorithm. Contains processor's current assigned tasks and path, and processor's
@@ -11,9 +13,9 @@ import java.util.List;
 public class Processor {
 
     private int _pid;
-    private int _currentTotalWeight;
+    private int _currentAbleToStart;
 
-    private List<Node> _currentPath;
+    private Map<Integer, Node> _currentSchedule;
 
     /**
      * Constructor of Processor. Default processor's path weight is set to 0.
@@ -21,27 +23,25 @@ public class Processor {
      */
     public Processor(int pid){
         _pid = pid;
-        _currentTotalWeight = 0;
+        _currentAbleToStart = 0;
+        _currentSchedule = new HashMap<>();
     }
 
     /**
      * Add a new node/task to the Processor instance, also updates processor's total path weight.
      * @param node
      */
-    public void addNode(Node node){
-        _currentPath.add(node);
-        _currentTotalWeight += node.getWeight();
+    public void addNode(int start, Node node){
+        _currentSchedule.put(start, node);
+        _currentAbleToStart = start + node.getWeight();
     }
 
-    /**
-     * Returns the last node of processor's current path. 
-     * @return
-     */
-    public Node getLastNode(){
-        return _currentPath.get(_currentPath.size()-1);
+    public Map<Integer, Node> getCurrentSchedule() {
+        return _currentSchedule;
     }
 
-    public int getCurrentTotalWeight(){
-        return _currentTotalWeight;
+    public int getCurrentAbleToStart(){
+        return _currentAbleToStart;
     }
+
 }

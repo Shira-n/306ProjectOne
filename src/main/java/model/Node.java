@@ -12,9 +12,13 @@ public class Node {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
 
+    private int _nid;
+
     private int _weight;
     private int _parentsCount;
     private int _childrenCount;
+
+    private int _startTime;
 
     public Node(int weight){
         _parents = new HashMap<>();
@@ -49,7 +53,6 @@ public class Node {
     public Map<Node, Integer> getChildren(){
         return _children;
     }
-
 
     /**
      * Return true if the input Node is a parent node of this Node. False otherwise.

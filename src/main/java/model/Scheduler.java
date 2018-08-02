@@ -39,7 +39,7 @@ public class Scheduler {
     }
 
     private int earliestStartTime(Node currentNode){
-        _processors.
+        //_processors.
         return -1;
     }
 
