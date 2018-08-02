@@ -31,7 +31,7 @@ public class Scheduler {
     }
 
     private boolean dependenciesMet(List<Node> processedNodes, Node currentNode){
-        if(processedNodes.containsAll(currentNode._parents.keySet())){
+        if(processedNodes.containsAll(currentNode.getParents().keySet())){
             return true;
         }else {
             return false;

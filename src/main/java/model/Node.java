@@ -41,6 +41,16 @@ public class Node {
         _children.put(child, pathWeight);
     }
 
+
+    public Map<Node, Integer> getParents(){
+        return _parents;
+    }
+
+    public Map<Node, Integer> getChildren(){
+        return _children;
+    }
+
+
     /**
      * Return true if the input Node is a parent node of this Node. False otherwise.
      */
