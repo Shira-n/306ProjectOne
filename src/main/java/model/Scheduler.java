@@ -47,6 +47,11 @@ public class Scheduler {
         return -1;
     }
 
+    private void topologicalSort(){
+        for (Node n : _graph){
+            //...
+        }
+    }
     /**
      * Return a list of scheduled processors
      */
