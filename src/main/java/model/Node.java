@@ -37,9 +37,20 @@ public class Node {
     public int getStartTime(){return _startTime;}
 
     /**
+     * @return the parents of this node
+     */
+    public Map<Node, Integer> getParents(){return _parents;}
+
+    /**
+     * @return the children of this node
+     */
+    public Map<Node, Integer> getChildren(){return _children;}
+
+    /**
      * @param startTime sets the starting time of the node in the processor
      */
     public void setStartTime(int startTime){_startTime = startTime;}
+
     /**
      * Add a parent node to this Node with the communication weight between these two Nodes.
      */
@@ -52,15 +63,6 @@ public class Node {
      */
     public void addChild(Node child, int pathWeight) {
         _children.put(child, pathWeight);
-    }
-
-
-    public Map<Node, Integer> getParents(){
-        return _parents;
-    }
-
-    public Map<Node, Integer> getChildren(){
-        return _children;
     }
 
     /**

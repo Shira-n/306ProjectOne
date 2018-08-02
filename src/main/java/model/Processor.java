@@ -33,8 +33,10 @@ public class Processor {
      */
     public void addNode(int start, Node node){
         _currentSchedule.put(start, node);
-        node.setStartTime(start);
         _currentAbleToStart = start + node.getWeight();
+
+        //adds the start time of the processing to the node
+        node.setStartTime(start);
     }
 
     public Map<Integer, Node> getCurrentSchedule() {
