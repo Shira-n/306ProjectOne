@@ -23,17 +23,24 @@ public class Scheduler {
             if(i==0){
                 _processors.get(0).addNode(_graph.get(0));
             }else{
-                for (int j=0;j<processedNodes.size();j++) {
-                    if (_graph.get(i)._parents.containsKey(processedNodes.get(j))){
-
-                    }
+                if(dependenciesMet(processedNodes, _graph.get(i))){
+                    earliestStartTime(_graph.get(i));
                 }
             }
         }
     }
 
-    private void containsAllParents(){
+    private boolean dependenciesMet(List<Node> processedNodes, Node currentNode){
+        if(processedNodes.containsAll(currentNode._parents.keySet())){
+            return true;
+        }else {
+            return false;
+        }
+    }
 
+    private int earliestStartTime(Node currentNode){
+        _processors.
+        return -1;
     }
     /**
      * Return a list of scheduled processors
