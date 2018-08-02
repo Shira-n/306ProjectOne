@@ -19,31 +19,64 @@ public class Scheduler {
     public void schedule(){
         List<Node> processedNodes = new ArrayList<>();
         for (int i = 0; i < _graph.size(); i++){
+            Node currentNode = _graph.get(i);
             if (i == 0){
-                _processors.get(0).addNode(0,_graph.get(0));
+                _processors.get(0).addNode(0, currentNode);
             }else{
-                if(dependenciesMet(processedNodes, _graph.get(i))){
-                    earliestStartTime(_graph.get(i));
+                if(processedNodes.containsAll(currentNode.getParents().keySet())){
+                    scheduleNode(currentNode);
+                    processedNodes.add(currentNode);
                 }
             }
         }
     }
 
-    private boolean dependenciesMet(List<Node> processedNodes, Node currentNode){
-        if (processedNodes.containsAll(currentNode.getParents().keySet())){
-            return true;
-        }else {
-            return false;
+    private void scheduleNode(Node currentNode){
+        Processor bestProcessor = _processors.get(0);
+        int bestStartTime = 0;
+        for (int i = 0; i < _numberOfProcessor; i++) {
+            Processor currentProcessor = _processors.get(i);
+            //Find the current time able to start on current processor
+            int currentAbleToStart = earliestStartTime(currentNode.getParents().keySet(), currentProcessor.getCurrentSchedule().values(), currentProcessor);
+
+            int delayStartTime = 0;
+            //Compare with other processors to find earliest time possible to start on current processor
+            for (Processor p : _processors){
+                if (!p.equals(currentProcessor)) {
+                    for (Node n : currentNode.getParents().keySet()) {
+                        for (Node scheduleNodes : currentProcessor.getCurrentSchedule().values()) {
+                            if (n.equals(scheduleNodes)) {
+                                delayStartTime = n.getWeight() + n.getStartTime() + n.getPathWeightToChild(currentNode);
+                                if (currentAbleToStart < delayStartTime){
+                                    currentAbleToStart = delayStartTime;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (i == 0){
+                bestStartTime = currentAbleToStart;
+            }else if(currentAbleToStart < bestStartTime){
+                bestStartTime = currentAbleToStart;
+                bestProcessor = currentProcessor;
+            }
         }
+        bestProcessor.addNode(bestStartTime, currentNode);
     }
 
-    private int earliestStartTime(Node currentNode){
-        Processor bestProcessor = _processors.get(0);
-        for (int i = 0; i < _numberOfProcessor; i++) {
-            System.out.println("check");
+    private int earliestStartTime(Set<Node> parents, Collection<Node> _scheduleNodes, Processor processor){
+        int currentAbleToStart = processor.getCurrentAbleToStart();
+        for (Node n : parents){
+            for(Node currentScheduleNode : _scheduleNodes){
+                if (n.equals(currentScheduleNode)){
+                    if (currentScheduleNode.getStartTime() + currentScheduleNode.getWeight() > currentAbleToStart){
+                        currentAbleToStart = currentScheduleNode.getStartTime() + currentScheduleNode.getWeight();
+                    }
+                }
+            }
         }
-
-        return -1;
+        return currentAbleToStart;
     }
 
 
