@@ -19,8 +19,8 @@ public class Scheduler {
 
     public void schedule(){
         List<Node> processedNodes = new ArrayList<>();
-        for (int i=0;i<_graph.size();i++){
-            if(i==0){
+        for (int i = 0; i < _graph.size(); i++){
+            if (i == 0){
                 _processors.get(0).addNode(0,_graph.get(0));
             }else{
                 if(dependenciesMet(processedNodes, _graph.get(i))){
@@ -31,7 +31,7 @@ public class Scheduler {
     }
 
     private boolean dependenciesMet(List<Node> processedNodes, Node currentNode){
-        if(processedNodes.containsAll(currentNode.getParents().keySet())){
+        if (processedNodes.containsAll(currentNode.getParents().keySet())){
             return true;
         }else {
             return false;
@@ -40,8 +40,8 @@ public class Scheduler {
 
     private int earliestStartTime(Node currentNode){
         Processor bestProcessor = _processors.get(0);
-        for (int i=0;i<_numberOfProcessor;i++) {
-
+        for (int i = 0; i < _numberOfProcessor; i++) {
+            System.out.println("check");
         }
 
         return -1;
