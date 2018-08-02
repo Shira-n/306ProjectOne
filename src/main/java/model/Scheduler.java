@@ -8,7 +8,7 @@ public class Scheduler {
     private List<Processor> _processors;
 
     public Scheduler(List<Node> graph, int numberOfProcessor){
-        _graph = topoligicalSort(graph);
+        _graph = topologicalSort(graph);
         _numberOfProcessor = numberOfProcessor;
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++){
@@ -79,8 +79,12 @@ public class Scheduler {
         return currentAbleToStart;
     }
 
-
-    private List<Node> topoligicalSort(List<Node> graph){
+    /**
+     * Topological sort
+     * @param graph
+     * @return
+     */
+    private List<Node> topologicalSort(List<Node> graph){
         //Find the start nodes in the graph
         List<Node> startNodes = new ArrayList<>();
         for (Node n : graph){
@@ -94,23 +98,37 @@ public class Scheduler {
     }
 
     private List<Node> recursiveSort(List<Node> startNodes){
-        if (startNodes.size() < 1){
-            return null;
-        }else {
-            List<Node> sortedQueue = new ArrayList<>();
-            List<Node> newStartNodes = new ArrayList<>();
-            for (Node n : startNodes) {
-                sortedQueue.add(n);
+        List<Node> sorted = new ArrayList<>();
+        List<Node> newStartNodes = new ArrayList<>();
+        for (Node n : startNodes) {
+            sorted.add(n);
+            System.out.println("Parent is " + n.getWeight());
+
+            if (n.getChildren().keySet().size() > 01) {
                 for (Node child : n.getChildren().keySet()) {
-                    child.sortParent();
+                    System.out.println("Child is " + child.getWeight());
+                    child.sortOneParent();
                     if (child.parentsSorted()) {
                         newStartNodes.add(child);
                     }
                 }
             }
-            sortedQueue.addAll(recursiveSort(newStartNodes));
-            return sortedQueue;
         }
+        if (newStartNodes.size() < 1) {
+            return sorted;
+        }else{
+            System.out.println(newStartNodes.size());
+            sorted.addAll(recursiveSort(newStartNodes));
+            return sorted;
+        }
+    }
+
+    /**
+     * for test
+     * @return
+     */
+    public List<Node> getGraph() {
+        return _graph;
     }
 
     /**

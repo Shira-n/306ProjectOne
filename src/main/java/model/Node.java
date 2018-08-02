@@ -12,14 +12,15 @@ public class Node {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
 
-    private int _nid;
+    private String _id;
 
     private int _weight;
     private int _unsortedParents;
 
     private int _startTime;
 
-    public Node(int weight){
+    public Node(String id, int weight){
+        _id = id;
         _parents = new HashMap<>();
         _children = new HashMap<>();
         _weight = weight;
@@ -54,7 +55,10 @@ public class Node {
         _children.put(child, pathWeight);
     }
 
-    public void sortParent(){
+    public String getId(){
+        return _id;
+    }
+    public void sortOneParent(){
         _unsortedParents--;
     }
 

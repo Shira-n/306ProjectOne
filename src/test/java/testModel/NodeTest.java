@@ -14,7 +14,7 @@ public class NodeTest {
 	/* TO DO @Josh */
 	@Before
 	public void initialise() {
-		_baseNode = new Node(1);
+		_baseNode = new Node("0", 1);
 	}
 	
 	/** 
@@ -31,7 +31,7 @@ public class NodeTest {
 	@Test
 	public void addParentTest() {
 		/* Makes a node and uses addParent() method to add it as a parent to _baseNode */
-		Node Parent = new Node(1);
+		Node Parent = new Node("0", 1);
 		try {
 			_baseNode.addParent(Parent, 1);
 			assertTrue(_baseNode.isParent(Parent)); 
@@ -47,7 +47,7 @@ public class NodeTest {
 	@Test
 	public void addChildTest() {
 		/* Makes a node and uses addChild() method to add it as a child to _baseNode */
-		Node Child = new Node(1);
+		Node Child = new Node("0",1);
 		try {
 			_baseNode.addChild(Child, 1);
 			assertTrue(_baseNode.isChild(Child)); 
