@@ -22,6 +22,7 @@ public class Scheduler {
             Node currentNode = _graph.get(i);
             if (i == 0){
                 _processors.get(0).addNode(0, currentNode);
+                processedNodes.add(currentNode);
             }else{
                 if(processedNodes.containsAll(currentNode.getParents().keySet())){
                     scheduleNode(currentNode);
@@ -44,7 +45,7 @@ public class Scheduler {
             for (Processor p : _processors){
                 if (!p.equals(currentProcessor)) {
                     for (Node n : currentNode.getParents().keySet()) {
-                        for (Node scheduleNodes : currentProcessor.getCurrentSchedule().values()) {
+                        for (Node scheduleNodes : p.getCurrentSchedule().values()) {
                             if (n.equals(scheduleNodes)) {
                                 delayStartTime = n.getWeight() + n.getStartTime() + n.getPathWeightToChild(currentNode);
                                 if (currentAbleToStart < delayStartTime){
@@ -70,7 +71,7 @@ public class Scheduler {
         for (Node n : parents){
             for(Node currentScheduleNode : _scheduleNodes){
                 if (n.equals(currentScheduleNode)){
-                    if (currentScheduleNode.getStartTime() + currentScheduleNode.getWeight() > currentAbleToStart){
+                    if ((currentScheduleNode.getStartTime() + currentScheduleNode.getWeight()) > currentAbleToStart){
                         currentAbleToStart = currentScheduleNode.getStartTime() + currentScheduleNode.getWeight();
                     }
                 }
