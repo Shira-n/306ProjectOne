@@ -18,11 +18,29 @@ public class Scheduler {
     }
 
     public void schedule(){
-
+        List<Node> processedNodes = new ArrayList<>();
+        for (int i=0;i<_graph.size();i++){
+            if(i==0){
+                _processors.get(0).addNode(_graph.get(0));
+            }else{
+                if(dependenciesMet(processedNodes, _graph.get(i))){
+                    earliestStartTime(_graph.get(i));
+                }
+            }
+        }
     }
 
-    private void topologicalSort(){
+    private boolean dependenciesMet(List<Node> processedNodes, Node currentNode){
+        if(processedNodes.containsAll(currentNode._parents.keySet())){
+            return true;
+        }else {
+            return false;
+        }
+    }
 
+    private int earliestStartTime(Node currentNode){
+        _processors.
+        return -1;
     }
 
     /**
