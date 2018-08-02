@@ -18,9 +18,23 @@ public class Scheduler {
     }
 
     public void schedule(){
+        List<Node> processedNodes = new ArrayList<>();
+        for (int i=0;i<_graph.size();i++){
+            if(i==0){
+                _processors.get(0).addNode(_graph.get(0));
+            }else{
+                for (int j=0;j<processedNodes.size();j++) {
+                    if (_graph.get(i)._parents.containsKey(processedNodes.get(j))){
 
+                    }
+                }
+            }
+        }
     }
 
+    private void containsAllParents(){
+
+    }
     /**
      * Return a list of scheduled processors
      */
