@@ -32,6 +32,15 @@ public class Node {
     public int getWeight(){return _weight;}
 
     /**
+     * @return the starting time of the node in the processor
+     */
+    public int getStartTime(){return _startTime;}
+
+    /**
+     * @param startTime sets the starting time of the node in the processor
+     */
+    public void setStartTime(int startTime){_startTime = startTime;}
+    /**
      * Add a parent node to this Node with the communication weight between these two Nodes.
      */
     public void addParent(Node parent, int pathWeight){
