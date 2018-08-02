@@ -9,10 +9,12 @@ import java.util.Map;
  * connected nodes.
  */
 public class Node {
-    Map<Node, Integer> _parents;
-    Map<Node, Integer> _children;
+    private Map<Node, Integer> _parents;
+    private Map<Node, Integer> _children;
 
     private int _weight;
+    private int _parentsCount;
+    private int _childrenCount;
 
     public Node(int weight){
         _parents = new HashMap<>();
