@@ -2,14 +2,16 @@ package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class  DotFileAdapter {
 	  private List<Node> _data = new ArrayList<Node>();
 	  private String[] _words;
 
     public DotFileAdapter(String inputPath) throws FileNotFoundException {
-        readGraph(intputPath);
+        readGraph(inputPath);
     }
 
 	/**

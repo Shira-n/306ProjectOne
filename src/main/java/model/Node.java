@@ -9,10 +9,16 @@ import java.util.Map;
  * connected nodes.
  */
 public class Node {
-    Map<Node, Integer> _parents;
-    Map<Node, Integer> _children;
+    private Map<Node, Integer> _parents;
+    private Map<Node, Integer> _children;
+
+    private int _nid;
 
     private int _weight;
+    private int _parentsCount;
+    private int _childrenCount;
+
+    private int _startTime;
 
     public Node(int weight){
         _parents = new HashMap<>();
@@ -24,6 +30,26 @@ public class Node {
      * Return the weight of this Node.
      */
     public int getWeight(){return _weight;}
+
+    /**
+     * @return the starting time of the node in the processor
+     */
+    public int getStartTime(){return _startTime;}
+
+    /**
+     * @return the parents of this node
+     */
+    public Map<Node, Integer> getParents(){return _parents;}
+
+    /**
+     * @return the children of this node
+     */
+    public Map<Node, Integer> getChildren(){return _children;}
+
+    /**
+     * @param startTime sets the starting time of the node in the processor
+     */
+    public void setStartTime(int startTime){_startTime = startTime;}
 
     /**
      * Add a parent node to this Node with the communication weight between these two Nodes.

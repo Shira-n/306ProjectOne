@@ -6,14 +6,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import model.DotFileAdapter;
-import model.Node;
-import model.Notification;
-import model.Scheduler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import model.DotFileAdapter;
+import model.Node;
+import model.Notification;
+import model.Scheduler;
 
 public class Main {
         // extends Application {
@@ -108,6 +109,10 @@ public class Main {
             //If -o is specified, read the specified output filename
             }else if(args[i].equals("-o")) {
                 try {
+                    if (args[i+1].equals("-v")||args[i+1].equals("-p")){
+                        Notification.message("Error: filename for output is not valid please choose another name");
+                        System.exit(1);
+                    }
                     _outputFile = args[i + 1] + ".dot";
                     i++;
                 } catch (ArrayIndexOutOfBoundsException e1) {
