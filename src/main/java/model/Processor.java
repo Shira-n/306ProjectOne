@@ -46,5 +46,8 @@ public class Processor {
     public int getCurrentAbleToStart(){
         return _currentAbleToStart;
     }
-
+    
+    public int getID() {
+        return _pid;
+    }
 }

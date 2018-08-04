@@ -19,18 +19,25 @@ public class Node {
 
     private int _startTime;
 
-    public Node(String id, int weight){
-        _id = id;
+
+    public Node(int weight, String id){
         _parents = new HashMap<>();
         _children = new HashMap<>();
         _weight = weight;
+        _id = id;
     }
 
     /**
      * Return the weight of this Node.
      */
     public int getWeight(){return _weight;}
+    
+    /**
+     * Return the id of this Node.
+     */
+    public String getId(){return _id;}
 
+    
     /**
      * @return the starting time of the node in the processor
      */
@@ -66,9 +73,6 @@ public class Node {
         _children.put(child, pathWeight);
     }
 
-    public String getId(){
-        return _id;
-    }
     public void sortOneParent(){
         _unsortedParents--;
     }
