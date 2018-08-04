@@ -2,16 +2,14 @@ package model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class  DotFileAdapter {
 	  private List<Node> _data = new ArrayList<Node>();
 	  private String[] _words;
-	  private File _inputFile;
 
     public DotFileAdapter(String inputPath) throws FileNotFoundException {
         readGraph(inputPath);
@@ -21,8 +19,8 @@ public class  DotFileAdapter {
 	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval from main
 	 */
 	private void readGraph(String inputPath) throws FileNotFoundException{
-		_inputFile = new File(inputPath);
-		Scanner sc = new Scanner(_inputFile);
+		File file = new File(inputPath);
+		Scanner sc = new Scanner(file);
 
 //		Scans Dot File, converts each line to a String Array to add to _data
 		while (sc.hasNextLine()) {
@@ -39,75 +37,60 @@ public class  DotFileAdapter {
 					String numberOnly = str.replaceAll("[^0-9]", "");
 					int edgeWeight = Integer.parseInt(numberOnly);
 
-					String str2 = _words[1].toString();
-					String nodeNumParent = str2.replaceAll("[^0-9]", "");
-					int parentNum = Integer.parseInt(nodeNumParent);
-
-					String str3 = _words[3].toString();
-					String nodeNumChild = str3.replaceAll("[^0-9]", "");
-					int childNum = Integer.parseInt(nodeNumChild);
-
-					_data.get(parentNum).addChild(_data.get(childNum), edgeWeight);
-
-					_data.get(childNum).addParent(_data.get(parentNum), edgeWeight);
+					String parentID = _words[1].toString();
+					String childID = _words[3].toString();
+					
+					Node child = null;
+					Node parent = null;
+					
+					for (Node e: _data) {
+						if (e.getId().equals(parentID)) {
+							parent = e;
+						}
+						else if (e.getId().equals(childID)) {
+							child = e;
+						}
+					}
+					
+					//@ ASSUMES NODES GIVEN BEFORE EDGES
+					try {
+						int parentIndex = _data.indexOf(parent);
+						int childIndex = _data.indexOf(child);
+						
+						_data.get(parentIndex).addChild(_data.get(childIndex), edgeWeight);
+	
+						_data.get(childIndex).addParent(_data.get(parentIndex), edgeWeight);
+					}
+					catch (Exception e) {
+						;
+					}
 				}
 
 //				if not a vertex, must be a node
 				else {
-					
+
+
 					String str = _words[2].toString();
 					String numberOnly = str.replaceAll("[^0-9]", "");
 					int weight = Integer.parseInt(numberOnly);
 
-					Node e = new Node(weight);
+					
 
-					String str2 = _words[1].toString();
-					String nodeNum = str2.replaceAll("[^0-9]", "");
-					int nodePlace = Integer.parseInt(nodeNum);
+					String nodeID = _words[1].toString();
 
-					_data.add(nodePlace , e);
+					Node e = new Node(weight, nodeID);
+					
+					_data.add(e);
 				}
 			}
 		}
 		sc.close();
 	}
 
-/**
- * 
- * @param schedule
- * @param outputPath
- * @throws IOException 
- */
-    public void writeSchedule(List<Processor> schedule, String outputPath) throws IOException{
+    public void writeSchedule(List<Processor> schedule, String outputPath){
+        //TODO Haven't decided on the output data structure.
+        //I was thinking about passing List<Processor> from scheduler. Can leave this for now
     	
-    	File file = new File(outputPath);
-    	FileWriter fw = new FileWriter(file);
-		Scanner sc = new Scanner(_inputFile);
-		
-		while (sc.hasNextLine()) {
-			String Line = sc.nextLine();
-			
-			if (Line.toLowerCase().contains("Weight=")) {
-				
-				if (Line.toLowerCase().contains("->")) {
-					fw.write(Line);
-					fw.flush();
-				}
-				else {
-					_words = Line.split("\\s+");
-					for (int i = 0; i < schedule.size(); i++) {
-						schedule.get(i);
-					}
-				}
-			}
-			else {
-				fw.write(Line);
-				fw.flush();
-			}
-		}
-		fw.close();
-		sc.close();
-		
     }
 
     public List<Node> getData(){
