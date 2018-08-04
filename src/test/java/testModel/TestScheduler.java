@@ -20,28 +20,28 @@ public class TestScheduler {
 
     @Before
     public void initialise() {
-        Node n0 = new Node("0", 5);
-        Node n1 = new Node("1", 6);
+        Node n0 = new Node(5, "0");
+        Node n1 = new Node(6, "1");
         n0.addChild(n1, 15);
         n1.addParent(n0, 15);
 
-        Node n2 = new Node("2", 5);
+        Node n2 = new Node(5, "2");
         n0.addChild(n2, 11);
         n2.addParent(n0, 11);
 
-        Node n3 = new Node("3", 6);
+        Node n3 = new Node(6, "3");
         n0.addChild(n3, 11);
         n3.addParent(n0, 11);
 
-        Node n4 = new Node("4", 4);
+        Node n4 = new Node(4, "4");
         n1.addChild(n4, 19);
         n4.addParent(n1, 19);
 
-        Node n5 = new Node("5", 7);
+        Node n5 = new Node(7, "5");
         n1.addChild(n5, 4);
         n5.addParent(n1, 4);
 
-        Node n6 = new Node("6", 7);
+        Node n6 = new Node(7, "6");
         n1.addChild(n6, 21);
         n6.addParent(n1, 21);
 

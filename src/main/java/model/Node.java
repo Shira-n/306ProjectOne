@@ -21,10 +21,10 @@ public class Node {
 
 
     public Node(int weight, String id){
+        _id = id;
+        _weight = weight;
         _parents = new HashMap<>();
         _children = new HashMap<>();
-        _weight = weight;
-        _id = id;
     }
 
     /**

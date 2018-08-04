@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import model.DotFileAdapter;
@@ -37,7 +38,6 @@ public class Main {
     */
 
     public static void main(String[] args) {
-        System.out.println(args.length);
         if (args.length < 2){
             Notification.message("Error: Please specify the filename and numbers of processors to use");
             System.exit(1);
@@ -72,6 +72,7 @@ public class Main {
             Scheduler schedule = new Scheduler(graph, numberOfProcessor);
             schedule.schedule();
             //TODO somehow get the result (can't implement now)
+            reader.writeSchedule(schedule.getSchedule(), _outputFile);
 
             //Write result
             //TODO pass result and output filename to adapter to write file. Can leave this for now.
@@ -82,6 +83,9 @@ public class Main {
             System.exit(1);
         }catch(FileNotFoundException e){
             Notification.message("Error: File does not exist");
+            System.exit(1);
+        } catch (IOException e) {
+            Notification.message("Error: IO Exception");
             System.exit(1);
         }
 
