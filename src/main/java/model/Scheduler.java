@@ -17,24 +17,23 @@ public class Scheduler {
     }
 
     /**
-     * schedules the nodes in the list to processors using greedy algorithm
+     * Schedules the Nodes in the list to Processors using greedy algorithm
      */
     public void schedule(){
         List<Node> processedNodes = new ArrayList<>();
 
-        //schedules all nodes in list
-        for (Node currentNode:_graph){
-            //checks if nodes parents have been fulfilled
-            if(processedNodes.containsAll(currentNode.getParents().keySet())){
-                greedySchedule(currentNode);
-                processedNodes.add(currentNode);
-            }
+        //Schedules all Nodes in list. As the list has already be topologically sorted, we can just schedule all
+        //the Nodes one by one.
+        for (Node currentNode : _graph){
+            greedySchedule(currentNode);
+            //TODO see if need below
+            processedNodes.add(currentNode);
         }
     }
 
     /**
-     * greedy algorithm to find the current best Processor to allocating the currentNode
-     * @param currentNode the node to be allocated to a processor
+     * Greedy algorithm to find the current best Processor to allocating one Node
+     * @param currentNode the Node to be allocated to a Processor
      */
     private void greedySchedule(Node currentNode){
         Processor bestProcessor = _processors.get(0);
@@ -50,7 +49,7 @@ public class Scheduler {
             //Finds the earliest possible time considering other processors
             currentAbleToStart = compareWithOtherProcessors(currentProcessor, currentNode, currentAbleToStart);
 
-            //assigns the earliest time to start on first processor
+            //Assigns the earliest time to start on first processor
             if (i == 0){
                 bestStartTime = currentAbleToStart;
 
@@ -60,7 +59,7 @@ public class Scheduler {
                 bestProcessor = currentProcessor;
             }
         }
-        //updates the processor to add node to the schedule
+        //Updates the processor to add node to the schedule
         bestProcessor.addNode(bestStartTime, currentNode);
     }
 
