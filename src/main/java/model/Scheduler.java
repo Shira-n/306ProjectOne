@@ -80,9 +80,7 @@ public class Scheduler {
     }
 
     /**
-     * Topological sort
-     * @param graph
-     * @return
+     * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
      */
     private List<Node> topologicalSort(List<Node> graph){
         //Find the start nodes in the graph
@@ -92,7 +90,6 @@ public class Scheduler {
                 startNodes.add(n);
             }
         }
-
         //Recursively sort the rest of nodes
         return recursiveSort(startNodes);
     }
@@ -102,11 +99,8 @@ public class Scheduler {
         List<Node> newStartNodes = new ArrayList<>();
         for (Node n : startNodes) {
             sorted.add(n);
-            System.out.println("Parent is " + n.getWeight());
-
             if (n.getChildren().keySet().size() > 01) {
                 for (Node child : n.getChildren().keySet()) {
-                    System.out.println("Child is " + child.getWeight());
                     child.sortOneParent();
                     if (child.parentsSorted()) {
                         newStartNodes.add(child);
@@ -117,7 +111,6 @@ public class Scheduler {
         if (newStartNodes.size() < 1) {
             return sorted;
         }else{
-            System.out.println(newStartNodes.size());
             sorted.addAll(recursiveSort(newStartNodes));
             return sorted;
         }

@@ -58,11 +58,10 @@ public class TestScheduler {
             for (Node n : s.getGraph()){
                 System.out.println(n.getId());
             }
-
         }
         catch(Exception ex) {
             ex.printStackTrace();
-            fail("Baka");
+            fail("You did something wrong! Check error msg!");
         }
     }
 
