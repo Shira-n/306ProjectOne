@@ -70,9 +70,45 @@ public class  DotFileAdapter {
 		sc.close();
 	}
 
-    public void writeSchedule(List<Processor> schedule, String outputPath){
-        //TODO Haven't decided on the output data structure.
-        //I was thinking about passing List<Processor> from scheduler. Can leave this for now
+/**
+ * 
+ * @param schedule
+ * @param outputPath
+ * @throws IOException 
+ */
+    public void writeSchedule(List<Processor> schedule, String outputPath) throws IOException{
+    	
+    	File file = new File(outputPath);
+    	FileWriter fw = new FileWriter(file);
+		Scanner sc = new Scanner(_inputFile);
+		
+		while (sc.hasNextLine()) {
+			String Line = sc.nextLine();
+			
+			if (Line.toLowerCase().contains("Weight=")) {
+				
+				if (Line.toLowerCase().contains("->")) {
+					fw.write(Line);
+					fw.flush();
+				}
+				else {
+					_words = Line.split("\\s+");
+					String ID = _words[1];
+					for (int i = 0; i < schedule.size(); i++) {
+						Processor p = schedule.get(i);
+						int PID = p.getID();
+						p.getCurrentSchedule();
+					}
+				}
+			}
+			else {
+				fw.write(Line);
+				fw.flush();
+			}
+		}
+		fw.close();
+		sc.close();
+		
     }
 
     public List<Node> getData(){
