@@ -12,7 +12,7 @@ public class Node {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
 
-    private int _nid;
+    private String _nid;
 
     private int _weight;
     private int _parentsCount;
@@ -20,17 +20,24 @@ public class Node {
 
     private int _startTime;
 
-    public Node(int weight){
+    public Node(int weight, String id){
         _parents = new HashMap<>();
         _children = new HashMap<>();
         _weight = weight;
+        _nid = id;
     }
 
     /**
      * Return the weight of this Node.
      */
     public int getWeight(){return _weight;}
+    
+    /**
+     * Return the id of this Node.
+     */
+    public String getId(){return _nid;}
 
+    
     /**
      * @return the starting time of the node in the processor
      */
