@@ -57,10 +57,12 @@ public class NodeTest {
 		}
 	}
 	
-	//@TODO @Josh
-	public void isChildTest() {};
-	public void isParentTest() {};
-	public void getPathWeightToChildTest() {};
+	@Test
+	public void getPathWeightToChildTest() {
+		Node Child = new Node(5, "x");
+		_baseNode.addChild(Child, 4);
+		assertTrue(_baseNode.getPathWeightToChild(Child) == 4);
+	}
 	
 
 }
