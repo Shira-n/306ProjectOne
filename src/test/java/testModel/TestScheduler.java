@@ -20,28 +20,28 @@ public class TestScheduler {
 
     @Before
     public void initialise() {
-        Node n0 = new Node(5);
-        Node n1 = new Node(6);
+        Node n0 = new Node(5, "0");
+        Node n1 = new Node(6, "1");
         n0.addChild(n1, 15);
         n1.addParent(n0, 15);
 
-        Node n2 = new Node(5);
+        Node n2 = new Node(5, "2");
         n0.addChild(n2, 11);
         n2.addParent(n0, 11);
 
-        Node n3 = new Node(6);
-        n0.addChild(n3, 10);
-        n3.addParent(n0, 10);
+        Node n3 = new Node(6, "3");
+        n0.addChild(n3, 11);
+        n3.addParent(n0, 11);
 
-        Node n4 = new Node(4);
+        Node n4 = new Node(4, "4");
         n1.addChild(n4, 19);
         n4.addParent(n1, 19);
 
-        Node n5 = new Node(7);
+        Node n5 = new Node(7, "5");
         n1.addChild(n5, 4);
         n5.addParent(n1, 4);
 
-        Node n6 = new Node(7);
+        Node n6 = new Node(7, "6");
         n1.addChild(n6, 21);
         n6.addParent(n1, 21);
 
@@ -125,6 +125,20 @@ public class TestScheduler {
         assertEquals(0, schedule.get(1).getCurrentAbleToStart());
         assertSame(0, schedule.get(1).getCurrentSchedule().size());
         assertTrue(schedule.get(1).getCurrentSchedule().values().isEmpty());
+    }
+
+    @Test
+    public void addParentTest() {
+        try {
+            Scheduler s = new Scheduler(_graph, 1);
+            for (Node n : s.getGraph()){
+                System.out.println(n.getId());
+            }
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            fail("You did something wrong! Check error msg!");
+        }
     }
 
     public void testScheduleThreeNodesWithOneParent(){
@@ -227,4 +241,5 @@ public class TestScheduler {
         assertSame(1, schedule.get(2).getCurrentSchedule().size());
         assertTrue(schedule.get(2).getCurrentSchedule().values().contains(_graph.get(5)));
     }
+
 }

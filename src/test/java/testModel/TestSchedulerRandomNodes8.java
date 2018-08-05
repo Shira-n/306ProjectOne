@@ -19,28 +19,28 @@ public class TestSchedulerRandomNodes8 {
 
     @Before
     public void initialise() {
-        Node n0 = new Node(35);
-        Node n1 = new Node(88);
+        Node n0 = new Node(35,"0");
+        Node n1 = new Node(88,"1");
         n0.addChild(n1, 3);
         n1.addParent(n0, 3);
 
-        Node n2 = new Node(176);
+        Node n2 = new Node(176, "2");
         n0.addChild(n2, 9);
         n2.addParent(n0, 9);
 
-        Node n3 = new Node(159);
+        Node n3 = new Node(159, "3");
         n0.addChild(n3, 7);
         n3.addParent(n0, 7);
 
-        Node n4 = new Node(176);
+        Node n4 = new Node(176, "4");
         n0.addChild(n4, 5);
         n4.addParent(n0, 5);
 
-        Node n6 = new Node(141);
+        Node n6 = new Node(141, "6");
         n0.addChild(n6, 4);
         n6.addParent(n0, 4);
 
-        Node n7 = new Node(53);
+        Node n7 = new Node(53, "7");
         n0.addChild(n7, 9);
         n7.addParent(n0, 9);
 
@@ -53,7 +53,7 @@ public class TestSchedulerRandomNodes8 {
         n2.addChild(n4, 8);
         n4.addParent(n2, 8);
 
-        Node n5 = new Node(141);
+        Node n5 = new Node(141, "5");
         n2.addChild(n5, 6);
         n5.addParent(n2, 6);
 

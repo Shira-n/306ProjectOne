@@ -19,30 +19,30 @@ public class TestSchedulerSeriesParallel {
 
     @Before
     public void initialise() {
-        Node n0 = new Node(10);
-        Node n2 = new Node(6);
+        Node n0 = new Node(10, "0");
+        Node n2 = new Node(6, "2");
         n0.addChild(n2, 51);
         n2.addParent(n0, 51);
 
-        Node n3 = new Node(7);
+        Node n3 = new Node(7, "3");
         n0.addChild(n3, 22);
         n3.addParent(n0, 22);
 
-        Node n4 = new Node(5);
+        Node n4 = new Node(5, "4");
         n0.addChild(n4, 44);
         n4.addParent(n0, 44);
 
-        Node n1 = new Node(7);
+        Node n1 = new Node(7, "1");
 
-        Node n6 = new Node(2);
+        Node n6 = new Node(2, "6");
         n2.addChild(n6, 59);
         n6.addParent(n2, 59);
 
-        Node n7 = new Node(2);
+        Node n7 = new Node(2, "7");
         n2.addChild(n7, 15);
         n7.addParent(n2, 15);
 
-        Node n8 = new Node(7);
+        Node n8 = new Node(7, "8");
         n2.addChild(n8, 59);
         n8.addParent(n2, 59);
 
@@ -52,7 +52,7 @@ public class TestSchedulerSeriesParallel {
         n4.addChild(n1, 66);
         n1.addParent(n4, 66);
 
-        Node n5 = new Node(9);
+        Node n5 = new Node(9, "5");
         n5.addChild(n1, 37);
         n1.addParent(n5, 37);
 

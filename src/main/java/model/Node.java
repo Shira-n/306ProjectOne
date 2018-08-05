@@ -12,19 +12,19 @@ public class Node {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
 
-    private String _nid;
+    private String _id;
 
     private int _weight;
-    private int _parentsCount;
-    private int _childrenCount;
+    private int _unsortedParents;
 
     private int _startTime;
 
+
     public Node(int weight, String id){
+        _id = id;
+        _weight = weight;
         _parents = new HashMap<>();
         _children = new HashMap<>();
-        _weight = weight;
-        _nid = id;
     }
 
     /**
@@ -35,7 +35,7 @@ public class Node {
     /**
      * Return the id of this Node.
      */
-    public String getId(){return _nid;}
+    public String getId(){return _id;}
 
     
     /**
@@ -63,6 +63,7 @@ public class Node {
      */
     public void addParent(Node parent, int pathWeight){
         _parents.put(parent, pathWeight);
+        _unsortedParents++;
     }
 
     /**
@@ -72,19 +73,24 @@ public class Node {
         _children.put(child, pathWeight);
     }
 
+    public void sortOneParent(){
+        _unsortedParents--;
+    }
+
+    public boolean parentsSorted(){
+        return _unsortedParents == 0;
+    }
+
+
     /**
      * Return true if the input Node is a parent node of this Node. False otherwise.
      */
-    public boolean isParent(Node node){
-        return _parents.keySet().contains(node);
-    }
+    public boolean isParent(Node node){ return _parents.keySet().contains(node); }
 
     /**
      * Return true if the input Node is a child node of this Node. False otherwise.
      */
-    public boolean isChild(Node node){
-        return _children.keySet().contains(node);
-    }
+    public boolean isChild(Node node){ return _children.keySet().contains(node); }
 
     /**
      * Return the communication weight to this child node.

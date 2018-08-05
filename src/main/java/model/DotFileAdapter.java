@@ -81,8 +81,6 @@ public class  DotFileAdapter {
 					String numberOnly = str.replaceAll("[^0-9]", "");
 					int weight = Integer.parseInt(numberOnly);
 
-
-
 					String nodeID = _words[1].toString();
 
 					Node e = new Node(weight, nodeID);
