@@ -4,6 +4,7 @@ import model.Node;
 import model.Processor;
 import model.Scheduler;
 import org.junit.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.*;
 
@@ -12,11 +13,13 @@ import static org.junit.Assert.*;
 public class TestScheduler {
 
     private List<Node> _graph = new ArrayList<>();
+    /*
     private List<Node> _simpleGraph = new ArrayList<>();
     private List<Node> _simpleGraph1 = new ArrayList<>();
     private List<Node> _simpleGraph2 = new ArrayList<>();
     private List<Node> _simpleGraph3 = new ArrayList<>();
     private List<Node> _simpleGraph4 = new ArrayList<>();
+    */
 
     @Before
     public void initialise() {
@@ -53,6 +56,7 @@ public class TestScheduler {
         _graph.add(n5);
         _graph.add(n6);
 
+        /*
         _simpleGraph.add(n0);
 
         _simpleGraph1.add(n0);
@@ -70,13 +74,23 @@ public class TestScheduler {
         _simpleGraph4.add(n1);
         _simpleGraph4.add(n2);
         _simpleGraph4.add(n3);
+        */
     }
 
     @Test
-    public void testScheduleOneNode(){
-        Scheduler scheduler = new Scheduler(_simpleGraph, 2);
-        scheduler.schedule();
-        List<Processor> schedule = scheduler.getSchedule();
+    public void testScheduleNewOutputFormat(){
+        Scheduler scheduler = new Scheduler(_graph, 2);
+
+        Map<String, Node> test = scheduler.getScheduledNodes();
+
+        for (String s : test.keySet()){
+            System.out.println("Id: " + s + " is scheduled at P" + test.get(s).getProcessor().getID() + " at time " +
+            test.get(s).getStartTime());
+        }
+
+        System.out.println("\nCompare\n");
+
+        /*
         assertEquals(0, _simpleGraph.get(0).getStartTime());
         assertEquals(5, schedule.get(0).getCurrentAbleToStart());
         assertSame(schedule.get(0).getCurrentSchedule().size(), 1);
@@ -85,8 +99,22 @@ public class TestScheduler {
         assertEquals(0, schedule.get(1).getCurrentAbleToStart());
         assertSame(schedule.get(1).getCurrentSchedule().size(), 0);
         assertTrue(schedule.get(1).getCurrentSchedule().values().isEmpty());
+         */
     }
 
+    @Test
+    public void testSchedule(){
+        Scheduler scheduler = new Scheduler(_graph, 2);
+        List<Processor> schedule = scheduler.getSchedule();
+        for (Processor p : schedule){
+            System.out.println("Processor: " + p.getID());
+            for (int i : p.getCurrentSchedule().keySet()) {
+                System.out.println("At " + i + " scheduled Node" + p.getCurrentSchedule().get(i).getId());
+            }
+        }
+    }
+
+    /*
     @Test
     public void testScheduleTwoNodesWithDependency(){
 
@@ -241,5 +269,6 @@ public class TestScheduler {
         assertSame(1, schedule.get(2).getCurrentSchedule().size());
         assertTrue(schedule.get(2).getCurrentSchedule().values().contains(_graph.get(5)));
     }
+    */
 
 }

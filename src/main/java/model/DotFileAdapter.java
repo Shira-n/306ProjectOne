@@ -147,6 +147,11 @@ public class  DotFileAdapter {
 
 	}
 
+
+	public void writeScheduleNew(Map<String, Node> scheduledNodes,String outputPath) throws IOException{
+		//TODO
+	}
+
 	public List<Node> getData(){
 		return _data;
 	}

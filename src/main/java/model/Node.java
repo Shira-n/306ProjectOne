@@ -13,12 +13,12 @@ public class Node {
     private Map<Node, Integer> _children;
 
     private String _id;
-
     private int _weight;
+
     private int _unsortedParents;
 
+    private Processor _processor;
     private int _startTime;
-
 
     public Node(int weight, String id){
         _id = id;
@@ -37,29 +37,32 @@ public class Node {
      */
     public String getId(){return _id;}
 
-    
+
+    /*
+        Getter & Setter of Schedule related fields
+     */
+
+    public Processor getProcessor(){ return _processor; }
+
+    public void setProcessor(Processor p){ _processor = p; }
+
     /**
-     * @return the starting time of the node in the processor
+     * Return the start time of the Node scheduled in the processor
      */
     public int getStartTime(){return _startTime;}
 
     /**
-     * @return the parents of this node
-     */
-    public Map<Node, Integer> getParents(){return _parents;}
-
-    /**
-     * @return the children of this node
-     */
-    public Map<Node, Integer> getChildren(){return _children;}
-
-    /**
-     * @param startTime sets the starting time of the node in the processor
+     * Set the start time of the Node scheduled in the processor
      */
     public void setStartTime(int startTime){_startTime = startTime;}
 
+
+    /*
+        Parents/Children
+     */
+
     /**
-     * Add a parent node to this Node with the communication weight between these two Nodes.
+     * Add a parent Node to this Node with the communication weight between these two Nodes.
      */
     public void addParent(Node parent, int pathWeight){
         _parents.put(parent, pathWeight);
@@ -67,19 +70,21 @@ public class Node {
     }
 
     /**
-     * Add a child node to this Node with the communication weight between these two Nodes.
+     * Add a child Node to this Node with the communication weight between these two Nodes.
      */
     public void addChild(Node child, int pathWeight) {
         _children.put(child, pathWeight);
     }
 
-    public void sortOneParent(){
-        _unsortedParents--;
-    }
+    /**
+     * Return the parents of this Node together with the communication costs.
+     */
+    public Map<Node, Integer> getParents(){return _parents;}
 
-    public boolean parentsSorted(){
-        return _unsortedParents == 0;
-    }
+    /**
+     * Return the children of this Node together with the communication costs.
+     */
+    public Map<Node, Integer> getChildren(){return _children;}
 
 
     /**
@@ -93,8 +98,8 @@ public class Node {
     public boolean isChild(Node node){ return _children.keySet().contains(node); }
 
     /**
-     * Return the communication weight to this child node.
-     * Return -1 if the input is not a child node to this Node.
+     * Return the communication weight to this child Node.
+     * Return -1 if the input is not a child Node to this Node.
      */
     public int getPathWeightToChild(Node child){
         if (_children.containsKey(child)){
@@ -103,4 +108,28 @@ public class Node {
             return -1;
         }
     }
+
+    /**
+     * Return the communication weight to this parent Node.
+     * Return -1 if the input is not a parent Node to this Node.
+     */
+    public int getPathWeightToParent(Node parent){
+        if (_parents.containsKey(parent)){
+            return _parents.get(parent);
+        }else{
+            return -1;
+        }
+    }
+
+    /*
+        Helper methods for topological sorting
+     */
+    public void sortOneParent(){
+        _unsortedParents--;
+    }
+
+    public boolean parentsSorted(){
+        return _unsortedParents == 0;
+    }
+
 }

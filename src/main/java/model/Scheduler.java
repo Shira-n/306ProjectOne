@@ -25,42 +25,168 @@ public class Scheduler {
         //Schedules all Nodes in list. As the list has already be topologically sorted, we can just schedule all
         //the Nodes one by one.
         for (Node currentNode : _graph){
-            greedySchedule(currentNode);
-            //TODO see if need below
-            processedNodes.add(currentNode);
+            //System.out.println("\n\nLook at Node" + currentNode.getId());
+            simplifedGreedySchedule(currentNode);
+            //greedySchedule(currentNode);
         }
     }
 
     /**
-     * Greedy algorithm to find the current best Processor to allocating one Node
-     * @param currentNode the Node to be allocated to a Processor
+     * A simplified greedy scheduling method. Schedule the input Node to the Processor such that has the earliest
+     * start time.
      */
-    private void greedySchedule(Node currentNode){
+    private void simplifedGreedySchedule(Node node){
         Processor bestProcessor = _processors.get(0);
-        int bestStartTime = 0;
+        int bestStartTime = Integer.MAX_VALUE;
+        int currentAbleToStart = 0;
+
+        for (Processor p : _processors){
+            //System.out.println("\nlook at Processor" + p.getID());
+            //Calculate the earliest possible start time on this processor.
+            currentAbleToStart = Math.max(p.getCurrentAbleToStart(), infulencedByParents(p, node));
+            //System.out.println("Best Start Time at P" + p.getID() + " is " + currentAbleToStart);
+            //Set this processor as a candidate if the start time on it is earlier than the current best.
+            if (currentAbleToStart < bestStartTime) {
+                bestStartTime = currentAbleToStart;
+                bestProcessor = p;
+            }
+        }
+
+        //Update the processor to add node to the schedule.
+        bestProcessor.addNode(bestStartTime, node);
+        //System.out.println("\nPut it on P" + bestProcessor.getID() + "with time " + bestStartTime);
+    }
+
+    /**
+     * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
+     * of the input Node's parents.
+     */
+    private int infulencedByParents(Processor target, Node n){
+        int limit = 0;
+        for (Node parent : n.getParents().keySet()){
+            if (parent.getProcessor().getID() == target.getID()) {
+                limit = Math.max(limit, parent.getStartTime() + parent.getWeight());
+                //System.out.println("influenced by parent on this p, parent is "+parent.getId()+  " limit is "+ limit);
+            }else{
+                //System.out.println("currentlimit: " +limit);
+                int i = parent.getStartTime() + parent.getWeight() + n.getPathWeightToParent(parent);
+                //System.out.println("other parents: " + i);
+                limit = Math.max(limit, parent.getStartTime() + parent.getWeight() + n.getPathWeightToParent(parent));
+                //System.out.println("influenced by parent not on this p, parent is "+parent.getId()+ " changed limit tp "+ limit);
+            }
+        }
+        //System.out.println("max limit: " + limit);
+        return limit;
+    }
+
+
+    /**
+     * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
+     */
+    private List<Node> topologicalSort(List<Node> graph){
+        //Find the start nodes in the graph
+        List<Node> startNodes = new ArrayList<>();
+        for (Node n : graph){
+            if (n.parentsSorted()){
+                startNodes.add(n);
+            }
+        }
+        //Recursively sort the rest of nodes
+        return recursiveSort(startNodes);
+    }
+
+    /**
+     * Recursive BFS method conduct topological sorting on input Nodes and their children.
+     * @param startNodes a list of Nodes that either have no parent or all its parents have been sorted.
+     * @return a list of Nodes that contain the input node and its children in sorted topological order.
+     */
+    private List<Node> recursiveSort(List<Node> startNodes){
+        List<Node> sorted = new ArrayList<>();
+        List<Node> newStartNodes = new ArrayList<>();
+        for (Node n : startNodes) {
+            //Add the input list of Nodes to sorted List.
+            sorted.add(n);
+            //Explore input Nodes' children and check if there is any child node has all its parents sorted.
+            if (n.getChildren().keySet().size() > 0) {
+                for (Node child : n.getChildren().keySet()) {
+                    child.sortOneParent();
+                    if (child.parentsSorted()) {
+                        newStartNodes.add(child);
+                    }
+                }
+            }
+        }
+        //When there is no more child to sort, return the input list of Nodes.
+        if (newStartNodes.size() < 1) {
+            return sorted;
+        //If there are still children, recursively sort them
+        }else{
+            sorted.addAll(recursiveSort(newStartNodes));
+            return sorted;
+        }
+    }
+
+
+    /**
+     * for test
+     */
+    public List<Node> getGraph() {
+        return _graph;
+    }
+
+    /**
+     * Return a list of scheduled processors
+     */
+    public List<Processor> getSchedule() {
+        schedule();
+        return _processors;
+    }
+
+    public Map<String, Node> getScheduledNodes(){
+        schedule();
+        Map<String, Node> schedule = new HashMap<>();
+        for (Node n : _graph){
+            schedule.put(n.getId(), n);
+        }
+        return schedule;
+    }
+
+    /*
+        Original Scheduling methods
+     */
+
+    /**
+     * Greedy algorithm to find the current best Processor and the best start time to allocate the input Node
+     */
+    private void greedySchedule(Node node){
+        Processor bestProcessor = _processors.get(0);
+        int bestStartTime = Integer.MAX_VALUE;
+        int currentAbleToStart = 0;
 
         //Iterates through each processor to find the earliest time the node can start processing in that processor
         for (int i = 0; i < _numberOfProcessor; i++) {
-            Processor currentProcessor = _processors.get(i);
+            Processor candidateProcessor = _processors.get(i);
 
             //Find the current time able to start on current processor ignoring other processors
-            int currentAbleToStart = StartTime(currentNode, currentProcessor);
+            currentAbleToStart = StartTime(node, candidateProcessor);
 
             //Finds the earliest possible time considering other processors
-            currentAbleToStart = compareWithOtherProcessors(currentProcessor, currentNode, currentAbleToStart);
+            currentAbleToStart = compareWithOtherProcessors(candidateProcessor, node, currentAbleToStart);
 
             //Assigns the earliest time to start on first processor
             if (i == 0){
                 bestStartTime = currentAbleToStart;
 
-            //Compare time of current best starting time to the earliest starting time on tis processor
+                //Compare time of current best starting time to the earliest starting time on tis processor
             }else if(currentAbleToStart < bestStartTime){
                 bestStartTime = currentAbleToStart;
-                bestProcessor = currentProcessor;
+                bestProcessor = candidateProcessor;
             }
         }
+
         //Updates the processor to add node to the schedule
-        bestProcessor.addNode(bestStartTime, currentNode);
+        node.setProcessor(bestProcessor);
+        bestProcessor.addNode(bestStartTime, node);
     }
 
     /**
@@ -110,55 +236,4 @@ public class Scheduler {
         return currentAbleToStart;
     }
 
-    /**
-     * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
-     */
-    private List<Node> topologicalSort(List<Node> graph){
-        //Find the start nodes in the graph
-        List<Node> startNodes = new ArrayList<>();
-        for (Node n : graph){
-            if (n.parentsSorted()){
-                startNodes.add(n);
-            }
-        }
-        //Recursively sort the rest of nodes
-        return recursiveSort(startNodes);
-    }
-
-    private List<Node> recursiveSort(List<Node> startNodes){
-        List<Node> sorted = new ArrayList<>();
-        List<Node> newStartNodes = new ArrayList<>();
-        for (Node n : startNodes) {
-            sorted.add(n);
-            if (n.getChildren().keySet().size() > 01) {
-                for (Node child : n.getChildren().keySet()) {
-                    child.sortOneParent();
-                    if (child.parentsSorted()) {
-                        newStartNodes.add(child);
-                    }
-                }
-            }
-        }
-        if (newStartNodes.size() < 1) {
-            return sorted;
-        }else{
-            sorted.addAll(recursiveSort(newStartNodes));
-            return sorted;
-        }
-    }
-
-    /**
-     * for test
-     * @return
-     */
-    public List<Node> getGraph() {
-        return _graph;
-    }
-
-    /**
-     * Return a list of scheduled processors
-     */
-    public List<Processor> getSchedule() {
-        return _processors;
-    }
 }
