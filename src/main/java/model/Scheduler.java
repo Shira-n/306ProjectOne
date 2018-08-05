@@ -1,7 +1,5 @@
 package model;
 
-import application.Main;
-
 import java.util.*;
 
 public class Scheduler {
@@ -28,7 +26,7 @@ public class Scheduler {
         //the Nodes one by one.
         for (Node currentNode : _graph){
             //System.out.println("\n\nLook at Node" + currentNode.getId());
-            simplifedSchedule(currentNode);
+            simplifedGreedySchedule(currentNode);
             //greedySchedule(currentNode);
         }
     }
@@ -37,7 +35,7 @@ public class Scheduler {
      * A simplified greedy scheduling method. Schedule the input Node to the Processor such that has the earliest
      * start time.
      */
-    private void simplifedSchedule(Node node){
+    private void simplifedGreedySchedule(Node node){
         Processor bestProcessor = _processors.get(0);
         int bestStartTime = Integer.MAX_VALUE;
         int currentAbleToStart = 0;
@@ -53,8 +51,7 @@ public class Scheduler {
                 bestProcessor = p;
             }
         }
-        //Update the Node with the best processor.
-        node.set_processor(bestProcessor);
+
         //Update the processor to add node to the schedule.
         bestProcessor.addNode(bestStartTime, node);
         //System.out.println("\nPut it on P" + bestProcessor.getID() + "with time " + bestStartTime);
@@ -98,11 +95,18 @@ public class Scheduler {
         return recursiveSort(startNodes);
     }
 
+    /**
+     * Recursive BFS method conduct topological sorting on input Nodes and their children.
+     * @param startNodes a list of Nodes that either have no parent or all its parents have been sorted.
+     * @return a list of Nodes that contain the input node and its children in sorted topological order.
+     */
     private List<Node> recursiveSort(List<Node> startNodes){
         List<Node> sorted = new ArrayList<>();
         List<Node> newStartNodes = new ArrayList<>();
         for (Node n : startNodes) {
+            //Add the input list of Nodes to sorted List.
             sorted.add(n);
+            //Explore input Nodes' children and check if there is any child node has all its parents sorted.
             if (n.getChildren().keySet().size() > 0) {
                 for (Node child : n.getChildren().keySet()) {
                     child.sortOneParent();
@@ -112,15 +116,15 @@ public class Scheduler {
                 }
             }
         }
+        //When there is no more child to sort, return the input list of Nodes.
         if (newStartNodes.size() < 1) {
             return sorted;
+        //If there are still children, recursively sort them
         }else{
             sorted.addAll(recursiveSort(newStartNodes));
             return sorted;
         }
     }
-
-
 
 
     /**
@@ -138,7 +142,18 @@ public class Scheduler {
         return _processors;
     }
 
+    public Map<String, Node> getScheduledNodes(){
+        schedule();
+        Map<String, Node> schedule = new HashMap<>();
+        for (Node n : _graph){
+            schedule.put(n.getId(), n);
+        }
+        return schedule;
+    }
 
+    /*
+        Original Scheduling methods
+     */
 
     /**
      * Greedy algorithm to find the current best Processor and the best start time to allocate the input Node
@@ -170,7 +185,7 @@ public class Scheduler {
         }
 
         //Updates the processor to add node to the schedule
-        node.set_processor(bestProcessor);
+        node.setProcessor(bestProcessor);
         bestProcessor.addNode(bestStartTime, node);
     }
 

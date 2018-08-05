@@ -1,9 +1,6 @@
 package model;
 
-//@TODO @Suying
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,21 +19,21 @@ public class Processor {
      * @param pid the id of the processor instance to be created
      */
     public Processor(int pid){
-        _pid = pid;
+        _pid = pid + 1;
         _currentAbleToStart = 0;
         _currentSchedule = new HashMap<>();
     }
 
     /**
      * Add a new node/task to the Processor instance, also updates processor's total path weight.
-     * @param node
      */
     public void addNode(int start, Node node){
         _currentSchedule.put(start, node);
         _currentAbleToStart = start + node.getWeight();
 
-        //adds the start time of the processing to the node
+        //Add the start time and the scheduled processor to the node
         node.setStartTime(start);
+        node.setProcessor(this);
     }
 
     public Map<Integer, Node> getCurrentSchedule() {

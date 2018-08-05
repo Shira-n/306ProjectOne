@@ -70,11 +70,12 @@ public class Main {
             //No multithreading for basic milestone
 
             //Run Scheduler to calculate the schedule.
-            Scheduler schedule = new Scheduler(graph, numberOfProcessor);
-            schedule.schedule();
+            Scheduler scheduler = new Scheduler(graph, numberOfProcessor);
+            //schedule.schedule();
 
             //Write result
-            reader.writeSchedule(schedule.getSchedule(), _outputFile);
+            //reader.writeSchedule(schedule.getSchedule(), _outputFile);
+            reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
