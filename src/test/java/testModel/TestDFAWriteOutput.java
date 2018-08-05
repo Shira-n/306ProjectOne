@@ -20,7 +20,7 @@ public class TestDFAWriteOutput{
 	@Before
 	public void setup() {
 		// add input path to Nodes_7_OutTree
-		DotFileAdapter _dfa = new DotFileAdapter();
+		//DotFileAdapter _dfa = new DotFileAdapter();
 		
 		_schedule.add(new Processor(1));
 		_schedule.add(new Processor(2));
