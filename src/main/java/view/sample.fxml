@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-border-color: #444b52; -fx-border-width: 10;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="_anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-border-color: #444b52; -fx-border-width: 10;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
       <VBox layoutX="10.0" layoutY="130.0" prefWidth="220.0" style="-fx-background-color: #858e93;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="120.0">
          <children>
@@ -103,6 +104,9 @@
             </HBox>
         </items>
       </ToolBar>
-      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" prefHeight="669.0" prefWidth="1063.0" />
+      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" prefHeight="669.0" prefWidth="1063.0">
+         <children>
+            <SwingNode fx:id="_swingNode" />
+         </children></Pane>
    </children>
 </AnchorPane>
