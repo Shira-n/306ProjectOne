@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.sound.sampled.Line;
 import javax.swing.CellEditor;
 
 import java.util.HashMap;
@@ -92,63 +93,104 @@ public class  DotFileAdapter {
 		sc.close();
 	}
 
-	/**
-	 * 
-	 * @param schedule
-	 * @param outputPath
-	 * @throws IOException 
-	 */
-	public void writeSchedule(List<Processor> schedule, String outputPath) throws IOException{
+//	/**
+//	 * 
+//	 * @param schedule
+//	 * @param outputPath
+//	 * @throws IOException 
+//	 */
+//	public void writeSchedule(List<Processor> schedule, String outputPath) throws IOException{
+//
+//		File file = new File(outputPath);
+//		FileWriter fw = new FileWriter(file);
+//		Scanner sc = new Scanner(_inputFile);
+//
+//		while (sc.hasNextLine()) {
+//			String Line = sc.nextLine();
+//
+//			if (Line.toLowerCase().contains("Weight=")) {
+//
+//				if (Line.toLowerCase().contains("->")) {
+//					fw.write(Line + System.getProperty("line.separator"));
+//					fw.flush();
+//
+//				}
+//				else {
+//					_words = Line.split("\\s+");
+//					String ID = _words[1];
+//					boolean found = false;
+//					while (!found) {
+//						for (int i = 0; i < schedule.size(); i++) {
+//							Processor p = schedule.get(i);
+//							for (Map.Entry<Integer, Node> e : p.getCurrentSchedule().entrySet()) {
+//								Node currentNode = e.getValue();
+//								Integer startTime = e.getKey();
+//								if (currentNode.getId().equalsIgnoreCase(ID)) {
+//									int PID = p.getID();
+//									int start = startTime.intValue(); 
+//									Line.replace("]", ",Start=" + start + ",Processor=" + PID + "]");
+//									found = true;
+//								}
+//							}
+//						}
+//					}
+//					fw.write(Line + System.getProperty("line.separator"));
+//					fw.flush();
+//				}
+//			}
+//			else {
+//				fw.write(Line + System.getProperty("line.separator"));
+//				fw.flush();
+//			}
+//		}
+//		fw.close();
+//		sc.close();
+//
+//	}
 
+
+	public void writeScheduleNew(Map<String, Node> scheduledNodes,String outputPath) throws IOException{
+		
 		File file = new File(outputPath);
 		FileWriter fw = new FileWriter(file);
 		Scanner sc = new Scanner(_inputFile);
-
-		while (sc.hasNextLine()) {
+		
+		while(sc.hasNextLine()) {
 			String Line = sc.nextLine();
-
+			
 			if (Line.toLowerCase().contains("Weight=")) {
-
+				
 				if (Line.toLowerCase().contains("->")) {
-					fw.write(Line);
+					fw.write(Line + System.getProperty("line.separator"));
 					fw.flush();
 				}
+				
 				else {
 					_words = Line.split("\\s+");
 					String ID = _words[1];
 					boolean found = false;
 					while (!found) {
-						for (int i = 0; i < schedule.size(); i++) {
-							Processor p = schedule.get(i);
-							for (Map.Entry<Integer, Node> e : p.getCurrentSchedule().entrySet()) {
-								Node currentNode = e.getValue();
-								Integer startTime = e.getKey();
-								if (currentNode.getId().equalsIgnoreCase(ID)) {
-									int PID = p.getID();
-									int start = startTime.intValue(); 
-									Line.replace("]", ",Start=" + start + ",Processor=" + PID + "]");
-									found = true;
-								}
+						for (Map.Entry<String, Node> e : scheduledNodes.entrySet()) {
+							if (e.getKey().equals(ID)) {
+								int PID = e.getValue().getProcessor().getID();
+								int Start = e.getValue().getStartTime();
+								Line.replace("]", ",Start=" + Start + ",Processor=" + PID + "]");
+								found = true;
 							}
 						}
 					}
-					fw.write(Line);
+					fw.write(Line + System.getProperty("line.separator"));
 					fw.flush();
 				}
 			}
 			else {
-				fw.write(Line);
+				fw.write(Line + System.getProperty("line.separator"));
 				fw.flush();
 			}
 		}
 		fw.close();
 		sc.close();
-
-	}
-
-
-	public void writeScheduleNew(Map<String, Node> scheduledNodes,String outputPath) throws IOException{
-		//TODO
+		
 	}
 
 	public List<Node> getData(){
