@@ -9,6 +9,7 @@ import java.util.Map;
  * connected nodes.
  */
 public class Node {
+
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
 
@@ -17,6 +18,7 @@ public class Node {
     private int _weight;
     private int _unsortedParents;
 
+    private Processor _processor;
     private int _startTime;
 
 
@@ -37,26 +39,24 @@ public class Node {
      */
     public String getId(){return _id;}
 
-    
+
+
+    public Processor getProcessor(){ return _processor; }
+
+    public void set_processor(Processor p){ _processor = p; }
+
+
     /**
      * @return the starting time of the node in the processor
      */
     public int getStartTime(){return _startTime;}
 
     /**
-     * @return the parents of this node
-     */
-    public Map<Node, Integer> getParents(){return _parents;}
-
-    /**
-     * @return the children of this node
-     */
-    public Map<Node, Integer> getChildren(){return _children;}
-
-    /**
      * @param startTime sets the starting time of the node in the processor
      */
     public void setStartTime(int startTime){_startTime = startTime;}
+
+
 
     /**
      * Add a parent node to this Node with the communication weight between these two Nodes.
@@ -73,13 +73,19 @@ public class Node {
         _children.put(child, pathWeight);
     }
 
-    public void sortOneParent(){
-        _unsortedParents--;
-    }
 
-    public boolean parentsSorted(){
-        return _unsortedParents == 0;
-    }
+
+    /**
+     * @return the parents of this node
+     */
+    public Map<Node, Integer> getParents(){return _parents;}
+
+    /**
+     * @return the children of this node
+     */
+    public Map<Node, Integer> getChildren(){return _children;}
+
+
 
 
     /**
@@ -93,7 +99,7 @@ public class Node {
     public boolean isChild(Node node){ return _children.keySet().contains(node); }
 
     /**
-     * Return the communication weight to this child node.
+     * Return the communication weight to this child Node.
      * Return -1 if the input is not a child node to this Node.
      */
     public int getPathWeightToChild(Node child){
@@ -103,4 +109,32 @@ public class Node {
             return -1;
         }
     }
+
+    /**
+     * Return the communication weight to this parent Node.
+     * Return -1 if the input is not a parent node to this Node.
+     */
+    public int getPathWeightToParent(Node parent){
+        if (_parents.containsKey(parent)){
+            return _parents.get(parent);
+        }else{
+            return -1;
+        }
+    }
+
+
+
+
+    /*
+        Helper methods for topological sorting
+     */
+    public void sortOneParent(){
+        _unsortedParents--;
+    }
+
+    public boolean parentsSorted(){
+        return _unsortedParents == 0;
+    }
+
+
 }

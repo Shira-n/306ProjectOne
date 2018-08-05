@@ -18,7 +18,8 @@ import model.Notification;
 import model.Scheduler;
 
 public class Main {
-        // extends Application {
+    //GUI
+    //extends Application {
 
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
@@ -66,17 +67,14 @@ public class Main {
                 launch(args);
             }
             */
+            //No multithreading for basic milestone
 
             //Run Scheduler to calculate the schedule.
-            //TODO _noCores would be passed to Scheduler for multi-thread computing. Leave this for now
             Scheduler schedule = new Scheduler(graph, numberOfProcessor);
             schedule.schedule();
-            //TODO somehow get the result (can't implement now)
-            reader.writeSchedule(schedule.getSchedule(), _outputFile);
 
             //Write result
-            //TODO pass result and output filename to adapter to write file. Can leave this for now.
-            //TODO ask for overwriting if file already exists, or save as INPUT_ouput_1.dot. Can leave this for now
+            reader.writeSchedule(schedule.getSchedule(), _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
@@ -140,7 +138,6 @@ public class Main {
      * checks if the file has valid type(.dot file) and exists in the directory
      */
     private static void checkFile(String filepath){
-
         if (!filepath.endsWith(".dot")){
             Notification.message("Error: input file has wrong suffix");
             System.exit(1);
