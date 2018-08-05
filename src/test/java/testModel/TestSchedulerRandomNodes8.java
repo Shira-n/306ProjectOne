@@ -118,7 +118,7 @@ public class TestSchedulerRandomNodes8 {
 
     @Test
     public void testTwoProcessor(){
-        System.out.println("\nTwo Processor");
+        System.out.println("\nTwo Processors");
 
         Scheduler scheduler = new Scheduler(_graph, 2);
         List<Processor> schedule = scheduler.getSchedule();
@@ -154,7 +154,7 @@ public class TestSchedulerRandomNodes8 {
 
     @Test
     public void testThreeProcessor(){
-        System.out.println("\nThree Processor");
+        System.out.println("\nThree Processors");
 
         Scheduler scheduler = new Scheduler(_graph, 3);
         List<Processor> schedule = scheduler.getSchedule();
@@ -192,7 +192,7 @@ public class TestSchedulerRandomNodes8 {
 
     @Test
     public void testFourProcessor(){
-        System.out.println("\nFourProcessor");
+        System.out.println("\nFourProcessors");
         Scheduler scheduler = new Scheduler(_graph, 4);
         List<Processor> schedule = scheduler.getSchedule();
         printSchedule(schedule);
@@ -224,11 +224,21 @@ public class TestSchedulerRandomNodes8 {
         */
     }
 
+
+    @Test
+    public void testEightProcessor() {
+        System.out.println("\nEightProcessors");
+        Scheduler scheduler = new Scheduler(_graph, 8);
+        List<Processor> schedule = scheduler.getSchedule();
+        printSchedule(schedule);
+    }
+
+
     private void printSchedule(List<Processor> schedule){
         for (Processor p : schedule){
             System.out.println("Processor: " + p.getID());
             for (int i : p.getCurrentSchedule().keySet()) {
-                System.out.println(i + " scheduled Node" + p.getCurrentSchedule().get(i).getId());
+                System.out.println("At " + i + " scheduled Node" + p.getCurrentSchedule().get(i).getId());
             }
         }
     }

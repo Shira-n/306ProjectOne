@@ -1,9 +1,6 @@
 package model;
 
-//@TODO @Suying
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,14 +26,14 @@ public class Processor {
 
     /**
      * Add a new node/task to the Processor instance, also updates processor's total path weight.
-     * @param node
      */
     public void addNode(int start, Node node){
         _currentSchedule.put(start, node);
         _currentAbleToStart = start + node.getWeight();
 
-        //adds the start time of the processing to the node
+        //Add the start time and the scheduled processor to the node
         node.setStartTime(start);
+        node.setProcessor(this);
     }
 
     public Map<Integer, Node> getCurrentSchedule() {

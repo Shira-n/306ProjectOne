@@ -68,7 +68,7 @@ public class TestSchedulerNode11 {
         _graph.add(n9);
         _graph.add(n10);
     }
-/*
+
     @Test
     public void testOneProcessor() {
         System.out.println("\nOneProcessor");
@@ -76,7 +76,7 @@ public class TestSchedulerNode11 {
         List<Processor> schedule = scheduler.getSchedule();
         printSchedule(schedule);
     }
-*/
+
     @Test
     public void testTwoProcessor() {
         System.out.println("\nTwoProcessors");
@@ -84,7 +84,7 @@ public class TestSchedulerNode11 {
         List<Processor> schedule = scheduler.getSchedule();
         printSchedule(schedule);
     }
-/*
+
     @Test
     public void testThreeProcessor() {
         System.out.println("\nThreeProcessors");
@@ -92,7 +92,7 @@ public class TestSchedulerNode11 {
         List<Processor> schedule = scheduler.getSchedule();
         printSchedule(schedule);
     }
-*/
+
     private void printSchedule(List<Processor> schedule){
         for (Processor p : schedule){
             System.out.println("Processor: " + p.getID());

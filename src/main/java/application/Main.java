@@ -71,7 +71,7 @@ public class Main {
 
             //Run Scheduler to calculate the schedule.
             Scheduler schedule = new Scheduler(graph, numberOfProcessor);
-            schedule.schedule();
+            //schedule.schedule();
 
             //Write result
             reader.writeSchedule(schedule.getSchedule(), _outputFile);
