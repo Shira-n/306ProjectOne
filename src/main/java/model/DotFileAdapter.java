@@ -205,7 +205,7 @@ public class  DotFileAdapter {
 			processLine = sc.nextLine();
 			if (processLine.contains("Weight=") && !processLine.contains("->")){
 				node = processLine.split(" ")[0].trim();
-				weight = "[Weight=" + scheduledNodes.get(node).getWeight() + ",";
+				weight = " [Weight=" + scheduledNodes.get(node).getWeight() + ",";
 				start = "Start=" + scheduledNodes.get(node).getStartTime() + ",";
 				processor =  "Processor=" + scheduledNodes.get(node).getProcessor().getID() + "];";
 				processLine = processLine.split(" ")[0] + weight + start + processor;

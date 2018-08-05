@@ -75,7 +75,7 @@ public class Main {
 
             //Write result
             //reader.writeSchedule(schedule.getSchedule(), _outputFile);
-            reader.writeScheduleNew(scheduler.getScheduledNodes(), _outputFile);
+            reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");

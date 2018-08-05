@@ -19,7 +19,7 @@ public class Processor {
      * @param pid the id of the processor instance to be created
      */
     public Processor(int pid){
-        _pid = pid;
+        _pid = pid + 1;
         _currentAbleToStart = 0;
         _currentSchedule = new HashMap<>();
     }
