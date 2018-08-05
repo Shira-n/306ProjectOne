@@ -149,6 +149,26 @@ public class  DotFileAdapter {
 
 	public void writeScheduleNew(Map<String, Node> scheduledNodes,String outputPath) throws IOException{
 		//TODO
+		File file = new File(outputPath);
+		FileWriter fw = new FileWriter(file);
+		Scanner sc = new Scanner(_inputFile);
+		String processLine, node, weight, start, processor;
+		while (sc.hasNext()){
+			processLine = sc.nextLine();
+			if (processLine.contains("Weight=") && !processLine.contains("->")){
+				node = processLine.split(" ")[0].trim();
+				weight = "[Weight=" + scheduledNodes.get(node).getWeight() + ",";
+				start = "Start=" + scheduledNodes.get(node).getStartTime() + ",";
+				processor =  "Processor=" + scheduledNodes.get(node).getProcessor().getID() + "];";
+				processLine = processLine.split(" ")[0] + weight + start + processor;
+			}
+			fw.write(processLine + "\n");
+			fw.flush();
+		}
+		fw.close();
+		sc.close();
+
+
 	}
 
 	public List<Node> getData(){
