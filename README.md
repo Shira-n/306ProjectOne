@@ -32,4 +32,5 @@ Optional:
 
 NOTE: parallisation and visualise is not currently available for basic milestone
 
-Refer to wiki for more information.
+Refer to wiki for more information
+Link: https://github.com/Shira-n/306ProjectOne/wiki
