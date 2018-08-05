@@ -110,8 +110,9 @@ public class  DotFileAdapter {
 			if (Line.toLowerCase().contains("Weight=")) {
 
 				if (Line.toLowerCase().contains("->")) {
-					fw.write(Line);
+					fw.write(Line + System.getProperty("line.separator"));
 					fw.flush();
+
 				}
 				else {
 					_words = Line.split("\\s+");
@@ -132,12 +133,12 @@ public class  DotFileAdapter {
 							}
 						}
 					}
-					fw.write(Line);
+					fw.write(Line + System.getProperty("line.separator"));
 					fw.flush();
 				}
 			}
 			else {
-				fw.write(Line);
+				fw.write(Line + System.getProperty("line.separator"));
 				fw.flush();
 			}
 		}
