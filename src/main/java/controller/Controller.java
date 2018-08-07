@@ -12,8 +12,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
-import org.graphstream.ui.fx_viewer.FxDefaultView;
-import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
@@ -34,7 +32,7 @@ public class Controller extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 1280, 800));
 
