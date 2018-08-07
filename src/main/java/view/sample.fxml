@@ -20,7 +20,12 @@
                   <Font name="Helvetica Neue Light" size="20.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: transparent;" text="Procssor Performance" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: transparent;" text="Gantt Chart" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+               <font>
+                  <Font name="Helvetica Neue Light" size="20.0" />
+               </font>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: transparent;" text="Open Output File" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Helvetica Neue Light" size="20.0" />
                </font>
@@ -88,12 +93,26 @@
                   </VBox>
                   <VBox prefHeight="120.0" prefWidth="250.0">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Progress" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="65%" textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
+                           <font>
+                              <Font name="Helvetica Neue Light" size="30.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="120.0" prefWidth="250.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Current Optimal Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                           <font>
+                              <Font name="Helvetica Neue Light" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Helvetica Neue Light" size="30.0" />
                            </font>
