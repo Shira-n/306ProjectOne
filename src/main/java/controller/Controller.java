@@ -7,11 +7,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.fx_viewer.FxDefaultView;
+import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
+
 
 import javax.swing.*;
 
@@ -24,16 +29,25 @@ public class Controller extends Application {
     @FXML
     private SwingNode _swingNode;
 
+    @FXML
+    private Pane _board;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 1280, 800));
 
-        createAndSetSwingContent(_swingNode);
-
         //new GraphExplorer();
+
         primaryStage.show();
+    }
+
+    @FXML
+    public void initialize() {
+        SwingNode node = new SwingNode();
+        createAndSetSwingContent(node);
+        _board.getChildren().add(node);
     }
 
     public static void main(String args[]) {
@@ -55,7 +69,7 @@ public class Controller extends Application {
     }
 
 
-    private void createAndSetSwingContent(final SwingNode swingNode) {
+    private void createAndSetSwingContent(SwingNode swingNode) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -85,8 +99,8 @@ public class Controller extends Application {
                 JPanel panel = new JPanel();
                 Viewer viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
                 View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
-                panel.add((JComponent) view);
-                swingNode.setContent(panel);
+                panel.add((JPanel)view);
+                swingNode.setContent((JPanel)view);
                 //_anchor.getChildren().add(graphViewer);
 
                 //swingNode.setContent(new JButton("Click me!"));
