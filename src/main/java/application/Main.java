@@ -24,7 +24,7 @@ public class Main {
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
     //By default the output file is INPUT_output.dot.
-    private static String _outputFile = "_output.dot";
+    private static String _outputFile = "-output.dot";
     //By default the execution run sequentially on one core.
     private static int _noOfCores = 1;
 
