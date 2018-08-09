@@ -18,6 +18,7 @@ public class Node {
     private int _unsortedParents;
 
     private Processor _processor;
+    private int _processorID;
     private int _startTime;
 
     public Node(int weight, String id){
@@ -55,6 +56,18 @@ public class Node {
      * Set the start time of the Node scheduled in the processor
      */
     public void setStartTime(int startTime){_startTime = startTime;}
+
+
+    public void setSchedule(int p, int t){
+        _processorID = p;
+        _startTime = t;
+    }
+
+    public void unSchedule(){
+        _processorID = -1;
+        _startTime = -1;
+    }
+
 
 
     /*

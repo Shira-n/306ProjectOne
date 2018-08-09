@@ -1,11 +1,5 @@
 package application;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +9,7 @@ import java.util.List;
 import model.DotFileAdapter;
 import model.Node;
 import model.Notification;
-import model.Scheduler;
+import model.schedule.Scheduler;
 
 public class Main {
     //GUI
@@ -24,7 +18,7 @@ public class Main {
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
     //By default the output file is INPUT_output.dot.
-    private static String _outputFile = "_output.dot";
+    private static String _outputFile = "-output.dot";
     //By default the execution run sequentially on one core.
     private static int _noOfCores = 1;
 
@@ -50,12 +44,13 @@ public class Main {
         try {
             //Read input file
             String filepath = args[0];
-            checkFile(filepath);
+            checkInputFile(filepath);
             DotFileAdapter reader = new DotFileAdapter(filepath);
             List<Node> graph = reader.getData();
 
             //Modify output filename
             _outputFile = filepath.substring(0, filepath.length() - 4) + _outputFile;
+            checkOutputFile(_outputFile);
 
             //Read number of processors.
             int numberOfProcessor = Integer.parseInt(args[1]);
@@ -138,7 +133,7 @@ public class Main {
     /**
      * checks if the file has valid type(.dot file) and exists in the directory
      */
-    private static void checkFile(String filepath){
+    private static void checkInputFile(String filepath){
         if (!filepath.endsWith(".dot")){
             Notification.message("Error: input file has wrong suffix");
             System.exit(1);
@@ -150,5 +145,11 @@ public class Main {
             Notification.message("Error: File does not exist");
             System.exit(1);
         }
+    }
+
+    //TODO @Jenny
+    //Ask the user to overwrite the output file if exists
+    private static void checkOutputFile(String filepath){
+
     }
 }

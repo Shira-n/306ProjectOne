@@ -1,11 +1,14 @@
-package model;
+package model.schedule;
+
+import model.Node;
+import model.Processor;
 
 import java.util.*;
 
 public class Scheduler {
-    private List<Node> _graph;
-    private int _numberOfProcessor;
-    private List<Processor> _processors;
+    protected List<Node> _graph;
+    protected int _numberOfProcessor;
+    protected List<Processor> _processors;
 
     public Scheduler(List<Node> graph, int numberOfProcessor){
         _graph = topologicalSort(graph);
@@ -61,7 +64,7 @@ public class Scheduler {
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
      */
-    private int infulencedByParents(Processor target, Node n){
+    protected int infulencedByParents(Processor target, Node n){
         int limit = 0;
         for (Node parent : n.getParents().keySet()){
             if (parent.getProcessor().getID() == target.getID()) {
@@ -78,6 +81,8 @@ public class Scheduler {
         //System.out.println("max limit: " + limit);
         return limit;
     }
+
+
 
 
     /**

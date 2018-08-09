@@ -2,13 +2,10 @@ package testModel;
 
 import model.Node;
 import model.Processor;
-import model.Scheduler;
+import model.schedule.Scheduler;
 import org.junit.*;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 public class TestScheduler {
 
