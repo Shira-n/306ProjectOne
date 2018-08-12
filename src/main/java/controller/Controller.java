@@ -15,7 +15,10 @@ import javafx.stage.Stage;
 
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
+<<<<<<< HEAD
 import org.graphstream.ui.swingViewer.ViewPanel;
+=======
+>>>>>>> 16240289c315dc16d7782e95737cbd710a0b386e
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import scala.App;
@@ -39,8 +42,7 @@ public class Controller extends Application {
     private AnchorPane _anchor;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        ;
+    public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 1280, 800));
