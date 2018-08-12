@@ -1,4 +1,5 @@
 package controller;
+
 import java.util.Iterator;
 
 import javafx.application.Application;
@@ -9,13 +10,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
-import org.graphstream.ui.fx_viewer.FxDefaultView;
-import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
+import scala.App;
 
 
 import javax.swing.*;
@@ -23,8 +26,8 @@ import javax.swing.*;
 import static javafx.application.Application.launch;
 
 
-
 public class Controller extends Application {
+
 
     @FXML
     private SwingNode _swingNode;
@@ -32,9 +35,13 @@ public class Controller extends Application {
     @FXML
     private Pane _board;
 
+    @FXML
+    private AnchorPane _anchor;
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        ;
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 1280, 800));
 
@@ -65,48 +72,38 @@ public class Controller extends Application {
     }
 
     protected void sleep() {
-        try { Thread.sleep(1000); } catch (Exception e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
     }
 
 
     private void createAndSetSwingContent(SwingNode swingNode) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        SingleGraph graph = new SingleGraph("Graph"); //GraphStream Class
+        //SwingNode graphViewer = new SwingNode(); //JavaFX Component to display Swing elements
 
-                SingleGraph graph = new SingleGraph("Graph"); //GraphStream Class
-                //SwingNode graphViewer = new SwingNode(); //JavaFX Component to display Swing elements
+        graph.addAttribute("ui.quality");
+        graph.addAttribute("ui.antialias");
 
-                graph.addAttribute("ui.stylesheet", styleSheet);
-                graph.setAutoCreate(true);
-                graph.setStrict(false);
-                graph.display();
+        graph.addNode("A");
 
-                graph.addEdge("AB", "A", "B");
-                graph.addEdge("BC", "B", "C");
-                graph.addEdge("CA", "C", "A");
-                graph.addEdge("AD", "A", "D");
-                graph.addEdge("DE", "D", "E");
-                graph.addEdge("DF", "D", "F");
-                graph.addEdge("EF", "E", "F");
-
-                for (Node node : graph) {
-                    node.addAttribute("ui.label", node.getId());
-                }
-
-                explore(graph.getNode("A"));
-
-                JPanel panel = new JPanel();
-                Viewer viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-                View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
-                panel.add((JPanel)view);
-                swingNode.setContent((JPanel)view);
-                //_anchor.getChildren().add(graphViewer);
-
-                //swingNode.setContent(new JButton("Click me!"));
-            }
+        JPanel panel = new JPanel();
+        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.enableAutoLayout();
+        ViewPanel viewPanel = viewer.addDefaultView(false);   // false indicates "no JFrame".
+        SwingUtilities.invokeLater(() -> {
+            swingNode.setContent(viewPanel);
         });
+
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().add(swingNode);
+        stackPane.setPrefHeight(481);
+        stackPane.setPrefWidth(738);
+        _anchor.getChildren().add(swingNode);
     }
+
 
     protected String styleSheet =
             "node {" +
