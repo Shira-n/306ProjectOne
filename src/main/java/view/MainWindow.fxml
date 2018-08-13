@@ -13,7 +13,8 @@
 
 <AnchorPane fx:id="_anchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-border-color: #444b52; -fx-border-width: 10;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <VBox layoutX="10.0" layoutY="130.0" prefWidth="220.0" style="-fx-background-color: #858e93;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="120.0">
+
+      <VBox layoutX="10.0" layoutY="130.0" style="-fx-background-color: dcdfdf;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1100.0" AnchorPane.topAnchor="100.0">
          <children>
             <Button alignment="CENTER" mnemonicParsing="false" prefHeight="150.0" prefWidth="250.0" style="-fx-background-color: transparent;" text="Node Graph" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                <font>
@@ -37,7 +38,7 @@
             </Button>
          </children>
       </VBox>
-      <ToolBar prefHeight="120.0" prefWidth="1280.0" style="-fx-background-color: #444b52;">
+      <ToolBar style="-fx-background-color: #444b52;" AnchorPane.bottomAnchor="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
             <Label prefHeight="120.0" text="Logo" textFill="WHITE">
                <font>
@@ -49,70 +50,70 @@
             </Label>
             <HBox prefHeight="120.0" prefWidth="1000.0">
                <children>
-                  <VBox maxWidth="250.0" HBox.hgrow="ALWAYS">
+                  <VBox HBox.hgrow="ALWAYS">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Status" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Status" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Computing" textAlignment="CENTER" textFill="#ff6c00" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Computing" textAlignment="CENTER" textFill="#ff6c00" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox maxWidth="250.0" prefWidth="250.0" HBox.hgrow="ALWAYS">
+                  <VBox prefWidth="250.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Number of Processors" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Number of Processors" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="4" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="40.0" prefWidth="250.0" text="4" textAlignment="CENTER" textFill="WHITE" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="30.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="120.0" prefWidth="150.0" HBox.hgrow="ALWAYS">
+                  <VBox prefWidth="150.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Progress" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Progress" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="65%" textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="40.0" prefWidth="250.0" text="65%" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Helvetica Neue Light" size="30.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="120.0" prefWidth="250.0">
+                  <VBox prefWidth="250.0">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="40.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Helvetica Neue Light" size="30.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="120.0" prefWidth="250.0">
+                  <VBox prefWidth="250.0">
                      <children>
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="60.0" prefWidth="250.0" text="Current Optimal Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="250.0" text="Current Optimal Time" textAlignment="CENTER" textFill="#6e757d" VBox.vgrow="ALWAYS">
                            <font>
                               <Font name="Helvetica Neue Light" size="20.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="60.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="40.0" prefWidth="250.0" text="31 sec .." textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="Helvetica Neue Light" size="30.0" />
                            </font>
@@ -123,9 +124,10 @@
             </HBox>
         </items>
       </ToolBar>
-      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" prefHeight="669.0" prefWidth="1063.0">
-         <children>
-            <SwingNode fx:id="_swingNode" />
-         </children></Pane>
+      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="380.0" AnchorPane.topAnchor="100.0">
+         <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
+      </Pane>
+      <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="900.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+
    </children>
 </AnchorPane>

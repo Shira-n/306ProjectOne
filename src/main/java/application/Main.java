@@ -31,7 +31,7 @@ public class Main {
     /* No GUI for basic milestone
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../view/MainWindow.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();

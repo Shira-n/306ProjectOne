@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.*;
 import java.util.Iterator;
 
 import javafx.application.Application;
@@ -15,81 +16,72 @@ import javafx.stage.Stage;
 
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
-<<<<<<< HEAD
+
 import org.graphstream.ui.swingViewer.ViewPanel;
-=======
->>>>>>> 16240289c315dc16d7782e95737cbd710a0b386e
-import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
-import scala.App;
 
 
 import javax.swing.*;
 
-import static javafx.application.Application.launch;
+
+/**
+ * Controller class for the MainWindow. Initialise all components on the pane.
+ */
+public class Controller{
 
 
-public class Controller extends Application {
-
+    private SingleGraph _graph;
 
     @FXML
     private SwingNode _swingNode;
 
     @FXML
-    private Pane _board;
-
-    @FXML
     private AnchorPane _anchor;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 1280, 800));
-
-        //new GraphExplorer();
-
-        primaryStage.show();
-    }
 
     @FXML
     public void initialize() {
-        SwingNode node = new SwingNode();
-        createAndSetSwingContent(node);
-        _board.getChildren().add(node);
+
+        initGraph();
+
+        initLabel();
     }
 
-    public static void main(String args[]) {
-        launch(args);
-    }
-
-    public void explore(Node source) {
-        Iterator<? extends Node> k = source.getBreadthFirstIterator();
-
-        while (k.hasNext()) {
-            Node next = k.next();
-            next.setAttribute("ui.class", "marked");
-            sleep();
-        }
-    }
-
-    protected void sleep() {
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
-    }
-
-
-    private void createAndSetSwingContent(SwingNode swingNode) {
+    /**
+     * Initialise the node graph to display the initial state of the graph.
+     */
+    private void initGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        SingleGraph graph = new SingleGraph("Graph"); //GraphStream Class
+
+        _graph = new SingleGraph("graph");
+        _graph.addNode("A");
+        _graph.addNode("B");
+
+        /*
+        JPanel adapterPanel = new JPanel();
+        adapterPanel.setBackground(Color.black);
+        adapterPanel.setMinimumSize(new Dimension(100,100));
+        adapterPanel.setSize(new Dimension(1500,1500));
+        */
+        Viewer viewer = new Viewer (_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.enableAutoLayout();
+        ViewPanel viewPanel = viewer.addDefaultView(false);
+        viewPanel.setMinimumSize(new Dimension(800,500));
+        viewPanel.setBackground(Color.black);
+        SwingUtilities.invokeLater(() -> {
+            _swingNode.setContent(viewPanel);
+        });
+
+    }
+
+    private void initLabel() {
+
+    }
+    /*
+    private void createAndSetSwingContent(SwingNode swingNode) {
+         //GraphStream Class
         //SwingNode graphViewer = new SwingNode(); //JavaFX Component to display Swing elements
 
-        graph.addAttribute("ui.quality");
-        graph.addAttribute("ui.antialias");
-
-        graph.addNode("A");
 
         JPanel panel = new JPanel();
         Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
@@ -105,15 +97,6 @@ public class Controller extends Application {
         stackPane.setPrefWidth(738);
         _anchor.getChildren().add(swingNode);
     }
-
-
-    protected String styleSheet =
-            "node {" +
-                    "	fill-color: black;" +
-                    "}" +
-                    "node.marked {" +
-                    "	fill-color: red;" +
-                    "}";
-
+    */
 }
 
