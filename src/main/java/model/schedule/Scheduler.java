@@ -56,7 +56,7 @@ public class Scheduler {
         }
 
         //Update the processor to add node to the schedule.
-        bestProcessor.addNode(bestStartTime, node);
+        bestProcessor.addNodeAt( node, bestStartTime);
         //System.out.println("\nPut it on P" + bestProcessor.getID() + "with time " + bestStartTime);
     }
 

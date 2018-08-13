@@ -1,7 +1,10 @@
 package model;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Represents a processor in the algorithm. Contains processor's current assigned tasks and path, and processor's
@@ -11,9 +14,8 @@ public class Processor {
 
     private int _pid;
     private int _currentAbleToStart;
-    private boolean _isEmpty;
 
-    private Map<Integer, Node> _currentSchedule;
+    private TreeMap<Integer, Node> _currentSchedule;
 
 
     /**
@@ -23,35 +25,33 @@ public class Processor {
     public Processor(int pid){
         _pid = pid + 1;
         _currentAbleToStart = 0;
-        _currentSchedule = new HashMap<>();
-        _isEmpty = true;
+        _currentSchedule = new TreeMap<>();
     }
 
     /**
      * Add a new node/task to the Processor instance, also updates processor's total path weight.
      */
-    public void addNode(int start, Node node){
+    public void addNodeAt(Node node, int start){
         _currentSchedule.put(start, node);
         _currentAbleToStart = start + node.getWeight();
-        _isEmpty = false;
-        //System.out.println("P"+ this.getID() +" added at time " + start);
-
-        //Add the start time and the scheduled processor to the node
-        node.setStartTime(start);
-        node.setProcessor(this);
+        System.out.println("P"+ this.getID() +": added a node at time " + start);
     }
 
-    public void removeNode(int start){
-        //System.out.println("P"+ this.getID() +" removed at time " + start);
+    public void removeNodeAt(int start){
         _currentSchedule.remove(start);
-        if (_currentSchedule.values().size() < 1){
-            _isEmpty = true;
+        System.out.println("P"+ this.getID() +" removed Node" + _currentSchedule.get(start) + " at time " + start);
+
+        if(_currentSchedule.size() > 0) {
+
+            System.out.println("");
+            System.out.println(_currentSchedule.lastEntry().getValue().getId());
+            System.out.println("");
+            Node currentLast = _currentSchedule.lastEntry().getValue();
+            _currentAbleToStart = currentLast.getStartTime() + currentLast.getWeight();
+            System.out.println("recalc start time of the processor to" + _currentAbleToStart);
+        }else {
+            _currentAbleToStart = 0;
         }
-    }
-
-
-    public boolean isEmpty(){
-        return _isEmpty;
     }
 
     public Map<Integer, Node> getCurrentSchedule() {

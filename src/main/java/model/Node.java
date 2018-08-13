@@ -21,7 +21,7 @@ public class Node {
     private int _unscheduledParents;
 
     private Processor _processor;
-    private int _processorID;
+    //private int _processorId;
     private int _startTime;
 
     public Node(int weight, String id){
@@ -45,57 +45,46 @@ public class Node {
     /*
         Getter & Setter of Schedule related fields
      */
-
-    public Processor getProcessor(){ return _processor; }
+///////////////////////////////////////////////////////////////////need to be deleted
 
     public void setProcessor(Processor p){ _processor = p; }
-/*
-    public void setSchedule(int p, int t){
-        _processorID = p;
-        _startTime = t;
-        for (Node c: _children.keySet()){
-            c.scheduledOneParent();
-        }
-    }
-    public int getProcessorID(){
-        return  _processorID;
-    }
-*/
-    public void schedule(Processor processor, int startTime){
-        _processor = processor;
-        _processor.addNode(startTime, this);
-        _startTime = startTime;
-        /*TODO need??
-        for (Node c: _children.keySet()){
-            c.scheduledOneParent();
-        }
-        */
-    }
 
 
-    /**
-     * Return the start time of the Node scheduled in the processor
-     */
-    public int getStartTime(){return _startTime;}
-
-    /**
-     * Set the start time of the Node scheduled in the processor
-     */
     public void setStartTime(int startTime){_startTime = startTime;}
 
-    private void scheduledOneParent() {
-        _unscheduledParents--;
+///////////////////////////////////////////////////////////////////need to be deleted
+
+
+
+
+    public void schedule(Processor processor, int startTime){
+        _processor = processor;
+        _startTime = startTime;
+        System.out.println("Node " + _id + ": linked processor " + processor.getID() + ", starting at " + startTime);
     }
 
 
     public void unSchedule(){
-        _processor.removeNode(_startTime);
+        _processor = null;
         _startTime = Integer.MAX_VALUE;
-        /*
-        for (Node c: _children.keySet()){
-            c.unscheduledOneParent();
-        }
-        */
+        System.out.println("Node " + _id + ": reset processor to null, startTime to max");
+    }
+
+
+    public int getStartTime(){return _startTime;}
+
+    public Processor getProcessor(){ return _processor; }
+
+    public int getProcessorId(){
+        return  _processor.getID();
+    }
+
+
+
+
+
+    private void scheduledOneParent() {
+        _unscheduledParents--;
     }
 
     private void unscheduledOneParent() {
@@ -106,6 +95,7 @@ public class Node {
         return  _unscheduledParents==0;
     }
 
+    /////////////////////////////////////////////////////////////////////////not used now
 
 
 

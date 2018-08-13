@@ -110,10 +110,15 @@ public class BranchAndBoundScheduler {
         for (int i = 0; i < _graph.size(); i++){
             System.out.print(_graph.get(i).getId() + " ");
         }
-        _graph.get(0).schedule(_processors.get(0), 0);
+        System.out.println(" ");
+
+        scheduleNode(_processors.get(0), _graph.get(0), 0);
         bbOptimalSchedule(1);
 
+        System.out.println("\n\nFinally the optimal schedule is");
        _optimalState.print();
+
+        System.out.println("Weight: "+_optimalState.getMaxWeight());
     }
 
     private State _optimalState = new State();
@@ -124,17 +129,24 @@ public class BranchAndBoundScheduler {
 
     private void bbOptimalSchedule(int pointer){
         if (pointer < _graph.size()){
-            System.out.println("Scheduling "+ _graph.get(pointer).getId());
-            unscheduleAfter(pointer);
+            System.out.println("\nScheduling Node"+ _graph.get(pointer).getId());
 
-            Node n = _graph.get(pointer);
+            Node node = _graph.get(pointer);
             int startTime;
-            for (Processor p : _processors){
-                startTime = Math.max(p.getCurrentAbleToStart(), infulencedByParents(p, n));
-                n.schedule(p, startTime);
-                System.out.println("Scheduled " + n.getId() + " at P" + p.getID() + " at time " + startTime);
+            for (Processor processor : _processors){
+                System.out.println("\nScheduling "+ _graph.get(pointer).getId() +" at P" + processor.getID());
+                System.out.println("\nFirst unschedule nodes after "+ _graph.get(pointer).getId());
+                unscheduleAfter(pointer);
+
+                startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                System.out.println("\nAfter that, scheduled " + node.getId() + " at P" + processor.getID() + " at time " + startTime);
+                scheduleNode(processor, node, startTime);
+
                 pointer++;
+                System.out.println("\nGo down a level");
                 bbOptimalSchedule(pointer);
+                System.out.println("\nGo back a level");
+                pointer--;
             }
         }else{
             State schedule = new State(_processors);
@@ -142,23 +154,40 @@ public class BranchAndBoundScheduler {
             if (schedule.getMaxWeight() < _optimalState.getMaxWeight()){
                 System.out.println("Switched!");
                 _optimalState = schedule;
+                System.out.println("Now the optimal schedule is ");
+                _optimalState.print();
             }
         }
     }
 
 
 
+    private void scheduleNode(Processor processor, Node node, int startTime){
+        node.schedule(processor, startTime);
+        processor.addNodeAt(node, startTime);
+    }
 
+    private void unscheduleNode(Node node){
+        if (node.getProcessor() != null) {
+            System.out.println("Node " + node.getId() + " 's processor is not null");
+            node.getProcessor().removeNodeAt(node.getStartTime());
+        }
+        node.unSchedule();
+    }
 
     private void unscheduleAfter(int pointer){
-        for (int i = pointer; i <= _graph.size(); i++){
-            //if (_graph.get(i).getProcessor() == null) {
-                System.out.println("Unscheduling " + _graph.get(i).getId());
-                _graph.get(i).unSchedule();
-            //}else{
-                //System.out.println("Not unscheduling " + _graph.get(i).getId());
-            //}
+        for (int i = pointer; i < _graph.size(); i++){
+            System.out.println("Clear schedule for " + _graph.get(i).getId());
+            unscheduleNode(_graph.get(i));
         }
+    }
+
+
+
+
+    private void unscheduleNode(Processor processor, Node node){
+        node.unSchedule();
+        processor.removeNodeAt(node.getStartTime());
     }
 
 

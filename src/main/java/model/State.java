@@ -11,11 +11,14 @@ public class State {
 
     public State(List<Processor> schedule){
         _max = 0;
+        System.out.println("\nState: Create new State");
+        System.out.println("Current schedule:");
         for (Processor p : schedule){
             _state.add(p.toString());
             _max = Math.max(_max, p.getCurrentAbleToStart());
-            System.out.println("currentmax " + _max);
+            System.out.println( "P" + p.getID() +" has a weight of " + p.getCurrentAbleToStart());
         }
+        System.out.println("so the maxWeight is " + _max);
     }
 
     public State(){
@@ -28,7 +31,11 @@ public class State {
 
     public void print(){
         for (String s : _state){
-            System.out.println("At this P: " + s);
+            if (s.length() > 0) {
+                System.out.println("At this P: " + s);
+            }else{
+                System.out.println("At this P: no schedule");
+            }
         }
     }
 }
