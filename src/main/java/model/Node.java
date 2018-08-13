@@ -24,7 +24,6 @@ public class Node {
     private int _processorID;
     private int _startTime;
 
-
     public Node(int weight, String id){
         _id = id;
         _weight = weight;
