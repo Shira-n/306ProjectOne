@@ -1,14 +1,12 @@
 package controller;
 
-import java.awt.*;
-import java.util.Iterator;
 
-import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import org.graphstream.graph.implementations.*;
 
@@ -17,6 +15,7 @@ import org.graphstream.ui.view.Viewer;
 
 
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -26,6 +25,34 @@ public class Controller{
 
 
     private SingleGraph _graph;
+    
+
+    @FXML
+    private Panel _graphPanel;
+
+    @FXML
+    private Panel _buttonPanel;
+
+    @FXML
+    private ToggleButton _toggle;
+
+    @FXML
+    private Label _time;
+
+    @FXML
+    private Label _status;
+
+    @FXML
+    private Label _currentBestTime;
+
+    @FXML
+    private Label _numNode;
+
+    @FXML
+    private Label _numProcessor;
+
+    @FXML
+    private Label _isParallel;
 
     @FXML
     private SwingNode _swingNode;

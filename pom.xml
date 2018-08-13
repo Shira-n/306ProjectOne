@@ -67,11 +67,14 @@
         <resources>
             <resource>
                 <filtering>false</filtering>
-                <directory>src/main/java/view</directory>
+                <directory>src/main/resources/view</directory>
                 <includes>
                     <include>**/*.fxml</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.png</include>
                 </includes>
             </resource>
+
         </resources>
     </build>
 
