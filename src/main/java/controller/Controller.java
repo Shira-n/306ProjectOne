@@ -8,6 +8,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import org.graphstream.graph.implementations.*;
 
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -24,14 +25,15 @@ import java.awt.*;
 public class Controller{
 
 
+
     private SingleGraph _graph;
-    
+
 
     @FXML
-    private Panel _graphPanel;
+    private Pane _graphPane;
 
     @FXML
-    private Panel _buttonPanel;
+    private Pane _buttonPane;
 
     @FXML
     private ToggleButton _toggle;
@@ -57,8 +59,6 @@ public class Controller{
     @FXML
     private SwingNode _swingNode;
 
-    @FXML
-    private AnchorPane _anchor;
 
 
     @FXML
@@ -75,19 +75,21 @@ public class Controller{
     private void initGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
-        _graph = new SingleGraph("graph");
-        _graph.addNode("A");
-        _graph.addNode("B");
+        _graph = GUIEntry.getGraph();
 
-        _graph.addAttribute("ui.stylesheet", "graph { fill-color: rgb(0,0,0); }");
 
+        _graph.addAttribute("ui.stylesheet", "graph { fill-color: rgba(0,0,0,255); }");
+        _graph.addAttribute("ui.stylesheet", "node { fill-color: rgba(255,0,0,255); }");
         Viewer viewer = new Viewer (_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         ViewPanel viewPanel = viewer.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(800,500));
+        viewPanel.setMinimumSize(new Dimension(600,500));
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
+        _swingNode.setLayoutX(25);
+        _swingNode.setLayoutY(55);
+
 
     }
 

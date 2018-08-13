@@ -22,7 +22,7 @@
       </ImageView>
       <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: black; -fx-border-color: grey;" AnchorPane.bottomAnchor="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-             <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
+            <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
             <ToggleButton layoutX="469.0" layoutY="14.0" style="-fx-background-color: white;" text="Show Gantt Chart" />
          </children>
       </Pane>
