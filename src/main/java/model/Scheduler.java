@@ -1,7 +1,4 @@
-package model.schedule;
-
-import model.Node;
-import model.Processor;
+package model;
 
 import java.util.*;
 

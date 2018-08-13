@@ -2,7 +2,7 @@ package testModel;
 
 import model.Node;
 import model.Processor;
-import model.schedule.Scheduler;
+import model.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -10,8 +10,7 @@ import model.DotFileAdapter;
 import model.Node;
 import model.Notification;
 import model.State;
-import model.schedule.BranchAndBoundScheduler;
-import model.schedule.Scheduler;
+import model.BranchAndBoundScheduler;
 
 public class Main {
     //GUI

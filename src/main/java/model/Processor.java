@@ -1,8 +1,5 @@
 package model;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -18,7 +15,6 @@ public class Processor {
     private int _currentAbleToStart;
 
     private TreeMap<Integer, Node> _currentSchedule;
-
 
     /**
      * Constructor of Processor. Default processor's path weight is set to 0.
@@ -41,9 +37,12 @@ public class Processor {
     public void removeNodeAt(int start){
         _currentSchedule.remove(start);
         if(_currentSchedule.size() > 0) {
+            //Remove the Node.
             Node currentLast = _currentSchedule.lastEntry().getValue();
+            //Recalculate the current able-to-start time.
             _currentAbleToStart = currentLast.getStartTime() + currentLast.getWeight();
         }else {
+            //To avoid NullPointerException. 2 hours debugging just because of this _(:з」∠)_.
             _currentAbleToStart = 0;
         }
     }
@@ -61,9 +60,6 @@ public class Processor {
     }
 
 
-
-
-
     /*
     public boolean equals(Processor p, Node n){
         for (Node parent : n.getParents().keySet()){
@@ -72,6 +68,9 @@ public class Processor {
     }
     */
 
+    /**
+     * Override Object.toString(). Use a String to represent the current schedule on this Processor.
+     */
     @Override
     public String toString(){
         String schedule = " ";

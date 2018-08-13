@@ -8,6 +8,7 @@ public class State {
 
     public State(List<Processor> schedule){
         _max = 0;
+        //Store the schedule on a processor by a String
         for (Processor p : schedule){
             _state.put(p.getID(), p.toString());
             _max = Math.max(_max, p.getCurrentAbleToStart());
@@ -22,7 +23,7 @@ public class State {
         return _max;
     }
 
-    /*
+    /* Used in debugging
     public void print(){
         for (Integer i : _state.keySet()){
             if (s.length() > 0) {
@@ -35,7 +36,11 @@ public class State {
     */
 
     /**
-     * Format { NodeID, [ProcessorID, StartTime] }
+     * Translate a Processor's schedule from a String to a form that is easier for DotFileAdapter.
+     * The schedule is translated to the following format { NodeID, [ProcessorID, StartTime] }
+     * The schedule information of a Node can be found using the Node's ID, and the first String
+     * in the String array is the ID of the Processor that the Node is scheduled on, the second
+     * String in the String array is the start time of the Node.
      */
     public Map<String, String[]> translate(){
         Map<String, String[]> translation = new HashMap<>();

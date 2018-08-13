@@ -1,8 +1,6 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,12 +42,10 @@ public class Node {
         Getter & Setter of Schedule related fields
      */
 ///////////////////////////////////////////////////////////////////need to be deleted
-
+//NOTE: Can be used in testing. No longer used in scheduling
     public void setProcessor(Processor p){ _processor = p; }
 
-
     public void setStartTime(int startTime){_startTime = startTime;}
-
 ///////////////////////////////////////////////////////////////////need to be deleted
 
     public void schedule(Processor processor, int startTime){

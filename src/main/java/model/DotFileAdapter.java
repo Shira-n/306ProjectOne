@@ -6,9 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-import javax.sound.sampled.Line;
-import javax.swing.CellEditor;
-
 public class  DotFileAdapter {
 	private List<Node> _data = new ArrayList<Node>();
 	private String[] _words;
@@ -121,8 +118,6 @@ public class  DotFileAdapter {
 			processLine = sc.nextLine();
 			if (processLine.contains("Weight=") && !processLine.contains("->")){
 				node = processLine.split(" ")[0].trim();
-				System.out.println(node);
-
 				firstHalf = processLine.split("]")[0] + ",";
 				processor =  "Processor=" + translation.get(node)[0] + "];";
 				start = "Start=" + translation.get(node)[1] + ",";

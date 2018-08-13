@@ -1,8 +1,4 @@
-package model.schedule;
-
-import model.Node;
-import model.Processor;
-import model.State;
+package model;
 
 import java.util.*;
 
@@ -25,6 +21,7 @@ public class BranchAndBoundScheduler {
     /*
         Topological Sort
      */
+
     /**
      * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
      */
@@ -74,16 +71,21 @@ public class BranchAndBoundScheduler {
 
 
 
-
+    /*
+        Methods that call schedule and return the final schedule in different forms.
+     */
 
     /**
-     * Return a list of scheduled processors
+     * Return a list of scheduled processors. Used in Basic Milestone
      */
     public List<Processor> getSchedule() {
         schedule();
         return _processors;
     }
 
+    /**
+     * Return a list of scheduled nodes. Used in Basic Milestone
+     */
     public Map<String, Node> getScheduledNodes() {
         schedule();
         Map<String, Node> schedule = new HashMap<>();
@@ -93,6 +95,9 @@ public class BranchAndBoundScheduler {
         return schedule;
     }
 
+    /**
+     * Return the optimal state from Branch and Bound algorithm.
+     */
     public State getOptimalSchedule(){
         schedule();
         return _optimalState;
@@ -100,37 +105,57 @@ public class BranchAndBoundScheduler {
 
 
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+        Schedule methods
+     */
+
     /**
      * Schedules the Nodes in the list to Processors using greedy algorithm
      */
     public void schedule() {
+        //Manually schedule the first Node on the first Processor
         scheduleNode(_processors.get(0), _graph.get(0), 0);
+        //Start Branch and Bound schedule from the second Node.
         bbOptimalSchedule(1);
-        //_optimalState.print();
-        System.out.println("Weight: "+_optimalState.getMaxWeight());
+        //System.out.println("Weight: "+_optimalState.getMaxWeight());
     }
 
+    /**
+     * Branch and Bound algorithm. Recursively explore all the possible schedule and find the optimal schedule.
+     */
     private void bbOptimalSchedule(int pointer){
+        //If there is still a Node to schedule
         if (pointer < _graph.size()){
             Node node = _graph.get(pointer);
             int startTime;
+            //Iterate through all the processors to try out all the possible schedule
             for (Processor processor : _processors){
+                //Need to un-schedule all the Node after and including this Node. Otherwise other schedule will affect
+                //the earliest start time of this Node.
                 unscheduleAfter(pointer);
+                //Calculate the earliest possible start time for this Node on this Processor.
                 startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                //Schedule this Node on this Processor.
                 scheduleNode(processor, node, startTime);
+                //Go down to the next Node.
                 pointer++;
+                //Recursively schedule the rest of the Nodes.
                 bbOptimalSchedule(pointer);
+                //Go back a level and try to schedule this Node on the next processor.
                 pointer--;
             }
-        }else{
+        }else{ //If all the Nodes have been scheduled
             State schedule = new State(_processors);
+            //Calculate the current schedule's weight and compare with the current optimal schedule.
             if (schedule.getMaxWeight() < _optimalState.getMaxWeight()){
                 _optimalState = schedule;
             }
         }
     }
 
+    /*
+        Schedule Helpers
+     */
     private void scheduleNode(Processor processor, Node node, int startTime){
         node.schedule(processor, startTime);
         processor.addNodeAt(node, startTime);
@@ -154,7 +179,6 @@ public class BranchAndBoundScheduler {
         processor.removeNodeAt(node.getStartTime());
     }
 
-
     /**
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
@@ -170,6 +194,13 @@ public class BranchAndBoundScheduler {
         }
         return limit;
     }
+
+
+
+
+    /*
+        Getter & Setter methods for testing
+     */
 
     /**
      * for test
