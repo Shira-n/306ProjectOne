@@ -117,7 +117,7 @@ public class BranchAndBoundScheduler {
         scheduleNode(_processors.get(0), _graph.get(0), 0);
         //Start Branch and Bound schedule from the second Node.
         bbOptimalSchedule(1);
-        //System.out.println("Weight: "+_optimalState.getMaxWeight());
+        System.out.println("Weight: "+_optimalState.getMaxWeight());
     }
 
     /**

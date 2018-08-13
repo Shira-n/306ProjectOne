@@ -47,13 +47,15 @@ public class State {
         String processor, node, start;
         for (Integer i : _state.keySet()){
             processor = Integer.toString(i);
-            for (String s : _state.get(i).trim().split(Processor.EXTERNAL_SPLIT)){
-                String[] pair = new String[2];
-                start = s.split(Processor.INTERNAL_SPLIT)[0];
-                node = s.split(Processor.INTERNAL_SPLIT)[1];
-                pair[0] = processor;
-                pair[1] = start;
-                translation.put(node, pair);
+            if (_state.get(i).trim().length() > 0) {
+                for (String s : _state.get(i).trim().split(Processor.EXTERNAL_SPLIT)) {
+                    String[] pair = new String[2];
+                    start = s.split(Processor.INTERNAL_SPLIT)[0];
+                    node = s.split(Processor.INTERNAL_SPLIT)[1];
+                    pair[0] = processor;
+                    pair[1] = start;
+                    translation.put(node, pair);
+                }
             }
         }
         return translation;
