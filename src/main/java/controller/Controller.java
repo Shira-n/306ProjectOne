@@ -52,17 +52,12 @@ public class Controller{
         _graph.addNode("A");
         _graph.addNode("B");
 
-        /*
-        JPanel adapterPanel = new JPanel();
-        adapterPanel.setBackground(Color.black);
-        adapterPanel.setMinimumSize(new Dimension(100,100));
-        adapterPanel.setSize(new Dimension(1500,1500));
-        */
+        _graph.addAttribute("ui.stylesheet", "graph { fill-color: rgb(0,0,0); }");
+
         Viewer viewer = new Viewer (_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         ViewPanel viewPanel = viewer.addDefaultView(false);
         viewPanel.setMinimumSize(new Dimension(800,500));
-        viewPanel.setBackground(Color.black);
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });

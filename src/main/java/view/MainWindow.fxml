@@ -124,7 +124,7 @@
             </HBox>
         </items>
       </ToolBar>
-      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="380.0" AnchorPane.topAnchor="100.0">
+      <Pane fx:id="_board" layoutX="219.0" layoutY="131.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="160.0" AnchorPane.rightAnchor="380.0" AnchorPane.topAnchor="100.0">
          <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
       </Pane>
       <Pane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="900.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
