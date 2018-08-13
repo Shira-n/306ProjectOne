@@ -11,6 +11,8 @@ import java.util.TreeMap;
  * current weight. Could call Processor to add tasks to a processor, or get processor's assigned tasks.
  */
 public class Processor {
+    public final static String EXTERNAL_SPLIT = ";";
+    public final static String INTERNAL_SPLIT = ",";
 
     private int _pid;
     private int _currentAbleToStart;
@@ -34,21 +36,13 @@ public class Processor {
     public void addNodeAt(Node node, int start){
         _currentSchedule.put(start, node);
         _currentAbleToStart = start + node.getWeight();
-        System.out.println("P"+ this.getID() +": added a node at time " + start);
     }
 
     public void removeNodeAt(int start){
         _currentSchedule.remove(start);
-        System.out.println("P"+ this.getID() +" removed Node" + _currentSchedule.get(start) + " at time " + start);
-
         if(_currentSchedule.size() > 0) {
-
-            System.out.println("");
-            System.out.println(_currentSchedule.lastEntry().getValue().getId());
-            System.out.println("");
             Node currentLast = _currentSchedule.lastEntry().getValue();
             _currentAbleToStart = currentLast.getStartTime() + currentLast.getWeight();
-            System.out.println("recalc start time of the processor to" + _currentAbleToStart);
         }else {
             _currentAbleToStart = 0;
         }
@@ -82,7 +76,7 @@ public class Processor {
     public String toString(){
         String schedule = " ";
         for (int startTime : _currentSchedule.keySet()){
-            schedule = schedule + startTime + "," + _currentSchedule.get(startTime).getId() + ";";
+            schedule = schedule + startTime + INTERNAL_SPLIT + _currentSchedule.get(startTime).getId() + EXTERNAL_SPLIT;
         }
         return schedule;
     }

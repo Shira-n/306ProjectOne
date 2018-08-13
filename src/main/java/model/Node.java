@@ -18,10 +18,8 @@ public class Node {
     private int _weight;
 
     private int _unsortedParents;
-    private int _unscheduledParents;
 
     private Processor _processor;
-    //private int _processorId;
     private int _startTime;
 
     public Node(int weight, String id){
@@ -54,22 +52,15 @@ public class Node {
 
 ///////////////////////////////////////////////////////////////////need to be deleted
 
-
-
-
     public void schedule(Processor processor, int startTime){
         _processor = processor;
         _startTime = startTime;
-        System.out.println("Node " + _id + ": linked processor " + processor.getID() + ", starting at " + startTime);
     }
-
 
     public void unSchedule(){
         _processor = null;
         _startTime = Integer.MAX_VALUE;
-        System.out.println("Node " + _id + ": reset processor to null, startTime to max");
     }
-
 
     public int getStartTime(){return _startTime;}
 
@@ -78,31 +69,6 @@ public class Node {
     public int getProcessorId(){
         return  _processor.getID();
     }
-
-
-
-
-
-    private void scheduledOneParent() {
-        _unscheduledParents--;
-    }
-
-    private void unscheduledOneParent() {
-        _unscheduledParents++;
-    }
-
-    public boolean isFree(){
-        return  _unscheduledParents==0;
-    }
-
-    /////////////////////////////////////////////////////////////////////////not used now
-
-
-
-
-
-
-
 
     /*
         Parents/Children
@@ -114,7 +80,6 @@ public class Node {
     public void addParent(Node parent, int pathWeight){
         _parents.put(parent, pathWeight);
         _unsortedParents++;
-        _unscheduledParents++;
     }
 
     /**

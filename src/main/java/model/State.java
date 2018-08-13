@@ -1,24 +1,17 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class State {
-    List<Node> _scheduled;
     int _max;
-
-    List<String> _state = new ArrayList<>();
+    Map<Integer, String> _state = new HashMap<>();
 
     public State(List<Processor> schedule){
         _max = 0;
-        System.out.println("\nState: Create new State");
-        System.out.println("Current schedule:");
         for (Processor p : schedule){
-            _state.add(p.toString());
+            _state.put(p.getID(), p.toString());
             _max = Math.max(_max, p.getCurrentAbleToStart());
-            System.out.println( "P" + p.getID() +" has a weight of " + p.getCurrentAbleToStart());
         }
-        System.out.println("so the maxWeight is " + _max);
     }
 
     public State(){
@@ -29,13 +22,35 @@ public class State {
         return _max;
     }
 
+    /*
     public void print(){
-        for (String s : _state){
+        for (Integer i : _state.keySet()){
             if (s.length() > 0) {
                 System.out.println("At this P: " + s);
             }else{
                 System.out.println("At this P: no schedule");
             }
         }
+    }
+    */
+
+    /**
+     * Format { NodeID, [ProcessorID, StartTime] }
+     */
+    public Map<String, String[]> translate(){
+        Map<String, String[]> translation = new HashMap<>();
+        String processor, node, start;
+        for (Integer i : _state.keySet()){
+            processor = Integer.toString(i);
+            for (String s : _state.get(i).trim().split(Processor.EXTERNAL_SPLIT)){
+                String[] pair = new String[2];
+                start = s.split(Processor.INTERNAL_SPLIT)[0];
+                node = s.split(Processor.INTERNAL_SPLIT)[1];
+                pair[0] = processor;
+                pair[1] = start;
+                translation.put(node, pair);
+            }
+        }
+        return translation;
     }
 }

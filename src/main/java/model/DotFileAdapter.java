@@ -4,15 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import javax.sound.sampled.Line;
 import javax.swing.CellEditor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class  DotFileAdapter {
 	private List<Node> _data = new ArrayList<Node>();
@@ -94,7 +89,7 @@ public class  DotFileAdapter {
 	}
 
 
-	public void writeScheduleNewNew(Map<String, Node> scheduledNodes,String outputPath) throws IOException{
+	public void writeGreedySchedule(Map<String, Node> scheduledNodes, String outputPath) throws IOException{
 		File file = new File(outputPath);
 		FileWriter fw = new FileWriter(file);
 		Scanner sc = new Scanner(_inputFile);
@@ -114,6 +109,32 @@ public class  DotFileAdapter {
 		fw.close();
 		sc.close();
 	}
+
+	public void writeOptimalSchedule(State optimalState, String outputPath) throws IOException {
+		File file = new File(outputPath);
+		FileWriter fw = new FileWriter(file);
+		Scanner sc = new Scanner(_inputFile);
+		String processLine, node, firstHalf, start, processor;
+		Map<String, String[]> translation = optimalState.translate();
+
+		while (sc.hasNext()){
+			processLine = sc.nextLine();
+			if (processLine.contains("Weight=") && !processLine.contains("->")){
+				node = processLine.split(" ")[0].trim();
+				System.out.println(node);
+
+				firstHalf = processLine.split("]")[0] + ",";
+				processor =  "Processor=" + translation.get(node)[0] + "];";
+				start = "Start=" + translation.get(node)[1] + ",";
+				processLine = firstHalf + start + processor;
+			}
+			fw.write(processLine + "\n");
+			fw.flush();
+		}
+		fw.close();
+		sc.close();
+	}
+
 
 	public List<Node> getData(){
 		return _data;

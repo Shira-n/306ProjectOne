@@ -9,6 +9,7 @@ import java.util.List;
 import model.DotFileAdapter;
 import model.Node;
 import model.Notification;
+import model.State;
 import model.schedule.BranchAndBoundScheduler;
 import model.schedule.Scheduler;
 
@@ -68,9 +69,11 @@ public class Main {
             //Run Scheduler to calculate the schedule.
             BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
 
-            scheduler.schedule();
+            //scheduler.schedule();
             //Write result
             //reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
+            State optimalSchedule = scheduler.getOptimalSchedule();
+            reader.writeOptimalSchedule(optimalSchedule, _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
