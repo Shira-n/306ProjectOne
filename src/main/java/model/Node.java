@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,10 +18,12 @@ public class Node {
     private int _weight;
 
     private int _unsortedParents;
+    private int _unscheduledParents;
 
     private Processor _processor;
     private int _processorID;
     private int _startTime;
+
 
     public Node(int weight, String id){
         _id = id;
@@ -46,6 +50,29 @@ public class Node {
     public Processor getProcessor(){ return _processor; }
 
     public void setProcessor(Processor p){ _processor = p; }
+/*
+    public void setSchedule(int p, int t){
+        _processorID = p;
+        _startTime = t;
+        for (Node c: _children.keySet()){
+            c.scheduledOneParent();
+        }
+    }
+    public int getProcessorID(){
+        return  _processorID;
+    }
+*/
+    public void schedule(Processor processor, int startTime){
+        _processor = processor;
+        _processor.addNode(startTime, this);
+        _startTime = startTime;
+        /*TODO need??
+        for (Node c: _children.keySet()){
+            c.scheduledOneParent();
+        }
+        */
+    }
+
 
     /**
      * Return the start time of the Node scheduled in the processor
@@ -57,16 +84,34 @@ public class Node {
      */
     public void setStartTime(int startTime){_startTime = startTime;}
 
-
-    public void setSchedule(int p, int t){
-        _processorID = p;
-        _startTime = t;
+    private void scheduledOneParent() {
+        _unscheduledParents--;
     }
+
 
     public void unSchedule(){
-        _processorID = -1;
-        _startTime = -1;
+        _processor.removeNode(_startTime);
+        _startTime = Integer.MAX_VALUE;
+        /*
+        for (Node c: _children.keySet()){
+            c.unscheduledOneParent();
+        }
+        */
     }
+
+    private void unscheduledOneParent() {
+        _unscheduledParents++;
+    }
+
+    public boolean isFree(){
+        return  _unscheduledParents==0;
+    }
+
+
+
+
+
+
 
 
 
@@ -80,6 +125,7 @@ public class Node {
     public void addParent(Node parent, int pathWeight){
         _parents.put(parent, pathWeight);
         _unsortedParents++;
+        _unscheduledParents++;
     }
 
     /**
@@ -98,7 +144,6 @@ public class Node {
      * Return the children of this Node together with the communication costs.
      */
     public Map<Node, Integer> getChildren(){return _children;}
-
 
     /**
      * Return true if the input Node is a parent node of this Node. False otherwise.
@@ -133,6 +178,7 @@ public class Node {
             return -1;
         }
     }
+
 
     /*
         Helper methods for topological sorting

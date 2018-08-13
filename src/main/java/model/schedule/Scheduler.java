@@ -6,9 +6,9 @@ import model.Processor;
 import java.util.*;
 
 public class Scheduler {
-    protected List<Node> _graph;
-    protected int _numberOfProcessor;
-    protected List<Processor> _processors;
+    private List<Node> _graph;
+    private int _numberOfProcessor;
+    private List<Processor> _processors;
 
     public Scheduler(List<Node> graph, int numberOfProcessor){
         _graph = topologicalSort(graph);
@@ -158,11 +158,9 @@ public class Scheduler {
 
     /*
         Original Scheduling methods
-     */
-
     /**
      * Greedy algorithm to find the current best Processor and the best start time to allocate the input Node
-     */
+     *
     private void greedySchedule(Node node){
         Processor bestProcessor = _processors.get(0);
         int bestStartTime = Integer.MAX_VALUE;
@@ -200,7 +198,7 @@ public class Scheduler {
      * @param node the node that needs to find the earliest it can start processing on processor
      * @param processor the processor that the node needs to be scheduled to
      * @return the earliest time the node can start processing on the processor
-     */
+     *
     private int StartTime(Node node, Processor processor) {
         int currentAbleToStart = processor.getCurrentAbleToStart();
 
@@ -222,7 +220,7 @@ public class Scheduler {
      * @param currentNode the node to be scheduled
      * @param currentAbleToStart the start time of the node on the currentProcessor without considering delays from other processors
      * @return the actual time the node can start processing on current processor considering delays
-     */
+     *
     private int compareWithOtherProcessors(Processor currentProcessor, Node currentNode, int currentAbleToStart){
         int delayStartTime = 0;
         //Compare with other processors to find earliest time possible to start on current processor
@@ -240,5 +238,6 @@ public class Scheduler {
         }
         return currentAbleToStart;
     }
+    */
 
 }
