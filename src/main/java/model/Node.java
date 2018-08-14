@@ -72,17 +72,17 @@ public class Node {
         return freeChildren;
     }
 
-    public Set<Node> unSchedule(){
+    public void unSchedule(){
         _processor = null;
         _startTime = Integer.MAX_VALUE;
-        Set<Node> notFreeChildren = new HashSet<>();
+        //Set<Node> notFreeChildren = new HashSet<>();
         for (Node child : _children.keySet()){
             child.unsortOneParent();
-            if (!child.parentsSorted()){
-                notFreeChildren.add(child);
-            }
+            //if (!child.parentsSorted()){
+            //    notFreeChildren.add(child);
+            //}
         }
-        return notFreeChildren;
+        //return notFreeChildren;
     }
 
 
