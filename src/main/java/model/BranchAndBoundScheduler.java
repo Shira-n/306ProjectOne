@@ -1,7 +1,5 @@
 package model;
 
-import application.Main;
-
 import java.util.*;
 
 public class BranchAndBoundScheduler {
@@ -14,6 +12,9 @@ public class BranchAndBoundScheduler {
         //_graph = topologicalSort(graph);
         _graph = graph;
         _freeToSchedule = findEntries(graph);
+        for (Node node : _freeToSchedule){
+            calcBottomWeight(node);
+        }
         for (int i = 0 ;i < _graph.size(); i++){
             System.out.print(" " + _graph.get(i).getId());
         }
@@ -24,6 +25,7 @@ public class BranchAndBoundScheduler {
         _optimalState = new State();
     }
 
+
     private Set<Node> findEntries(List<Node> graph){
         Set<Node> entries = new HashSet<>();
         for (Node n : graph) {
@@ -32,6 +34,20 @@ public class BranchAndBoundScheduler {
             }
         }
         return  entries;
+    }
+
+
+    private int calcBottomWeight(Node node){
+        if (node.getChildren().size() > 0){
+            int maxChileBtmWeight = 0;
+            for (Node child: node.getChildren().keySet()){
+                maxChileBtmWeight = Math.max(maxChileBtmWeight,calcBottomWeight(child));
+            }
+            node.setBottomWeight(maxChileBtmWeight + node.getWeight());
+        }else{
+            node.setBottomWeight(node.getWeight());
+        }
+        return node.getBottomWeight();
     }
 
 
@@ -144,34 +160,36 @@ public class BranchAndBoundScheduler {
     private void bbOptimalSchedule(Set<Node> freeToSchedule){
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
-            for (Node node : freeToSchedule){
-                for (Processor processor : _processors){
+            for (Node node : freeToSchedule) {
+                for (Processor processor : _processors) {
                     int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
 
-                    Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
-                    //for (Node n : newFreeToSchedule){
-                    //    System.out.println("To newFreeToSchedule, added child " + n.getId());
-                    //}
-                    processor.addNodeAt(node, startTime);
+                    if (node.getBottomWeight() <= _optimalState.getMaxWeight()) {
+                        Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                        //for (Node n : newFreeToSchedule){
+                        //    System.out.println("To newFreeToSchedule, added child " + n.getId());
+                        //}
+                        processor.addNodeAt(node, startTime);
 
-                    newFreeToSchedule.addAll(freeToSchedule);
-                    newFreeToSchedule.remove(node);
-                    //for (Node n : newFreeToSchedule){
-                    //    System.out.println("Now newFreeToSchedule has " + n.getId());
-                    //}
+                        newFreeToSchedule.addAll(freeToSchedule);
+                        newFreeToSchedule.remove(node);
+                        //for (Node n : newFreeToSchedule){
+                        //    System.out.println("Now newFreeToSchedule has " + n.getId());
+                        //}
 
-                    //System.out.println("Call recursive");
-                    bbOptimalSchedule(newFreeToSchedule);
+                        //System.out.println("Call recursive");
+                        bbOptimalSchedule(newFreeToSchedule);
 
 
-
-                    if (node.getProcessor() != null) {
-                        node.getProcessor().removeNodeAt(node.getStartTime());
+                        if (node.getProcessor() != null) {
+                            node.getProcessor().removeNodeAt(node.getStartTime());
+                        }
+                        node.unSchedule();
+                        //System.out.println("UnScheduled " + node.getId());
                     }
-                    node.unSchedule();
-                    //System.out.println("UnScheduled " + node.getId());
                 }
-           }}else{ //If all the Nodes have been scheduled
+            }
+        }else{ //If all the Nodes have been scheduled
             int max = 0;
             for (Processor processor : _processors){
                 max = Math.max(max, processor.getCurrentAbleToStart());

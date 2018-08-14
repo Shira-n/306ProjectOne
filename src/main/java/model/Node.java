@@ -16,6 +16,7 @@ public class Node {
 
     private String _id;
     private int _weight;
+    private int _bottomWeight;
 
     private int _unsortedParents;
 
@@ -43,6 +44,14 @@ public class Node {
     /*
         Getter & Setter of Schedule related fields
      */
+
+    public void setBottomWeight(int bottomLevel){
+        _bottomWeight = bottomLevel;
+    }
+
+    public int getBottomWeight(){
+        return _bottomWeight;
+    }
 ///////////////////////////////////////////////////////////////////need to be deleted
 //NOTE: Can be used in testing. No longer used in scheduling
     public void setProcessor(Processor p){ _processor = p; }
