@@ -13,10 +13,10 @@ import java.util.Set;
  * an GUIMain object ad stores appropriate fields that will be used by the GUI .
  */
 public class GUIEntry implements Runnable{
-    private List<Node> _nodes;
-    private String _filename;
-    private int _numProcessor;
-    private boolean _parallelised;
+    private static List<Node> _nodes;
+    private static String _filename;
+    private static int _numProcessor;
+    private static boolean _parallelised;
     private static SingleGraph _graph = new SingleGraph("graph");
     private static Controller _controller;
 
@@ -26,7 +26,9 @@ public class GUIEntry implements Runnable{
         _numProcessor = numProcessor;
         _parallelised = parallelised;
         createGraph();
+
     }
+
 
     /**
      * Calls GUIEntry class which starts the visualisation.
@@ -40,17 +42,20 @@ public class GUIEntry implements Runnable{
     public static SingleGraph getGraph() {
         return _graph;
     }
-    public String getFilename() {
+    public static String getFilename() {
         return _filename;
     }
 
-    public int getNumProcessor() {
+    public static int getNumProcessor() {
         return _numProcessor;
     }
 
-    public boolean getParallelised() {
+    public static boolean getParallelised() {
         return _parallelised;
     }
+
+    //TODO
+    public static int getNumNode() { return /*_nodes.size()*/3;}
 
 
     private void createGraph() {
