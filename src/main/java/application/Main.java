@@ -1,11 +1,5 @@
 package application;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +9,8 @@ import java.util.List;
 import model.DotFileAdapter;
 import model.Node;
 import model.Notification;
-import model.Scheduler;
+import model.State;
+import model.BranchAndBoundScheduler;
 
 public class Main {
     //GUI
@@ -50,12 +45,13 @@ public class Main {
         try {
             //Read input file
             String filepath = args[0];
-            checkFile(filepath);
+            checkInputFile(filepath);
             DotFileAdapter reader = new DotFileAdapter(filepath);
             List<Node> graph = reader.getData();
 
             //Modify output filename
             _outputFile = filepath.substring(0, filepath.length() - 4) + _outputFile;
+            checkOutputFile(_outputFile);
 
             //Read number of processors.
             int numberOfProcessor = Integer.parseInt(args[1]);
@@ -70,12 +66,13 @@ public class Main {
             //No multithreading for basic milestone
 
             //Run Scheduler to calculate the schedule.
-            Scheduler scheduler = new Scheduler(graph, numberOfProcessor);
-            //schedule.schedule();
+            BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
 
+            //scheduler.schedule();
             //Write result
-            //reader.writeSchedule(schedule.getSchedule(), _outputFile);
-            reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
+            //reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
+            State optimalSchedule = scheduler.getOptimalSchedule();
+            reader.writeOptimalSchedule(optimalSchedule, _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
@@ -138,7 +135,7 @@ public class Main {
     /**
      * checks if the file has valid type(.dot file) and exists in the directory
      */
-    private static void checkFile(String filepath){
+    private static void checkInputFile(String filepath){
         if (!filepath.endsWith(".dot")){
             Notification.message("Error: input file has wrong suffix");
             System.exit(1);
@@ -150,5 +147,11 @@ public class Main {
             Notification.message("Error: File does not exist");
             System.exit(1);
         }
+    }
+
+    //TODO @Jenny
+    //Ask the user to overwrite the output file if exists
+    private static void checkOutputFile(String filepath){
+
     }
 }

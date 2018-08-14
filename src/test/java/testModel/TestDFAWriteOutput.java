@@ -90,7 +90,7 @@ public class TestDFAWriteOutput{
 	@Test
 	public void simpleManualPrintTest() {
 		try {
-			_dfa.writeScheduleNewNew(_schedule, "src/test/dotfiles/Nodes_7_OutTree_Output.dot");
+			_dfa.writeGreedySchedule(_schedule, "src/test/dotfiles/Nodes_7_OutTree_Output.dot");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,7 +123,7 @@ public class TestDFAWriteOutput{
 	@Test
 	public void simpleTest() {
 		try {
-			_dfa.writeScheduleNewNew(_schedule, "src/test/dotfiles/Nodes_7_OutTree_Output.dot");
+			_dfa.writeGreedySchedule(_schedule, "src/test/dotfiles/Nodes_7_OutTree_Output.dot");
 			File file = new File("src/test/dotfiles/Nodes_7_OutTree_Output.dot");
 			File originalFile = new File("src/test/dotfiles/Nodes_7_OutTree.dot");
 			Scanner osc;

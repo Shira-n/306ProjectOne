@@ -41,21 +41,30 @@ public class Node {
     /*
         Getter & Setter of Schedule related fields
      */
+///////////////////////////////////////////////////////////////////need to be deleted
+//NOTE: Can be used in testing. No longer used in scheduling
+    public void setProcessor(Processor p){ _processor = p; }
+
+    public void setStartTime(int startTime){_startTime = startTime;}
+///////////////////////////////////////////////////////////////////need to be deleted
+
+    public void schedule(Processor processor, int startTime){
+        _processor = processor;
+        _startTime = startTime;
+    }
+
+    public void unSchedule(){
+        _processor = null;
+        _startTime = Integer.MAX_VALUE;
+    }
+
+    public int getStartTime(){return _startTime;}
 
     public Processor getProcessor(){ return _processor; }
 
-    public void setProcessor(Processor p){ _processor = p; }
-
-    /**
-     * Return the start time of the Node scheduled in the processor
-     */
-    public int getStartTime(){return _startTime;}
-
-    /**
-     * Set the start time of the Node scheduled in the processor
-     */
-    public void setStartTime(int startTime){_startTime = startTime;}
-
+    public int getProcessorId(){
+        return  _processor.getID();
+    }
 
     /*
         Parents/Children
@@ -85,7 +94,6 @@ public class Node {
      * Return the children of this Node together with the communication costs.
      */
     public Map<Node, Integer> getChildren(){return _children;}
-
 
     /**
      * Return true if the input Node is a parent node of this Node. False otherwise.
@@ -120,6 +128,7 @@ public class Node {
             return -1;
         }
     }
+
 
     /*
         Helper methods for topological sorting
