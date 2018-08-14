@@ -53,7 +53,7 @@ public class Scheduler {
         }
 
         //Update the processor to add node to the schedule.
-        bestProcessor.addNode(bestStartTime, node);
+        bestProcessor.addNodeAt( node, bestStartTime);
         //System.out.println("\nPut it on P" + bestProcessor.getID() + "with time " + bestStartTime);
     }
 
@@ -61,7 +61,7 @@ public class Scheduler {
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
      */
-    private int infulencedByParents(Processor target, Node n){
+    protected int infulencedByParents(Processor target, Node n){
         int limit = 0;
         for (Node parent : n.getParents().keySet()){
             if (parent.getProcessor().getID() == target.getID()) {
@@ -78,6 +78,8 @@ public class Scheduler {
         //System.out.println("max limit: " + limit);
         return limit;
     }
+
+
 
 
     /**
@@ -153,11 +155,9 @@ public class Scheduler {
 
     /*
         Original Scheduling methods
-     */
-
     /**
      * Greedy algorithm to find the current best Processor and the best start time to allocate the input Node
-     */
+     *
     private void greedySchedule(Node node){
         Processor bestProcessor = _processors.get(0);
         int bestStartTime = Integer.MAX_VALUE;
@@ -195,7 +195,7 @@ public class Scheduler {
      * @param node the node that needs to find the earliest it can start processing on processor
      * @param processor the processor that the node needs to be scheduled to
      * @return the earliest time the node can start processing on the processor
-     */
+     *
     private int StartTime(Node node, Processor processor) {
         int currentAbleToStart = processor.getCurrentAbleToStart();
 
@@ -217,7 +217,7 @@ public class Scheduler {
      * @param currentNode the node to be scheduled
      * @param currentAbleToStart the start time of the node on the currentProcessor without considering delays from other processors
      * @return the actual time the node can start processing on current processor considering delays
-     */
+     *
     private int compareWithOtherProcessors(Processor currentProcessor, Node currentNode, int currentAbleToStart){
         int delayStartTime = 0;
         //Compare with other processors to find earliest time possible to start on current processor
@@ -235,5 +235,6 @@ public class Scheduler {
         }
         return currentAbleToStart;
     }
+    */
 
 }
