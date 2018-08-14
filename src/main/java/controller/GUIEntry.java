@@ -18,6 +18,7 @@ public class GUIEntry implements Runnable{
     private int _numProcessor;
     private boolean _parallelised;
     private static SingleGraph _graph = new SingleGraph("graph");
+    private static Controller _controller;
 
     public GUIEntry(List<Node> nodes, String filename, int numProcessor, boolean parallelised) {
         _nodes = nodes;
@@ -68,6 +69,14 @@ public class GUIEntry implements Runnable{
             }
         }
         */
+    }
+
+    public static Controller getController() {
+        return _controller;
+    }
+
+    public static void setController(Controller controller) {
+        _controller = controller;
     }
 
 }

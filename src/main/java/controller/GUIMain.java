@@ -16,7 +16,7 @@ public class GUIMain extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
         primaryStage.setTitle("Visualisation of Computation");
-        primaryStage.setScene(new Scene(root, 650, 850));
+        primaryStage.setScene(new Scene(root, 750, 850));
         primaryStage.show();
     }
 

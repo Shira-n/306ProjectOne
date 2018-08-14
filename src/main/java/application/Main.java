@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import controller.Controller;
+import controller.GUIEntry;
 import model.DotFileAdapter;
 import model.Node;
 import model.Notification;
@@ -58,12 +60,21 @@ public class Main {
 
             //Read optional arguments
             ReadOptionalArgs(args);
-            /* No GUI for basic milestone
+
+            /*
+            //check if require visualisation
             if (_visualisation){
-                launch(args);
+                //GUI visualisation
+                GUIEntry entry = new GUIEntry(null,"FILE",4, false);
+                entry.run();
+                Controller controller = entry.getController();
+                System.out.print(controller);
+                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(graph, numberOfProcessor, controller);
             }
-            */
-            //No multithreading for basic milestone
+            else {
+                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
+            }
+*/
 
             //Run Scheduler to calculate the schedule.
             BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);

@@ -63,6 +63,7 @@ public class Controller{
 
     @FXML
     public void initialize() {
+        GUIEntry.setController(this);
 
         initGraph();
 
@@ -83,7 +84,7 @@ public class Controller{
         Viewer viewer = new Viewer (_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         ViewPanel viewPanel = viewer.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(600,500));
+        viewPanel.setMinimumSize(new Dimension(700,500));
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
@@ -96,26 +97,7 @@ public class Controller{
     private void initLabel() {
 
     }
-    /*
-    private void createAndSetSwingContent(SwingNode swingNode) {
-         //GraphStream Class
-        //SwingNode graphViewer = new SwingNode(); //JavaFX Component to display Swing elements
 
 
-        JPanel panel = new JPanel();
-        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        viewer.enableAutoLayout();
-        ViewPanel viewPanel = viewer.addDefaultView(false);   // false indicates "no JFrame".
-        SwingUtilities.invokeLater(() -> {
-            swingNode.setContent(viewPanel);
-        });
-
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().add(swingNode);
-        stackPane.setPrefHeight(481);
-        stackPane.setPrefWidth(738);
-        _anchor.getChildren().add(swingNode);
-    }
-    */
 }
 

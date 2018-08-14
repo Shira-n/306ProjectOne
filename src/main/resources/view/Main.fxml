@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -10,23 +12,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.embed.swing.SwingNode?>
 <AnchorPane prefHeight="850.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <ImageView fx:id="_background" fitHeight="850.0" fitWidth="650.0">
+      <ImageView fx:id="_background" fitHeight="850.0" fitWidth="750.0">
          <image>
             <Image url="@image/background.jpg" />
          </image>
       </ImageView>
-      <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: black; -fx-border-color: grey;" AnchorPane.bottomAnchor="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="260.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
-            <ToggleButton layoutX="469.0" layoutY="14.0" style="-fx-background-color: white;" text="Show Gantt Chart" />
+            <ToggleButton layoutX="577.0" layoutY="16.0" style="-fx-background-color: white;" text="Show Gantt Chart" />
+            <Pane fx:id="_ganttPane" layoutX="25.0" layoutY="65.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: white;" />
          </children>
       </Pane>
-      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.7; -fx-background-color: black; -fx-border-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="590.0">
+      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="590.0">
          <children>
             <Label fx:id="_time" alignment="CENTER" prefHeight="130.0" prefWidth="200.0" style="-fx-border-color: grey;" text="00:30" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -36,9 +36,9 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <HBox layoutX="200.0" prefHeight="130.0" prefWidth="450.0" style="-fx-border-color: grey;">
+            <HBox layoutX="200.0" prefHeight="130.0" prefWidth="550.0" style="-fx-border-color: grey;">
                <children>
-                  <VBox prefWidth="225.0">
+                  <VBox prefWidth="225.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label prefHeight="150.0" prefWidth="200.0" text="Status" textFill="WHITE">
                            <font>
@@ -48,10 +48,10 @@
                               <Insets left="10.0" />
                            </padding>
                            <VBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="25.0" />
                            </VBox.margin>
                         </Label>
-                        <Label prefHeight="150.0" prefWidth="200.0" text="Current Best Time" textFill="WHITE" wrapText="true">
+                        <Label prefHeight="150.0" text="Current Best Schedule Time" textFill="WHITE" wrapText="true">
                            <font>
                               <Font name="Helvetica Neue UltraLight" size="24.0" />
                            </font>
@@ -59,12 +59,12 @@
                               <Insets left="10.0" />
                            </padding>
                            <VBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="25.0" />
                            </VBox.margin>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="130.0" prefWidth="225.0">
+                  <VBox prefHeight="130.0" prefWidth="225.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label fx:id="_status" prefHeight="150.0" prefWidth="200.0" text="Computing~" textFill="#ffab5d">
                            <font>
@@ -74,7 +74,7 @@
                               <Insets left="10.0" />
                            </padding>
                            <VBox.margin>
-                              <Insets />
+                              <Insets left="25.0" />
                            </VBox.margin>
                         </Label>
                         <Label fx:id="_currentBestTime" prefHeight="150.0" prefWidth="200.0" text="33 Seconds  " textFill="WHITE" wrapText="true">
@@ -85,16 +85,16 @@
                               <Insets left="10.0" />
                            </padding>
                            <VBox.margin>
-                              <Insets />
+                              <Insets left="25.0" />
                            </VBox.margin>
                         </Label>
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <HBox layoutY="130.0" prefHeight="130.0" prefWidth="650.0" style="-fx-border-color: grey;">
+            <HBox layoutY="130.0" prefHeight="130.0" prefWidth="750.0" style="-fx-border-color: grey;">
                <children>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
                         <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true">
                            <image>
@@ -103,7 +103,7 @@
                         </ImageView>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Nodes" textFill="WHITE" wrapText="true">
+                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Nodes" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font name="Helvetica Neue UltraLight" size="16.0" />
                                  </font>
@@ -126,7 +126,7 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
                         <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true">
                            <image>
@@ -135,7 +135,7 @@
                         </ImageView>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Processors" textFill="WHITE" wrapText="true">
+                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Processors" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font name="Helvetica Neue UltraLight" size="16.0" />
                                  </font>
@@ -155,7 +155,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
                         <ImageView fitHeight="70.0" fitWidth="60.0" pickOnBounds="true">
                            <image>
@@ -164,7 +164,7 @@
                         </ImageView>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Parallelized" textFill="WHITE" wrapText="true">
+                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Parallelized" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font name="Helvetica Neue UltraLight" size="16.0" />
                                  </font>
@@ -172,7 +172,7 @@
                                     <Insets left="10.0" />
                                  </padding>
                               </Label>
-                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="True" textFill="WHITE" wrapText="true">
+                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="True" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                  <font>
                                     <Font name="Helvetica Neue UltraLight" size="24.0" />
                                  </font>
