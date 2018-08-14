@@ -1,19 +1,37 @@
 package model;
 
+import application.Main;
+
 import java.util.*;
 
 public class BranchAndBoundScheduler {
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
+    private Set<Node> _freeToSchedule;
 
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
-        _graph = topologicalSort(graph);
+        //_graph = topologicalSort(graph);
+        _graph = graph;
+        _freeToSchedule = findEntries(graph);
+        for (int i = 0 ;i < _graph.size(); i++){
+            System.out.print(" " + _graph.get(i).getId());
+        }
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++) {
             _processors.add(new Processor(i));
         }
         _optimalState = new State();
+    }
+
+    private Set<Node> findEntries(List<Node> graph){
+        Set<Node> entries = new HashSet<>();
+        for (Node n : graph) {
+            if (n.getParents().size() <= 0) {
+                entries.add(n);
+            }
+        }
+        return  entries;
     }
 
 
@@ -114,41 +132,53 @@ public class BranchAndBoundScheduler {
      */
     public void schedule() {
         //Manually schedule the first Node on the first Processor
-        scheduleNode(_processors.get(0), _graph.get(0), 0);
+        //scheduleNode(_processors.get(0), _graph.get(0), 0);
         //Start Branch and Bound schedule from the second Node.
-        bbOptimalSchedule(1);
+        bbOptimalSchedule(_freeToSchedule);
         System.out.println("Weight: "+_optimalState.getMaxWeight());
     }
 
     /**
      * Branch and Bound algorithm. Recursively explore all the possible schedule and find the optimal schedule.
      */
-    private void bbOptimalSchedule(int pointer){
+    private void bbOptimalSchedule(Set<Node> freeToSchedule){
         //If there is still a Node to schedule
-        if (pointer < _graph.size()){
-            Node node = _graph.get(pointer);
-            int startTime;
-            //Iterate through all the processors to try out all the possible schedule
+        if (freeToSchedule.size() > 0){
+            for (Node node : freeToSchedule){
+                for (Processor processor : _processors){
+                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+
+                    Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                    //for (Node n : newFreeToSchedule){
+                    //    System.out.println("To newFreeToSchedule, added child " + n.getId());
+                    //}
+                    processor.addNodeAt(node, startTime);
+
+                    newFreeToSchedule.addAll(freeToSchedule);
+                    newFreeToSchedule.remove(node);
+                    //for (Node n : newFreeToSchedule){
+                    //    System.out.println("Now newFreeToSchedule has " + n.getId());
+                    //}
+
+                    //System.out.println("Call recursive");
+                    bbOptimalSchedule(newFreeToSchedule);
+
+
+
+                    if (node.getProcessor() != null) {
+                        node.getProcessor().removeNodeAt(node.getStartTime());
+                    }
+                    node.unSchedule();
+                    //System.out.println("UnScheduled " + node.getId());
+                }
+           }}else{ //If all the Nodes have been scheduled
+            int max = 0;
             for (Processor processor : _processors){
-                //Need to un-schedule all the Node after and including this Node. Otherwise other schedule will affect
-                //the earliest start time of this Node.
-                unscheduleAfter(pointer);
-                //Calculate the earliest possible start time for this Node on this Processor.
-                startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-                //Schedule this Node on this Processor.
-                scheduleNode(processor, node, startTime);
-                //Go down to the next Node.
-                pointer++;
-                //Recursively schedule the rest of the Nodes.
-                bbOptimalSchedule(pointer);
-                //Go back a level and try to schedule this Node on the next processor.
-                pointer--;
+                max = Math.max(max, processor.getCurrentAbleToStart());
             }
-        }else{ //If all the Nodes have been scheduled
-            State schedule = new State(_processors);
             //Calculate the current schedule's weight and compare with the current optimal schedule.
-            if (schedule.getMaxWeight() < _optimalState.getMaxWeight()){
-                _optimalState = schedule;
+            if (max < _optimalState.getMaxWeight()){
+                _optimalState = new State(_processors);
             }
         }
     }

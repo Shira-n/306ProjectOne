@@ -117,7 +117,7 @@ public class  DotFileAdapter {
 		while (sc.hasNext()){
 			processLine = sc.nextLine();
 			if (processLine.contains("Weight=") && !processLine.contains("->")){
-				node = processLine.split(" ")[0].trim();
+				node = processLine.split("\\[")[0].trim();
 				firstHalf = processLine.split("]")[0] + ",";
 				processor =  "Processor=" + translation.get(node)[0] + "];";
 				start = "Start=" + translation.get(node)[1] + ",";

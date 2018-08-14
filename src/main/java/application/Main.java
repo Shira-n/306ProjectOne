@@ -34,6 +34,7 @@ public class Main {
     */
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         if (args.length < 2){
             Notification.message("Error: Please specify the filename and numbers of processors to use");
             System.exit(1);
@@ -84,7 +85,8 @@ public class Main {
             Notification.message("Error: IO Exception");
             System.exit(1);
         }
-
+        long endTime = System.currentTimeMillis();
+        System.out.println("That took "+(endTime-startTime)+" milliseconds");
     }
 
     /**
