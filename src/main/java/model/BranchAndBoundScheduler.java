@@ -164,7 +164,7 @@ public class BranchAndBoundScheduler {
                 for (Processor processor : _processors) {
                     int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
 
-                    if (node.getBottomWeight() <= _optimalState.getMaxWeight()) {
+                    if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
                         Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
                         //for (Node n : newFreeToSchedule){
                         //    System.out.println("To newFreeToSchedule, added child " + n.getId());
