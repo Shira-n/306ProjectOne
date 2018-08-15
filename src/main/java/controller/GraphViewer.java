@@ -35,7 +35,6 @@ public class GraphViewer extends Viewer {
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     +"\tstroke-mode: plain; stroke-color:grey; stroke-width: 3px;"
                     + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
-
                     + "\tsize: 30px, 30px;\n"
                     + "\ttext-size: 15px; text-color: white;\n");
         }
@@ -69,17 +68,23 @@ public class GraphViewer extends Viewer {
     }
 
     public void updateNodeColour(Node node) {
-        System.out.println(node.getAttribute("processor")+"");
-        System.out.println(_colourMgr.getColor(0)+ " COlor");
-        //String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor"))-1);
+        String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor")));
         node.removeAttribute("ui.style");
         node.addAttribute("ui.style", "text-alignment: center;\n"
-                +"\tstroke-mode: plain; stroke-color: red; stroke-width: 3px;"
+                +"\tstroke-mode: plain; stroke-color: " + processorColour + "; stroke-width: 3px;"
                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
 
                 + "\tsize: 30px, 30px;\n"
-                + "\ttext-size: 13px; text-color: white;\n");
-
+                + "\ttext-size: 20px; text-color: " + processorColour + ";\n");
+        Sprite sprite = _mgr.addSprite("Node" + node.getId());
+        sprite.addAttribute("ui.label", "P" + node.getAttribute("processor")
+                + "   Start: " + node.getAttribute("startTime"));
+        sprite.addAttribute("ui.style","text-alignment: center;\n"
+                + "\ttext-background-mode: rounded-box;\n"
+                + "\ttext-alignment: under;\n"
+                + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
+                + "\ttext-size: 16px;\n");
+        sprite.attachToNode(node.getId());
     }
 
     public void setNodeBorderColour() {

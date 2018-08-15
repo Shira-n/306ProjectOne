@@ -86,11 +86,12 @@ public class Controller {
     public void initialize() {
         GUIEntry.setController(this);
 
+        initColour();
+
         initLabels();
 
         initGraph();
 
-        initColour();
 
         Controller controller = this;
         Thread thread = new Thread() {
@@ -115,7 +116,7 @@ public class Controller {
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState) {
-        System.out.println("called");
+        //System.out.println("called");
         for (String nodeID: updatedState.keySet()) {
             String[] nodeInfo = updatedState.get(nodeID);
             Node node = _graph.getNode(nodeID);
