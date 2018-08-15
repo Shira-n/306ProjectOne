@@ -69,10 +69,12 @@ public class GraphViewer extends Viewer {
     }
 
     public void updateNodeColour(Node node) {
-        String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor"))-1);
+        System.out.println(node.getAttribute("processor")+"");
+        System.out.println(_colourMgr.getColor(0)+ " COlor");
+        //String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor"))-1);
         node.removeAttribute("ui.style");
         node.addAttribute("ui.style", "text-alignment: center;\n"
-                +"\tstroke-mode: plain; stroke-color:" + processorColour + "; stroke-width: 3px;"
+                +"\tstroke-mode: plain; stroke-color: red; stroke-width: 3px;"
                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
 
                 + "\tsize: 30px, 30px;\n"

@@ -5,6 +5,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -16,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import model.BranchAndBoundScheduler;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 
@@ -83,13 +85,22 @@ public class Controller {
     @FXML
     public void initialize() {
         GUIEntry.setController(this);
-        System.out.println("initialise");
 
-        //initLabels();
+        initLabels();
 
-       // initGraph();
+        initGraph();
 
-        //initColour();
+        initColour();
+
+        Controller controller = this;
+        Thread thread = new Thread() {
+            public void run() {
+                System.out.print("IN THREAD");
+                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller);
+
+            }
+        };
+        thread.start();
     }
 
     /**

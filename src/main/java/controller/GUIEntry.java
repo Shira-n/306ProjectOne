@@ -13,7 +13,7 @@ import java.util.Set;
  * This is the class that Main class calls when client requests visualisation. This class creates
  * an GUIMain object ad stores appropriate fields that will be used by the GUI .
  */
-public class GUIEntry implements Runnable {
+public class GUIEntry {
     private static List<Node> _nodes;
     private static String _filename;
     private static int _numProcessor;
@@ -27,19 +27,25 @@ public class GUIEntry implements Runnable {
         _numProcessor = numProcessor;
         _parallelised = parallelised;
         createGraph();
-
+        Thread GUI = new Thread() {
+            public void run()  {
+                Application.launch(GUIMain.class);
+            }
+        };
+        GUI.start();
     }
 
 
     /**
      * Calls GUIEntry class which starts the visualisation.
      */
+    /*
     @Override
     public void run() {
         Application.launch(GUIMain.class);
         System.out.print("In run");
     }
-
+*/
 
     public static SingleGraph getGraph() {
         return _graph;
@@ -55,6 +61,10 @@ public class GUIEntry implements Runnable {
 
     public static boolean getParallelised() {
         return _parallelised;
+    }
+
+    public static List<Node> getNodes() {
+        return _nodes;
     }
 
     //TODO

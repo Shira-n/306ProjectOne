@@ -60,12 +60,17 @@ public class Main {
             //check if require visualisation
             if (_visualisation){
                 //GUI visualisation
-                GUIEntry entry = new GUIEntry(graph,"FILE",4, false);
-                entry.run();
-                System.out.println("after run");
-                Controller controller = entry.getController();
-                System.out.print(controller);
-                scheduler = new BranchAndBoundScheduler(graph, numberOfProcessor, controller);
+                GUIEntry entry = new GUIEntry(graph,"S",numberOfProcessor, false);
+               try {
+                   while( GUIEntry.getController() == null) {
+                       Thread.sleep(1000);
+                   }
+               }
+               catch (InterruptedException e) {
+                   //
+               }
+                scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), GUIEntry.getController());
+                //entry.run();
             }
             else {
                 scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
