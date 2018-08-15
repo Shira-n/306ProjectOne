@@ -26,8 +26,10 @@ import org.graphstream.ui.view.Viewer;
 
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
@@ -47,6 +49,8 @@ public class Controller {
     private ColourManager _colourMgr;
 
     private GraphViewer _viewer;
+
+    private List<model.Node> _nodes;
 
     @FXML
     private Pane _graphPane;
@@ -84,6 +88,8 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        _nodes = GUIEntry.getNodes();
+
         GUIEntry.setController(this);
 
         initColour();
@@ -102,6 +108,7 @@ public class Controller {
             }
         };
         thread.start();
+        
     }
 
     /**

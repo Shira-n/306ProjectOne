@@ -85,6 +85,17 @@ public class GraphViewer extends Viewer {
                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
                 + "\ttext-size: 16px;\n");
         sprite.attachToNode(node.getId());
+
+        for(int i =0; i< _graph.getEdgeCount(); i++) {
+            Edge edge = _graph.getEdge(i);
+            if (edge.getNode0().getAttribute("processor").equals(edge.getNode1().getAttribute("processor"))) {
+
+                edge.removeAttribute("ui.style");
+                edge.addAttribute("ui.style", "fill-mode: plain; fill-color: " + processorColour + ";\n"
+                        + "\ttext-size: 15px; text-color: white;\n"
+                        + "\ttext-alignment: along;\n");
+            }
+        }
     }
 
     public void setNodeBorderColour() {
