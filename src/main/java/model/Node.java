@@ -72,6 +72,22 @@ public class Node {
         return freeChildren;
     }
 
+    /**
+     * Return a set of Nodes that will become free if this Node is scheduled
+     */
+    public Set<Node> ifSchedule(){
+        Set<Node> freeChildren = new HashSet<>();
+        for (Node child : _children.keySet()){
+            child.sortOneParent();
+            if (child.parentsSorted()){
+                freeChildren.add(child);
+            }
+            child.unsortOneParent();
+        }
+        return freeChildren;
+    }
+
+
     public void unSchedule(){
         _processor = null;
         _startTime = Integer.MAX_VALUE;
@@ -172,6 +188,12 @@ public class Node {
 
     public boolean parentsSorted(){
         return _unsortedParents == 0;
+    }
+
+    public void reset(){
+        _processor = null;
+        _startTime = Integer.MAX_VALUE;
+        _unsortedParents = _parents.keySet().size();
     }
 
 }
