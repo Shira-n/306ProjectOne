@@ -112,27 +112,32 @@ public class BranchAndBoundScheduler {
     private void bbOptimalSchedule(Set<Node> freeToSchedule){
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
+            // Get Nodes to ignore when internal order is arbitrary
+            Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
             for (Node node : freeToSchedule) {
-                for (Processor processor : _processors) {
-                    //Calculate the earliest Start time of this Node on this Processor.
-                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-                    //Prune:
-                    //Check the minimum potential total weight of schedules after this step.
-                    //If it is greater than the current optimal schedule's weight, skip it
-                    //Otherwise, schedule this Node on this Processor and continue investigating.
-                    if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
-                        //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
-                        Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
-                        processor.addNodeAt(node, startTime);
-                        //Include every Nodes in the original free Node set except for this scheduled Node.
-                        newFreeToSchedule.addAll(freeToSchedule);
-                        newFreeToSchedule.remove(node);
-                        //Recursively investigating
-                        bbOptimalSchedule(newFreeToSchedule);
-                        //Un-schedule this Node to allow it being scheduled on next Processor.
-                        unscheduleNode(node);
+                // Check if node is okay to schedule
+               if (!(nodesToIgnore.contains(node))) {
+                    for (Processor processor : _processors) {
+                        //Calculate the earliest Start time of this Node on this Processor.
+                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                        //Prune:
+                        //Check the minimum potential total weight of schedules after this step.
+                        //If it is greater than the current optimal schedule's weight, skip it
+                        //Otherwise, schedule this Node on this Processor and continue investigating.
+                        if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                            //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
+                            Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                            processor.addNodeAt(node, startTime);
+                            //Include every Nodes in the original free Node set except for this scheduled Node.
+                            newFreeToSchedule.addAll(freeToSchedule);
+                            newFreeToSchedule.remove(node);
+                            //Recursively investigating
+                            bbOptimalSchedule(newFreeToSchedule);
+                            //Un-schedule this Node to allow it being scheduled on next Processor.
+                            unscheduleNode(node);
+                        }
                     }
-                }
+               }
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
@@ -188,7 +193,58 @@ public class BranchAndBoundScheduler {
         return limit;
     }
 
+    /**
+     *
+     * @param freeToSchedule the current iteration of nodes with sorted parents
+     * @return Set<Node> of Nodes to ignore due to arbitrary internal ordering
+     */
+    protected Set<Node> internalOrderingCheck(Set<Node> freeToSchedule) {
+        Set<Node> nodesToRemove = new HashSet<>();
 
+        for (Iterator<Node> aIterator = freeToSchedule.iterator(); aIterator.hasNext(); ) {
+            Node n1 = aIterator.next();
+            for (Iterator<Node> bIterator = aIterator; bIterator.hasNext(); ) {
+                Node n2 = bIterator.next();
+                boolean sameDependencies = false;
+                if (!n1.equals(n2)) {
+                    sameDependencies = true;
+                    Set<Node> n1parents = n1.getParents().keySet();
+                    Set<Node> n2parents = n2.getParents().keySet();
+                    Set<Node> n1children = n1.getChildren().keySet();
+                    Set<Node> n2children = n2.getChildren().keySet();
+                    // Check if they have the same set of parents
+                    if (n1parents.equals(n2parents)) {
+                        // Check if they have the same set of children
+                        if (n1children.equals(n2children)) {
+                            // Check if all incoming edges have same weight
+                            for (Node p : n1parents) {
+                                if (!(p.getPathWeightToChild(n1) == p.getPathWeightToChild(n2))) {
+                                    sameDependencies = false;
+                                }
+                            }
+                            // Check if all outgoing edges have same weight
+                            for (Node p: n1children) {
+                                if (!(n1.getPathWeightToParent(p) == n2.getPathWeightToParent(p))) {
+                                    sameDependencies = false;
+                                }
+                            }
+
+                        }
+                    }
+                }
+                if (sameDependencies) {
+                    if  (!(nodesToRemove.contains(n2))) {
+                        nodesToRemove.add(n2);
+                    }
+
+                }
+            }
+        }
+
+
+
+        return nodesToRemove;
+    }
 
 
     /*
