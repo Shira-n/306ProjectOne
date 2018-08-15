@@ -18,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import model.BranchAndBoundScheduler;
+import model.State;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 
@@ -51,6 +52,8 @@ public class Controller {
     private GraphViewer _viewer;
 
     private List<model.Node> _nodes;
+
+    private GUITimer _timer;
 
     @FXML
     private Pane _graphPane;
@@ -86,9 +89,12 @@ public class Controller {
     private SwingNode _swingNode;
 
 
+
     @FXML
     public void initialize() {
         _nodes = GUIEntry.getNodes();
+        _timer = GUIEntry.getTimer();
+        _timer.setController(this);
 
         GUIEntry.setController(this);
 
@@ -98,17 +104,19 @@ public class Controller {
 
         initGraph();
 
-
         Controller controller = this;
+
+
+
         Thread thread = new Thread() {
             public void run() {
                 System.out.print("IN THREAD");
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller);
-
+                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
+                model.State optimalSchedule = scheduler.getOptimalSchedule();
             }
         };
         thread.start();
-        
+
     }
 
     /**
@@ -122,7 +130,7 @@ public class Controller {
      * Called by algorithm to update GUI to show newly calculated current optimal schedule.
      * @param updatedState
      */
-    public synchronized void update(Map<String,String[]> updatedState) {
+    public synchronized void update(Map<String,String[]> updatedState,Map<String,String[]>updatedStateByProcessor) {
         //System.out.println("called");
         for (String nodeID: updatedState.keySet()) {
             String[] nodeInfo = updatedState.get(nodeID);
@@ -185,23 +193,22 @@ public class Controller {
         _numProcessor.setText(GUIEntry.getNumProcessor() + "");
         _isParallel.setText(GUIEntry.getParallelised() + "");
 
-
-        //create Timer and updates the timer label accordingly
-        _time.setText(_timeSeconds + "");
-        _timeline = new Timeline();
-        _timeline.setCycleCount(Timeline.INDEFINITE);
-        _timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
-            _timeSeconds++;
-            _time.setText(_timeSeconds + "");
-            if (_timeSeconds > 500000) {
-                _timeline.stop();
-            }
-        }));
-        _timeline.play();
     }
 
 
+    public synchronized  void setTimer(int count) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                _time.setText(count+"");
+            }
+        });
 
+    }
+
+    public synchronized void completed(int maxWeight) {
+        _status.setText("Completed");
+    }
 
     @FXML
     public void handlePressQuit(ActionEvent event) {
