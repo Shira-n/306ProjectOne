@@ -2,6 +2,7 @@ package controller;
 
 import javafx.application.Application;
 import model.Node;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.List;
@@ -61,19 +62,29 @@ public class GUIEntry implements Runnable{
     private void createGraph() {
 
 
-        _graph.addNode("A");
+        org.graphstream.graph.Node A = _graph.addNode("A");
+        A.addAttribute("id","A");
         _graph.addNode("B");
-        _graph.addEdge("a","A","B");
+        _graph.addNode("C");
+        Edge e = _graph.addEdge("a","A","B");
+        e.addAttribute("weight","32");
 
         /*
         for(Node n: _nodes) {
-            _graph.addNode(n.getId().toString());
+            org.graphstream.graph.Node node = _graph.addNode(n.getId());
+            node.addAttribute("weight",String.valueOf(n.getWeight()));
+            node.addAttribute("processor","null"));
+            node.addAttribute("startTime","null");
+
             Set<Node> children  = n.getChildren().keySet();
             for (Node c: children) {
-                _graph.addEdge("a",n.getId().toString(),c.getId().toString());
+                String id = n.getId() + c.getId();
+                Edge edge = _graph.addEdge(id,n.getId(),c.getId());
+                edge.addAttribute("weight", String.valueOf(n.getPathWeightToChild(c)));
             }
         }
         */
+
     }
 
     public static Controller getController() {

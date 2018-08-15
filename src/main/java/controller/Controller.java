@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -39,6 +40,10 @@ public class Controller {
     private Timeline _timeline;
 
     private int _timeSeconds;
+
+    private ColourManager _colourMgr;
+
+    private GraphViewer _viewer;
 
     @FXML
     private Pane _graphPane;
@@ -81,6 +86,46 @@ public class Controller {
         initLabels();
 
         initGraph();
+
+        initColour();
+    }
+
+    /**
+     * Create a colour manager instance which generates colour for each of the processors
+     */
+    private void initColour() {
+        _colourMgr = new ColourManager(GUIEntry.getNumProcessor());
+    }
+
+    /**
+     * Called from algorithm to update information of a node
+     * @param nodeID
+     * @param startTime
+     * @param processorNum
+     */
+    public synchronized void update(String nodeID, String startTime, String processorNum) {
+        Node node = _graph.getNode(nodeID);
+        node.removeAttribute("startTime");
+        node.removeAttribute("processor");
+        node.addAttribute("startTime",startTime);
+        node.addAttribute("processor",processorNum);
+
+        /*
+        for (Node node: _graph) {
+            if (node.getAttribute("id").equals(nodeID)) {
+                node.removeAttribute("startTime");
+                node.removeAttribute("processor");
+                node.addAttribute("startTime",startTime);
+                node.addAttribute("processor",processorNum);
+            }
+        }
+        */
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //_viewer.updateNodeColour(node);
+            }
+        });
     }
 
     /**
@@ -91,13 +136,22 @@ public class Controller {
 
         _graph = GUIEntry.getGraph();
 
+        //Viewer viewer = new Viewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        _viewer = new GraphViewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD,_colourMgr);
 
-        _graph.addAttribute("ui.stylesheet", "graph { fill-color: rgba(0,0,0,255); }");
-        _graph.addAttribute("ui.stylesheet", "node { fill-color: rgba(255,0,0,255); }");
-        Viewer viewer = new Viewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        viewer.enableAutoLayout();
-        ViewPanel viewPanel = viewer.addDefaultView(false);
+        _graph.addAttribute("ui.stylesheet", "graph {\n" +
+                "fill-mode: gradient-vertical;\n" +
+                "fill-color:  #405d60, #202033;\n" +
+                "padding: 20px;\n" +
+                "}");
+        //_graph.addAttribute("ui.stylesheet", "node { fill-color: rgba(255,0,0,255); }");
+
+        _viewer.enableAutoLayout();
+        ViewPanel viewPanel = _viewer.addDefaultView(false);
+        viewPanel.setBackground(Color.blue);
         viewPanel.setMinimumSize(new Dimension(700, 500));
+        viewPanel.setOpaque(false);
+        viewPanel.setBackground(Color.black);
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
@@ -133,6 +187,8 @@ public class Controller {
         }));
         _timeline.play();
     }
+
+
 
 
     @FXML
