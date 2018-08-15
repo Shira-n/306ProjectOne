@@ -60,13 +60,24 @@ public class Processor {
     }
 
     public int getCurrentAbleToStart(){
-        System.out.println("P" + getID() + " is able to start at "+  _currentAbleToStart);
         return _currentAbleToStart;
     }
 
     public int getBottomWeight() {
         return _bottomWeight;
     }
+
+    /*
+    public int getIdleCostFunction(){
+        int idle, totalIdle
+        for (int i : _currentSchedule.keySet()){
+            idle = _currentSchedule.get(i).getStartTime() +
+            if (_currentSchedule.get(i))
+        }
+    }
+    */
+
+
     /*
     public boolean equals(Processor p, Node n){
         for (Node parent : n.getParents().keySet()){

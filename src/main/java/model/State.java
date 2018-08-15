@@ -14,12 +14,12 @@ public class State {
         _bottomWeight = 0;
 
         //Keep references of current free to schedule Nodes
-        System.out.print("Free Nodes at this state are: ");
+        //System.out.print("Free Nodes at this state are: ");
         for (Node n : freeToStart){
             _freeToSchedule.add(n);
-            System.out.print(" " + n.getId());
+            //System.out.print(" " + n.getId());
         }
-        System.out.println(" ");
+        //System.out.println(" ");
         for (Processor p : schedule){
             //Store the schedule on a processor by a String
             _stateStringRep.put(p.getID(), p.toString());
@@ -112,14 +112,14 @@ public class State {
 
         //Reschedule the input to this State
         for (Node n : _nodeMap.values()){
-            System.out.println("Rescheduling Node "+ n.getId());
+            //System.out.println("Rescheduling Node "+ n.getId());
             processor =  processorMap.get(translation.get(n.getId())[0]);
-            System.out.println("It was at P"+ translation.get(n.getId())[0]);
+            //System.out.println("It was at P"+ translation.get(n.getId())[0]);
             startTime = Integer.parseInt(translation.get(n.getId())[1]);
             n.schedule(processor, startTime);
             processor.addNodeAt(n, startTime);
-            System.out.println("It was scheduled to start at "+ startTime);
-            System.out.println("Newer P start time "+ processor.getCurrentAbleToStart());
+            //System.out.println("It was scheduled to start at "+ startTime);
+            //System.out.println("Newer P start time "+ processor.getCurrentAbleToStart());
         }
 
         return  _freeToSchedule;
