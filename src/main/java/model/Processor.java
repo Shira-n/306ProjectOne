@@ -13,6 +13,7 @@ public class Processor {
 
     private int _pid;
     private int _currentAbleToStart;
+    private int _bottomWeight;
 
     private TreeMap<Integer, Node> _currentSchedule;
 
@@ -24,6 +25,7 @@ public class Processor {
         _pid = pid + 1;
         _currentAbleToStart = 0;
         _currentSchedule = new TreeMap<>();
+        _bottomWeight = 0;
     }
 
     /**
@@ -31,7 +33,8 @@ public class Processor {
      */
     public void addNodeAt(Node node, int start){
         _currentSchedule.put(start, node);
-        _currentAbleToStart = start + node.getWeight();
+        _currentAbleToStart = Math.max(_currentAbleToStart, start + node.getWeight());
+        _bottomWeight = Math.max(_bottomWeight, node.getBottomWeight());
     }
 
     public void removeNodeAt(int start){
@@ -51,15 +54,19 @@ public class Processor {
         return _currentSchedule;
     }
 
-    public int getCurrentAbleToStart(){
-        return _currentAbleToStart;
-    }
-    
+
     public int getID() {
         return _pid;
     }
 
+    public int getCurrentAbleToStart(){
+        System.out.println("P" + getID() + " is able to start at "+  _currentAbleToStart);
+        return _currentAbleToStart;
+    }
 
+    public int getBottomWeight() {
+        return _bottomWeight;
+    }
     /*
     public boolean equals(Processor p, Node n){
         for (Node parent : n.getParents().keySet()){
@@ -67,6 +74,13 @@ public class Processor {
         }
     }
     */
+
+
+    public void clear(){
+        _currentAbleToStart = 0;
+        _currentSchedule = new TreeMap<>();
+        _bottomWeight = 0;
+    }
 
     /**
      * Override Object.toString(). Use a String to represent the current schedule on this Processor.
