@@ -1,7 +1,9 @@
 package model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represent a node/task in the input graph. Containing the time this task consumes, references to its parent tasks
@@ -14,6 +16,7 @@ public class Node {
 
     private String _id;
     private int _weight;
+    private int _bottomWeight;
 
     private int _unsortedParents;
 
@@ -41,6 +44,14 @@ public class Node {
     /*
         Getter & Setter of Schedule related fields
      */
+
+    public void setBottomWeight(int bottomLevel){
+        _bottomWeight = bottomLevel;
+    }
+
+    public int getBottomWeight(){
+        return _bottomWeight;
+    }
 ///////////////////////////////////////////////////////////////////need to be deleted
 //NOTE: Can be used in testing. No longer used in scheduling
     public void setProcessor(Processor p){ _processor = p; }
@@ -48,15 +59,33 @@ public class Node {
     public void setStartTime(int startTime){_startTime = startTime;}
 ///////////////////////////////////////////////////////////////////need to be deleted
 
-    public void schedule(Processor processor, int startTime){
+    public Set<Node> schedule(Processor processor, int startTime){
         _processor = processor;
         _startTime = startTime;
+        Set<Node> freeChildren = new HashSet<>();
+        for (Node child : _children.keySet()){
+            child.sortOneParent();
+            if (child.parentsSorted()){
+                freeChildren.add(child);
+            }
+        }
+        return freeChildren;
     }
 
     public void unSchedule(){
         _processor = null;
         _startTime = Integer.MAX_VALUE;
+        //Set<Node> notFreeChildren = new HashSet<>();
+        for (Node child : _children.keySet()){
+            child.unsortOneParent();
+            //if (!child.parentsSorted()){
+            //    notFreeChildren.add(child);
+            //}
+        }
+        //return notFreeChildren;
     }
+
+
 
     public int getStartTime(){return _startTime;}
 
@@ -135,6 +164,10 @@ public class Node {
      */
     public void sortOneParent(){
         _unsortedParents--;
+    }
+
+    public void unsortOneParent(){
+        _unsortedParents++;
     }
 
     public boolean parentsSorted(){

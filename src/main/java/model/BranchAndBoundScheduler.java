@@ -6,9 +6,18 @@ public class BranchAndBoundScheduler {
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
+    private Set<Node> _freeToSchedule;
 
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
-        _graph = topologicalSort(graph);
+        //_graph = topologicalSort(graph);
+        _graph = graph;
+        _freeToSchedule = findEntries(graph);
+        for (Node node : _freeToSchedule){
+            calcBottomWeight(node);
+        }
+        for (int i = 0 ;i < _graph.size(); i++){
+            System.out.print(" " + _graph.get(i).getId());
+        }
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++) {
             _processors.add(new Processor(i));
@@ -16,57 +25,36 @@ public class BranchAndBoundScheduler {
         _optimalState = new State();
     }
 
-
-
-    /*
-        Topological Sort
-     */
-
     /**
-     * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
+     * Find the entry points of a graph, that is, Nodes that initially do not have a parent.
      */
-    private List<Node> topologicalSort(List<Node> graph) {
-        //Find the start nodes in the graph
-        List<Node> startNodes = new ArrayList<>();
+    private Set<Node> findEntries(List<Node> graph){
+        Set<Node> entries = new HashSet<>();
         for (Node n : graph) {
-            if (n.parentsSorted()) {
-                startNodes.add(n);
+            if (n.getParents().size() <= 0) {
+                entries.add(n);
             }
         }
-        //Recursively sort the rest of nodes
-        return recursiveSort(startNodes);
+        return  entries;
     }
 
     /**
-     * Recursive BFS method conduct topological sorting on input Nodes and their children.
-     *
-     * @param startNodes a list of Nodes that either have no parent or all its parents have been sorted.
-     * @return a list of Nodes that contain the input node and its children in sorted topological order.
+     * Recursively calculate Bottom Weight of the input Node. The bottom weight of a Node will be the sum of its
+     * weight and the maximum bottom weight of its children.
+     * @param node
+     * @return
      */
-    private List<Node> recursiveSort(List<Node> startNodes) {
-        List<Node> sorted = new ArrayList<>();
-        List<Node> newStartNodes = new ArrayList<>();
-        for (Node n : startNodes) {
-            //Add the input list of Nodes to sorted List.
-            sorted.add(n);
-            //Explore input Nodes' children and check if there is any child node has all its parents sorted.
-            if (n.getChildren().keySet().size() > 0) {
-                for (Node child : n.getChildren().keySet()) {
-                    child.sortOneParent();
-                    if (child.parentsSorted()) {
-                        newStartNodes.add(child);
-                    }
-                }
+    private int calcBottomWeight(Node node){
+        if (node.getChildren().size() > 0){
+            int maxChileBtmWeight = 0;
+            for (Node child: node.getChildren().keySet()){
+                maxChileBtmWeight = Math.max(maxChileBtmWeight,calcBottomWeight(child));
             }
+            node.setBottomWeight(maxChileBtmWeight + node.getWeight());
+        }else{
+            node.setBottomWeight(node.getWeight());
         }
-        //When there is no more child to sort, return the input list of Nodes.
-        if (newStartNodes.size() < 1) {
-            return sorted;
-            //If there are still children, recursively sort them
-        } else {
-            sorted.addAll(recursiveSort(newStartNodes));
-            return sorted;
-        }
+        return node.getBottomWeight();
     }
 
 
@@ -114,41 +102,46 @@ public class BranchAndBoundScheduler {
      */
     public void schedule() {
         //Manually schedule the first Node on the first Processor
-        scheduleNode(_processors.get(0), _graph.get(0), 0);
-        //Start Branch and Bound schedule from the second Node.
-        bbOptimalSchedule(1);
-        System.out.println("Weight: "+_optimalState.getMaxWeight());
+        bbOptimalSchedule(_freeToSchedule);
+        System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
 
     /**
      * Branch and Bound algorithm. Recursively explore all the possible schedule and find the optimal schedule.
      */
-    private void bbOptimalSchedule(int pointer){
+    private void bbOptimalSchedule(Set<Node> freeToSchedule){
         //If there is still a Node to schedule
-        if (pointer < _graph.size()){
-            Node node = _graph.get(pointer);
-            int startTime;
-            //Iterate through all the processors to try out all the possible schedule
-            for (Processor processor : _processors){
-                //Need to un-schedule all the Node after and including this Node. Otherwise other schedule will affect
-                //the earliest start time of this Node.
-                unscheduleAfter(pointer);
-                //Calculate the earliest possible start time for this Node on this Processor.
-                startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-                //Schedule this Node on this Processor.
-                scheduleNode(processor, node, startTime);
-                //Go down to the next Node.
-                pointer++;
-                //Recursively schedule the rest of the Nodes.
-                bbOptimalSchedule(pointer);
-                //Go back a level and try to schedule this Node on the next processor.
-                pointer--;
+        if (freeToSchedule.size() > 0){
+            for (Node node : freeToSchedule) {
+                for (Processor processor : _processors) {
+                    //Calculate the earliest Start time of this Node on this Processor.
+                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                    //Prune:
+                    //Check the minimum potential total weight of schedules after this step.
+                    //If it is greater than the current optimal schedule's weight, skip it
+                    //Otherwise, schedule this Node on this Processor and continue investigating.
+                    if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                        //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
+                        Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                        processor.addNodeAt(node, startTime);
+                        //Include every Nodes in the original free Node set except for this scheduled Node.
+                        newFreeToSchedule.addAll(freeToSchedule);
+                        newFreeToSchedule.remove(node);
+                        //Recursively investigating
+                        bbOptimalSchedule(newFreeToSchedule);
+                        //Un-schedule this Node to allow it being scheduled on next Processor.
+                        unscheduleNode(node);
+                    }
+                }
             }
         }else{ //If all the Nodes have been scheduled
-            State schedule = new State(_processors);
+            int max = 0;
             //Calculate the current schedule's weight and compare with the current optimal schedule.
-            if (schedule.getMaxWeight() < _optimalState.getMaxWeight()){
-                _optimalState = schedule;
+            for (Processor processor : _processors){
+                max = Math.max(max, processor.getCurrentAbleToStart());
+            }
+            if (max < _optimalState.getMaxWeight()){
+                _optimalState = new State(_processors);
             }
         }
     }
