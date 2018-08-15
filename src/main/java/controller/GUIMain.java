@@ -20,6 +20,7 @@ public class GUIMain extends Application {
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(new Scene(root, 750, 850));
         primaryStage.show();
+        System.out.println("after show");
     }
 
 }

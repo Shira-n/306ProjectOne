@@ -8,16 +8,9 @@ import java.util.List;
 
 import controller.Controller;
 import controller.GUIEntry;
-import model.DotFileAdapter;
-import model.Node;
-import model.Notification;
-import model.State;
-import model.BranchAndBoundScheduler;
+import model.*;
 
 public class Main {
-    //GUI
-    //extends Application {
-
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
     //By default the output file is INPUT_output.dot.
@@ -62,23 +55,25 @@ public class Main {
             //Read optional arguments
             ReadOptionalArgs(args);
 
-            /*
+
+            BranchAndBoundScheduler scheduler = null;
             //check if require visualisation
             if (_visualisation){
                 //GUI visualisation
-                GUIEntry entry = new GUIEntry(null,"FILE",4, false);
+                GUIEntry entry = new GUIEntry(graph,"FILE",4, false);
                 entry.run();
+                System.out.println("after run");
                 Controller controller = entry.getController();
                 System.out.print(controller);
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(graph, numberOfProcessor, controller);
+                scheduler = new BranchAndBoundScheduler(graph, numberOfProcessor, controller);
             }
             else {
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
+                scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
             }
-*/
+
 
             //Run Scheduler to calculate the schedule.
-            BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
+            //BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
 
             //scheduler.schedule();
             //Write result

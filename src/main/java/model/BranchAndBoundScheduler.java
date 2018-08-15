@@ -1,5 +1,7 @@
 package model;
 
+import controller.Controller;
+
 import java.util.*;
 
 public class BranchAndBoundScheduler {
@@ -7,10 +9,16 @@ public class BranchAndBoundScheduler {
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
+    private Controller _controller;
 
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
+        this(graph,numberOfProcessor,null);
+    }
+
+    public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor, Controller controller) {
         //_graph = topologicalSort(graph);
         _graph = graph;
+        _controller = controller;
         _freeToSchedule = findEntries(graph);
         for (Node node : _freeToSchedule){
             calcBottomWeight(node);
@@ -23,6 +31,7 @@ public class BranchAndBoundScheduler {
             _processors.add(new Processor(i));
         }
         _optimalState = new State();
+        System.out.println("constructor");
     }
 
     /**
@@ -142,6 +151,11 @@ public class BranchAndBoundScheduler {
             }
             if (max < _optimalState.getMaxWeight()){
                 _optimalState = new State(_processors);
+                //if there is visualisation
+                if (_controller != null) {
+                    //calls the controller class to update GUI to display newly computed current optimal schedule.
+                    _controller.update(_optimalState.translate());
+                }
             }
         }
     }

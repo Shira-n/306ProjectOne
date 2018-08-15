@@ -26,6 +26,7 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.TimerTask;
 
 
@@ -82,12 +83,13 @@ public class Controller {
     @FXML
     public void initialize() {
         GUIEntry.setController(this);
+        System.out.println("initialise");
 
-        initLabels();
+        //initLabels();
 
-        initGraph();
+       // initGraph();
 
-        initColour();
+        //initColour();
     }
 
     /**
@@ -98,34 +100,25 @@ public class Controller {
     }
 
     /**
-     * Called from algorithm to update information of a node
-     * @param nodeID
-     * @param startTime
-     * @param processorNum
+     * Called by algorithm to update GUI to show newly calculated current optimal schedule.
+     * @param updatedState
      */
-    public synchronized void update(String nodeID, String startTime, String processorNum) {
-        Node node = _graph.getNode(nodeID);
-        node.removeAttribute("startTime");
-        node.removeAttribute("processor");
-        node.addAttribute("startTime",startTime);
-        node.addAttribute("processor",processorNum);
-
-        /*
-        for (Node node: _graph) {
-            if (node.getAttribute("id").equals(nodeID)) {
-                node.removeAttribute("startTime");
-                node.removeAttribute("processor");
-                node.addAttribute("startTime",startTime);
-                node.addAttribute("processor",processorNum);
-            }
+    public synchronized void update(Map<String,String[]> updatedState) {
+        System.out.println("called");
+        for (String nodeID: updatedState.keySet()) {
+            String[] nodeInfo = updatedState.get(nodeID);
+            Node node = _graph.getNode(nodeID);
+            node.removeAttribute("startTime");
+            node.removeAttribute("processor");
+            node.addAttribute("startTime",nodeInfo[1]);
+            node.addAttribute("processor",nodeInfo[0]);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    _viewer.updateNodeColour(node);
+                }
+            });
         }
-        */
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //_viewer.updateNodeColour(node);
-            }
-        });
     }
 
     /**

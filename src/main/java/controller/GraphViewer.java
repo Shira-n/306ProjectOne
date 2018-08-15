@@ -31,7 +31,7 @@ public class GraphViewer extends Viewer {
 
         for(Node node: _graph) {
             node.setAttribute("ui.label",
-                     node.getAttribute("id")+"");
+                     node.getId()+"");
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     +"\tstroke-mode: plain; stroke-color:grey; stroke-width: 3px;"
                     + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
