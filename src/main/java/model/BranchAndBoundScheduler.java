@@ -1,6 +1,7 @@
 package model;
 
 import controller.Controller;
+import controller.GUITimer;
 
 import java.util.*;
 
@@ -10,15 +11,17 @@ public class BranchAndBoundScheduler {
     private State _optimalState;
     private Set<Node> _freeToSchedule;
     private Controller _controller;
+    private GUITimer _timer;
 
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
-        this(graph,numberOfProcessor,null);
+        this(graph,numberOfProcessor,null,null);
     }
 
-    public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor, Controller controller) {
+    public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor, Controller controller, GUITimer timer) {
         //_graph = topologicalSort(graph);
         _graph = graph;
         _controller = controller;
+        _timer = timer;
         _freeToSchedule = findEntries(graph);
         for (Node node : _freeToSchedule){
             calcBottomWeight(node);
@@ -31,6 +34,8 @@ public class BranchAndBoundScheduler {
             _processors.add(new Processor(i));
         }
         _optimalState = new State();
+
+        System.out.println("IN Constructor");
     }
 
     /**
@@ -111,6 +116,9 @@ public class BranchAndBoundScheduler {
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
+        //inform the GUI that computation is completed
+        _controller.completed(_optimalState.getMaxWeight());
+        _timer.stopTimer();
         System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
 
@@ -155,7 +163,7 @@ public class BranchAndBoundScheduler {
                 if (_controller != null) {
                     //System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
-                    _controller.update(_optimalState.translate());
+                    _controller.update(_optimalState.translate(),_optimalState.translateByProcessor());
                 }
             }
         }

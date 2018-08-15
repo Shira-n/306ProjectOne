@@ -60,4 +60,28 @@ public class State {
         }
         return translation;
     }
+
+
+    /**
+     * return in the format {processorID, [NodeId, StartTime]}
+     * @return
+     */
+    public Map<String, String[]> translateByProcessor(){
+        Map<String, String[]> translation = new HashMap<>();
+        String processor, node, start;
+        for (Integer i : _state.keySet()){
+            processor = Integer.toString(i);
+            if (_state.get(i).trim().length() > 0) {
+                for (String s : _state.get(i).trim().split(Processor.EXTERNAL_SPLIT)) {
+                    String[] pair = new String[2];
+                    start = s.split(Processor.INTERNAL_SPLIT)[0];
+                    node = s.split(Processor.INTERNAL_SPLIT)[1];
+                    pair[0] = node;
+                    pair[1] = start;
+                    translation.put(processor, pair);
+                }
+            }
+        }
+        return translation;
+    }
 }

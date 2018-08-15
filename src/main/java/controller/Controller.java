@@ -47,6 +47,8 @@ public class Controller {
 
     private List<model.Node> _nodes;
 
+    private GUITimer _timer;
+
     @FXML
     private Pane _graphPane;
 
@@ -81,9 +83,12 @@ public class Controller {
     private SwingNode _swingNode;
 
 
+
     @FXML
     public void initialize() {
         _nodes = GUIEntry.getNodes();
+        _timer = GUIEntry.getTimer();
+        _timer.setController(this);
 
         GUIEntry.setController(this);
 
@@ -93,17 +98,21 @@ public class Controller {
 
         initGraph();
 
-
         Controller controller = this;
+
+
+
         Thread thread = new Thread() {
             public void run() {
                 System.out.print("IN THREAD");
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller);
-                drawGanttChart(scheduler.getOptimalSchedule());
+                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
+                model.State optimalSchedule = scheduler.getOptimalSchedule();
+                drawGanttChart(optimalSchedule);
+
             }
         };
         thread.start();
-        
+
     }
 
     /**
@@ -117,7 +126,7 @@ public class Controller {
      * Called by algorithm to update GUI to show newly calculated current optimal schedule.
      * @param updatedState
      */
-    public synchronized void update(Map<String,String[]> updatedState) {
+    public synchronized void update(Map<String,String[]> updatedState,Map<String,String[]>updatedStateByProcessor) {
         //System.out.println("called");
         for (String nodeID: updatedState.keySet()) {
             String[] nodeInfo = updatedState.get(nodeID);
@@ -180,19 +189,6 @@ public class Controller {
         _numProcessor.setText(GUIEntry.getNumProcessor() + "");
         _isParallel.setText(GUIEntry.getParallelised() + "");
 
-
-        //create Timer and updates the timer label accordingly
-        _time.setText(_timeSeconds + "");
-        _timeline = new Timeline();
-        _timeline.setCycleCount(Timeline.INDEFINITE);
-        _timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
-            _timeSeconds++;
-            _time.setText(_timeSeconds + "");
-            if (_timeSeconds > 500000) {
-                _timeline.stop();
-            }
-        }));
-        _timeline.play();
     }
 
     public void drawGanttChart(State optimalState) {
@@ -216,13 +212,7 @@ public class Controller {
             }
         }
 
-        for (String key : schedule.keySet()) {
-            System.out.println("key: " + key);
-            for (String value : schedule.get(key)) {
-                System.out.println("\tvalues: " + value);
-
-            }
-        }        //draw Axis
+        //draw Axis
         Line verticalLine = new Line(XAxisStart, YAxisStart, XAxisStart, YAxisEnd);
         verticalLine.setStroke(lineColor);
         Line horizontalLine = new Line(XAxisStart, YAxisEnd, XAxisEnd, YAxisEnd);
@@ -312,14 +302,28 @@ public class Controller {
              _ganttPane.getChildren().add(label);
         }
 
-        _ganttPane.setVisible(true);
+        //_ganttPane.setVisible(true);
     }
 
-    private double[] fontSize(Label label){
+    private double[] fontSize(Label label) {
         Text theText = new Text(label.getText());
         theText.setFont(label.getFont());
-        double[] size = {theText.getBoundsInLocal().getHeight(),theText.getBoundsInLocal().getWidth()};
+        double[] size = {theText.getBoundsInLocal().getHeight(), theText.getBoundsInLocal().getWidth()};
         return size;
+    }
+
+    public synchronized  void setTimer(int count) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                _time.setText(count+"");
+            }
+        });
+
+    }
+
+    public synchronized void completed(int maxWeight) {
+        _status.setText("Completed");
     }
 
     @FXML

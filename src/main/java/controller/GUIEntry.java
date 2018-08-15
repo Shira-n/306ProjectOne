@@ -20,6 +20,7 @@ public class GUIEntry {
     private static boolean _parallelised;
     private static SingleGraph _graph = new SingleGraph("graph");
     private static Controller _controller;
+    private static GUITimer _timer;
 
     public GUIEntry(List<Node> nodes, String filename, int numProcessor, boolean parallelised) {
         _nodes = nodes;
@@ -27,6 +28,9 @@ public class GUIEntry {
         _numProcessor = numProcessor;
         _parallelised = parallelised;
         createGraph();
+
+        _timer = new GUITimer();
+
         Thread GUI = new Thread() {
             public void run()  {
                 Application.launch(GUIMain.class);
@@ -65,6 +69,10 @@ public class GUIEntry {
 
     public static List<Node> getNodes() {
         return _nodes;
+    }
+
+    public static GUITimer getTimer() {
+        return _timer;
     }
 
     //TODO

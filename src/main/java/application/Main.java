@@ -61,7 +61,8 @@ public class Main {
             if (_visualisation){
                 //GUI visualisation
                 GUIEntry entry = new GUIEntry(graph,"S",numberOfProcessor, false);
-               try {
+               /*
+                try {
                    while( GUIEntry.getController() == null) {
                        Thread.sleep(1000);
                    }
@@ -71,6 +72,7 @@ public class Main {
                }
                 scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), GUIEntry.getController());
                 //entry.run();
+                */
             }
             else {
                 scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
@@ -83,8 +85,8 @@ public class Main {
             //scheduler.schedule();
             //Write result
             //reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
-            State optimalSchedule = scheduler.getOptimalSchedule();
-            reader.writeOptimalSchedule(optimalSchedule, _outputFile);
+            //State optimalSchedule = scheduler.getOptimalSchedule();
+            //reader.writeOptimalSchedule(optimalSchedule, _outputFile);
 
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
