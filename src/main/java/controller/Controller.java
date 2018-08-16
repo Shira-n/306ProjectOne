@@ -1,27 +1,23 @@
 package controller;
 
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.BranchAndBoundScheduler;
 import model.State;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
-
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 
@@ -29,10 +25,8 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 
 import java.awt.*;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.TimerTask;
 
 
 /**
@@ -124,6 +118,8 @@ public class Controller {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
+                drawGanttChart(optimalSchedule);
+
             }
         };
         thread.start();
@@ -215,6 +211,126 @@ public class Controller {
 
     }
 
+    public void drawGanttChart(State optimalState) {
+        final double YAxisStart = 20;
+        final double YAxisEnd = 460;
+        final double XAxisStart = 80;
+        final double XAxisEnd = 680;
+
+
+        int finishTime = 0;
+        javafx.scene.paint.Color lineColor = javafx.scene.paint.Color.BLACK;
+        int numberOfProcessors = Integer.parseInt(_numProcessor.getText());
+
+        Map<String, String[]> schedule = optimalState.translate();
+
+
+        for (model.Node node : _nodes) {
+            int startTime = Integer.parseInt(schedule.get(node.getId())[1]);
+            if (finishTime < startTime + node.getWeight()) {
+                finishTime = startTime + node.getWeight();
+            }
+        }
+
+        //draw Axis
+        Line verticalLine = new Line(XAxisStart, YAxisStart, XAxisStart, YAxisEnd);
+        verticalLine.setStroke(lineColor);
+        Line horizontalLine = new Line(XAxisStart, YAxisEnd, XAxisEnd, YAxisEnd);
+        horizontalLine.setStroke(lineColor);
+        _ganttPane.getChildren().addAll(verticalLine, horizontalLine);
+
+        double totalHeight = YAxisEnd - YAxisStart;
+        double totalWidth = XAxisEnd - XAxisStart;
+
+        double HorizontalUnit = totalWidth / (double) finishTime;
+        double VerticalUnit = totalHeight / (double) (1 + 3 * numberOfProcessors);
+
+        //draw vertical lines for viewing time on chart
+        for (int i = 0; i <= finishTime; i++) {
+            Line _line = new Line(i * HorizontalUnit + XAxisStart, YAxisEnd, i * HorizontalUnit + XAxisStart, YAxisEnd + 5);
+            if (i % 5 != 0) {
+                _line.setStrokeWidth(0.5);
+            }
+            Label _label = new Label(Integer.toString(i));
+
+            double width = (fontSize(_label))[1];
+
+            _label.setLayoutX(i * HorizontalUnit + XAxisStart - width / 2);
+            _label.setLayoutY(YAxisEnd + 5);
+
+            Line line5 = new Line(i * HorizontalUnit + XAxisStart, YAxisStart, i * HorizontalUnit + XAxisStart, YAxisEnd);
+            line5.getStrokeDashArray().addAll(2d);
+            line5.setStrokeWidth(0.2);
+
+            _ganttPane.getChildren().addAll(_line, _label, line5);
+        }
+
+        //draw nodes and labels
+        for (model.Node node : _nodes) {
+            int processor = Integer.parseInt(schedule.get(node.getId())[0]);
+            int startTime = Integer.parseInt(schedule.get(node.getId())[1]);
+            //double startHeight = VerticalUnit+3*(i-1)*VerticalUnit+YAxisStart;
+            double startHeight = VerticalUnit+3*(processor-1)*VerticalUnit+YAxisStart;
+            javafx.scene.shape.Rectangle rectangle = new Rectangle((startTime*HorizontalUnit)+XAxisStart, startHeight, node.getWeight()*HorizontalUnit, 2*VerticalUnit);
+            rectangle.setStroke(javafx.scene.paint.Color.WHITE);
+
+            Label label = new Label(node.getId());
+            double height = (fontSize(label))[0];
+            double width = (fontSize(label))[1];
+
+            label.setLayoutX((startTime*HorizontalUnit)+XAxisStart+(HorizontalUnit*node.getWeight())/2-width/2);
+            label.setLayoutY(startHeight+0.5*VerticalUnit+height+height/3);
+            label.setTextFill(javafx.scene.paint.Color.WHITE);
+
+            if(startTime!=0) {
+                Label alabel = new Label(Integer.toString(startTime));
+                height = (fontSize(alabel))[0];
+                width = (fontSize(alabel))[1];
+                alabel.setLayoutX(startTime * HorizontalUnit + XAxisStart - width / 2);
+                alabel.setLayoutY(startHeight - height);
+                _ganttPane.getChildren().add(alabel);
+            }
+            boolean repeat = false;
+            for(String[] node1: schedule.values()) {
+                if (startTime + node.getWeight()==Integer.parseInt(node1[1])){
+                    repeat=true;
+                }
+            }
+            if(!repeat){
+                Label blabel = new Label(Integer.toString(startTime + node.getWeight()));
+                height = (fontSize(blabel))[0];
+                width = (fontSize(blabel))[1];
+                blabel.setLayoutX((startTime + node.getWeight()) * HorizontalUnit + XAxisStart - width / 2);
+                blabel.setLayoutY(startHeight - height);
+                _ganttPane.getChildren().add(blabel);
+            }
+
+            _ganttPane.getChildren().addAll(rectangle, label);
+        }
+
+        //draw labels for processors
+        for (int i = 0; i < numberOfProcessors; i++) {
+            double startHeight = VerticalUnit+3*(i)*VerticalUnit+YAxisStart;
+
+            Label label = new Label("Processor " + (Integer.toString(i+1)));
+
+            double height = (fontSize(label))[0];
+
+            label.setLayoutX(XAxisStart-70);
+            label.setLayoutY(startHeight+0.5*VerticalUnit+height+height/3);
+
+             _ganttPane.getChildren().add(label);
+        }
+
+        //_ganttPane.setVisible(true);
+    }
+
+    private double[] fontSize(Label label) {
+        Text theText = new Text(label.getText());
+        theText.setFont(label.getFont());
+        double[] size = {theText.getBoundsInLocal().getHeight(), theText.getBoundsInLocal().getWidth()};
+        return size;
+    }
 
     public synchronized  void setTimer(int count) {
         Platform.runLater(new Runnable() {
