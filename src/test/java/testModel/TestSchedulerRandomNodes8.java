@@ -224,7 +224,6 @@ public class TestSchedulerRandomNodes8 {
         */
     }
 
-
     @Test
     public void testEightProcessor() {
         System.out.println("\nEightProcessors");

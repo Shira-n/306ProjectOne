@@ -68,6 +68,7 @@ public class GraphViewer extends Viewer {
     }
 
     public void updateNodeColour(Node node) {
+        System.out.println("Processor " + node.getAttribute("processor"));
         String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor")));
         node.removeAttribute("ui.style");
         node.addAttribute("ui.style", "text-alignment: center;\n"

@@ -140,13 +140,14 @@ public class Controller {
      * Called by algorithm to update GUI to show newly calculated current optimal schedule.
      * @param updatedState
      */
-    public synchronized void update(Map<String,String[]> updatedState,Map<String,String[]>updatedStateByProcessor) {
+    public synchronized void update(Map<String,String[]> updatedState) {
         System.out.println("UPDATE");
         for (String nodeID: updatedState.keySet()) {
             String[] nodeInfo = updatedState.get(nodeID);
             Node node = _graph.getNode(nodeID);
             System.out.println(node.getAttribute("startTime")+"");
             node.removeAttribute("startTime");
+            System.out.println(node.getId()+  " Processor: " + node.getAttribute("processor"));
             node.removeAttribute("processor");
             node.addAttribute("startTime",nodeInfo[1]);
             node.addAttribute("processor",nodeInfo[0]);
@@ -156,9 +157,6 @@ public class Controller {
                     _viewer.updateNodeColour(node);
                 }
             });
-        }
-        for (String processorID: updatedStateByProcessor.keySet()) {
-
         }
     }
 
