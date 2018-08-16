@@ -24,6 +24,8 @@ public class GraphViewer extends Viewer {
         graph.addAttribute("ui.quality");
         graph.addAttribute("ui.antialias");
         initialiseLabels();
+
+
     }
 
 
@@ -68,7 +70,7 @@ public class GraphViewer extends Viewer {
     }
 
     public void updateNodeColour(Node node) {
-        System.out.println("Processor " + node.getAttribute("processor"));
+        //System.out.println("Processor " + node.getAttribute("processor"));
         String processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor")));
         node.removeAttribute("ui.style");
         node.addAttribute("ui.style", "text-alignment: center;\n"
@@ -87,6 +89,7 @@ public class GraphViewer extends Viewer {
                 + "\ttext-size: 16px;\n");
         sprite.attachToNode(node.getId());
 
+        /*
         for(int i =0; i< _graph.getEdgeCount(); i++) {
             Edge edge = _graph.getEdge(i);
             if (edge.getNode0().getAttribute("processor").equals(edge.getNode1().getAttribute("processor"))) {
@@ -97,6 +100,7 @@ public class GraphViewer extends Viewer {
                         + "\ttext-alignment: along;\n");
             }
         }
+        */
     }
 
     public void setNodeBorderColour() {

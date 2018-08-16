@@ -87,14 +87,6 @@ public class BranchAndBoundScheduler {
     public List<Processor> getSchedule() {
         schedule();
 
-        System.out.println("In Getschedule");
-        //inform the GUI that computation is completed
-        _controller.completed(_optimalState.getMaxWeight());
-        _timer.stopTimer();
-        System.out.println("\nGet Schedule: Max Weight: "+_optimalState.getMaxWeight());
-        long endTime = System.currentTimeMillis();
-        System.out.println("That took "+(endTime-_startTime)+" milliseconds");
-
         return _processors;
     }
 
@@ -126,6 +118,15 @@ public class BranchAndBoundScheduler {
      */
     public State getOptimalSchedule(){
         ASchedule();
+
+        System.out.println("In Getschedule");
+        //inform the GUI that computation is completed
+        _controller.completed(_optimalState.getMaxWeight());
+        _timer.stopTimer();
+        System.out.println("\nGet Schedule: Max Weight: "+_optimalState.getMaxWeight());
+        long endTime = System.currentTimeMillis();
+        System.out.println("That took "+(endTime-_startTime)+" milliseconds");
+
         return _optimalState;
     }
 
@@ -138,8 +139,8 @@ public class BranchAndBoundScheduler {
      * Schedules the Nodes in the list to Processors using greedy algorithm
      */
     public void schedule() {
-        //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
+
     }
 
     /**
@@ -261,23 +262,13 @@ public class BranchAndBoundScheduler {
             }
 
         }
+
         System.out.println(stateQueue.size());
         System.out.println("Switched to B&B");
         State bbOptimal;
         for (State s : stateQueue){
             freeToSchedule = s.rebuild(_graph, _processors);
             bbOptimal = bbOptimalSchedule(freeToSchedule);
-            if (_optimalState.getMaxWeight() > bbOptimal.getMaxWeight()){
-                _optimalState = bbOptimal;
-                //if there is visualisation
-                //System.out.println(_controller);
-                if (_controller != null) {
-                    //System.out.println("Call update");
-                    //calls the controller class to update GUI to display newly computed current optimal schedule.
-                    _controller.update(_optimalState.translate());
-                }
-
-            }
         }
     }
 
