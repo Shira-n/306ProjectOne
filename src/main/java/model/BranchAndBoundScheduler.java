@@ -13,11 +13,14 @@ public class BranchAndBoundScheduler {
     private Controller _controller;
     private GUITimer _timer;
 
+    private long _startTime;
+
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
         this(graph,numberOfProcessor,null,null);
     }
 
     public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor, Controller controller, GUITimer timer) {
+        _startTime = System.currentTimeMillis();
         //_graph = topologicalSort(graph);
         _graph = graph;
         _controller = controller;
@@ -120,6 +123,8 @@ public class BranchAndBoundScheduler {
         _controller.completed(_optimalState.getMaxWeight());
         _timer.stopTimer();
         System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
+        long endTime = System.currentTimeMillis();
+        System.out.println("That took "+(endTime-_startTime)+" milliseconds");
     }
 
     /**

@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="850.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<AnchorPane prefHeight="850.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
       <ImageView fx:id="_background" fitHeight="850.0" fitWidth="750.0">
          <image>
@@ -30,6 +30,7 @@
                   <Font name="Arial Bold" size="26.0" />
                </font>
             </Button>
+            <Button fx:id="_start" layoutX="246.0" layoutY="22.0" mnemonicParsing="false" onAction="#handlePressStart" text="Start" />
          </children>
       </Pane>
       <Pane fx:id="_buttonPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="590.0">

@@ -104,10 +104,21 @@ public class Controller {
 
         initGraph();
 
+
+
+
+
+
+
+    }
+
+
+    /**
+    *
+    */
+    @FXML
+    public void handlePressStart(ActionEvent event) {
         Controller controller = this;
-
-
-
         Thread thread = new Thread() {
             public void run() {
                 System.out.print("IN THREAD");
@@ -116,7 +127,6 @@ public class Controller {
             }
         };
         thread.start();
-
     }
 
     /**
@@ -131,10 +141,11 @@ public class Controller {
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState,Map<String,String[]>updatedStateByProcessor) {
-        //System.out.println("called");
+        System.out.println("UPDATE");
         for (String nodeID: updatedState.keySet()) {
             String[] nodeInfo = updatedState.get(nodeID);
             Node node = _graph.getNode(nodeID);
+            System.out.println(node.getAttribute("startTime")+"");
             node.removeAttribute("startTime");
             node.removeAttribute("processor");
             node.addAttribute("startTime",nodeInfo[1]);
@@ -145,6 +156,9 @@ public class Controller {
                     _viewer.updateNodeColour(node);
                 }
             });
+        }
+        for (String processorID: updatedStateByProcessor.keySet()) {
+
         }
     }
 
@@ -207,7 +221,12 @@ public class Controller {
     }
 
     public synchronized void completed(int maxWeight) {
-        _status.setText("Completed");
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                _status.setText("Completed");
+            }
+        });
     }
 
     @FXML

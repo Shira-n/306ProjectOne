@@ -34,7 +34,7 @@ public class ColourManager {
     }
 
     public String getColor(int processorIndex) {
-        System.out.println("COLOR: " + _colours.get(processorIndex-1));
+        //System.out.println("COLOR: " + _colours.get(processorIndex-1));
         return _colours.get(processorIndex-1);
     }
 
