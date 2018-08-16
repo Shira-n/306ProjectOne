@@ -321,7 +321,7 @@ public class Controller {
              _ganttPane.getChildren().add(label);
         }
 
-        //_ganttPane.setVisible(true);
+        _ganttPane.setVisible(true);
     }
 
     private double[] fontSize(Label label) {

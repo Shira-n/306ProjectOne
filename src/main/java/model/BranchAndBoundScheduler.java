@@ -122,6 +122,14 @@ public class BranchAndBoundScheduler {
      */
     public State getOptimalSchedule(){
         schedule();
+
+        if (_controller!=null) {
+            _controller.completed(_optimalState.getMaxWeight());
+            _timer.stopTimer();
+            System.out.println("\nGet Schedule: Max Weight: " + _optimalState.getMaxWeight());
+            long endTime = System.currentTimeMillis();
+            System.out.println("That took " + (endTime - _startTime) + " milliseconds");
+        }
         return _optimalState;
     }
 
