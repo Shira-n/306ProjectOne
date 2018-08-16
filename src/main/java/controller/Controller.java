@@ -49,6 +49,7 @@ public class Controller {
 
     private GUITimer _timer;
 
+    private State _optimalSchedule;
     @FXML
     private Pane _graphPane;
 
@@ -81,8 +82,6 @@ public class Controller {
 
     @FXML
     private SwingNode _swingNode;
-
-
 
     @FXML
     public void initialize() {
@@ -118,7 +117,7 @@ public class Controller {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
-                drawGanttChart(optimalSchedule);
+                _optimalSchedule = optimalSchedule;
 
             }
         };
@@ -347,6 +346,7 @@ public class Controller {
             @Override
             public void run() {
                 _status.setText("Completed");
+                drawGanttChart(_optimalSchedule);
             }
         });
     }

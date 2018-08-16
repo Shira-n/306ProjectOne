@@ -26,9 +26,23 @@ public class BranchAndBoundScheduler {
         _controller = controller;
         _timer = timer;
         _freeToSchedule = findEntries(graph);
+        //Calc bottom weight
         for (Node node : _freeToSchedule){
             calcBottomWeight(node);
         }
+
+        //Calc equivalent nodes
+        for(Node node : _graph){
+            for (Node parent : node.getParents().keySet()){
+                for (Node sibling : parent.getChildren().keySet()){
+                    if (node.equals(sibling) && internalOrderingCheck(node, sibling) && node.isEquivalent(sibling)){
+                        node.addEquivalentNode(sibling);
+                    }
+                }
+            }
+        }
+
+
         /*
         for (int i = 0 ;i < _graph.size(); i++){
             System.out.print(" " + _graph.get(i).getId());
@@ -59,8 +73,6 @@ public class BranchAndBoundScheduler {
     /**
      * Recursively calculate Bottom Weight of the input Node. The bottom weight of a Node will be the sum of its
      * weight and the maximum bottom weight of its children.
-     * @param node
-     * @return
      */
     private int calcBottomWeight(Node node){
         if (node.getChildren().size() > 0){
@@ -80,7 +92,7 @@ public class BranchAndBoundScheduler {
     /*
         Methods that call schedule and return the final schedule in different forms.
      */
-
+///////////////////////////////////NOT USED IN MAIN/////////////////////////////////////////////////////////
     /**
      * Return a list of scheduled processors. Used in Basic Milestone
      */
@@ -101,21 +113,22 @@ public class BranchAndBoundScheduler {
         }
         return schedule;
     }
+///////////////////////////////////NOT USED IN MAIN/////////////////////////////////////////////////////////
+
 
     ///////////////////////////////////original/////////////////////////////////////////////////
     /**
      * Return the optimal state from Branch and Bound algorithm.
-
-
+     */
     public State getOptimalSchedule(){
         schedule();
         return _optimalState;
-    }*/
+    }
+
     //////////////////////////////////////AStar//////////////////////////////////////////////
     /**
      * Return the optimal state from Branch and Bound algorithm.
 
-     */
     public State getOptimalSchedule(){
         ASchedule();
 
@@ -128,8 +141,7 @@ public class BranchAndBoundScheduler {
         System.out.println("That took "+(endTime-_startTime)+" milliseconds");
 
         return _optimalState;
-    }
-
+    }*/
 
     /*
         Schedule methods
@@ -148,13 +160,21 @@ public class BranchAndBoundScheduler {
      */
     private State bbOptimalSchedule(Set<Node> freeToSchedule){
         State optimalState = new State();
+
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
             // Get Nodes to ignore when internal order is arbitrary
-            Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
+            Set<Node> visitedNodes = new HashSet<>();
             for (Node node : freeToSchedule) {
+                boolean repeated = false;
+                for (Node visited : visitedNodes){
+                    if (node.isEquivalent(visited)){
+                        repeated = true;
+                        break;
+                    }
+                }
                 // Check if node is okay to schedule
-               if (!(nodesToIgnore.contains(node))) {
+                if (!repeated) {
                     for (Processor processor : _processors) {
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
@@ -176,15 +196,16 @@ public class BranchAndBoundScheduler {
                         }
                     }
                }
+               visitedNodes.add(node);
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
             //Calculate the current schedule's weight and compare with the current optimal schedule.
-            for (Processor processor : _processors){
+            for (Processor processor : _processors) {
                 max = Math.max(max, processor.getCurrentAbleToStart());
             }
 
-            if (max < _optimalState.getMaxWeight()){
+            if (max < _optimalState.getMaxWeight()) {
                 _optimalState = new State(_processors);
                 //if there is visualisation
                 //System.out.println(_controller);
@@ -193,10 +214,9 @@ public class BranchAndBoundScheduler {
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
                     _controller.update(_optimalState.translate());
                 }
-                //optimalState.print();
             }
         }
-        return optimalState;
+        return _optimalState;
     }
 
 
@@ -204,8 +224,8 @@ public class BranchAndBoundScheduler {
 
     /*
         A*
-     */
-
+    */
+/*
     private void ASchedule(){
         for (State s : getNewStates(_freeToSchedule)){
             _stateQueue.add(s);
@@ -215,7 +235,7 @@ public class BranchAndBoundScheduler {
         AStarSchedule(_stateQueue);
         System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
-
+*/
     private PriorityQueue<State> _stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
         if (s1.getMaxWeight() + s1.getBottomWeight() > s2.getMaxWeight() + s2.getBottomWeight()){
             return 1;
@@ -286,41 +306,50 @@ public class BranchAndBoundScheduler {
 /////////////////////////////////////////////////////*/
 
         List<State> newStates = new ArrayList<>();
+        //Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
+        for (Node node : freeToSchedule) {
+            // Check if node is okay to schedule
+            //if (!(nodesToIgnore.contains(node))) {
+                //int bottomeWeight = Integer.MAX_VALUE;
 
-        for (Node node : freeToSchedule){
-            //int bottomeWeight = Integer.MAX_VALUE;
+                //Calculate Nodes that become free because of scheduling this Node
+                Set<Node> newFreeToSchedule = node.ifSchedule();
+                newFreeToSchedule.addAll(freeToSchedule);
+                newFreeToSchedule.remove(node);
+                /*System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
+                for (Node n : newFreeToSchedule){
+                    System.out.print(" " + n.getId());
+                }*/
 
-            //Calculate Nodes that become free because of scheduling this Node
-            Set<Node> newFreeToSchedule = node.ifSchedule();
-            newFreeToSchedule.addAll(freeToSchedule);
-            newFreeToSchedule.remove(node);
-            /*System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
-            for (Node n : newFreeToSchedule){
-                System.out.print(" " + n.getId());
-            }*/
+                for (Processor processor : _processors) {
 
-            for (Processor processor : _processors){
+                    //System.out.println("\nNow try to schedule it on P" + processor.getID());
+                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
 
-                //System.out.println("\nNow try to schedule it on P" + processor.getID());
-                int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                    node.schedule(processor, startTime);
+                    processor.addNodeAt(node, startTime);
 
-                node.schedule(processor, startTime);
-                processor.addNodeAt(node, startTime);
-
-                //Record this State
-                State state = new State(_processors, newFreeToSchedule);
-                //state.print();
-                //if (state.getBottomWeight() < bottomeWeight){
+                    //Record this State
+                    State state = new State(_processors, newFreeToSchedule);
+                    //state.print();
+                    //if (state.getBottomWeight() < bottomeWeight){
                     //bottomeWeight = state.getBottomWeight();
-                newStates.add(state);
-                //System.out.println("this state is added to list of states to return");
-                //}
-                unscheduleNode(node);
+                    newStates.add(state);
+                    //System.out.println("this state is added to list of states to return");
+                    //}
+                    unscheduleNode(node);
                 }
-            }
-            //System.out.println("Finish Call getNewStates\n\n");
-            return newStates;
+            //}
+        }
+        //System.out.println("Finish Call getNewStates\n\n");
+        return newStates;
     }
+
+
+
+
+
+
 
 
 
@@ -366,58 +395,38 @@ public class BranchAndBoundScheduler {
         return limit;
     }
 
+
     /**
-     *
-     * @param freeToSchedule the current iteration of nodes with sorted parents
-     * @return Set<Node> of Nodes to ignore due to arbitrary internal ordering
+     * Return true if two nodes are exchangable, false otherwise.
      */
-    protected Set<Node> internalOrderingCheck(Set<Node> freeToSchedule) {
-        Set<Node> nodesToRemove = new HashSet<>();
+    private boolean internalOrderingCheck(Node node, Node visited){
+        //The number of parents and children of them must be the same
+        if (node.getParents().keySet().size() != visited.getParents().keySet().size()
+                || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
+            return false;
+        }
 
-        for (Iterator<Node> aIterator = freeToSchedule.iterator(); aIterator.hasNext(); ) {
-            Node n1 = aIterator.next();
-            for (Iterator<Node> bIterator = aIterator; bIterator.hasNext(); ) {
-                Node n2 = bIterator.next();
-                boolean sameDependencies = false;
-                if (!n1.equals(n2)) {
-                    sameDependencies = true;
-                    Set<Node> n1parents = n1.getParents().keySet();
-                    Set<Node> n2parents = n2.getParents().keySet();
-                    Set<Node> n1children = n1.getChildren().keySet();
-                    Set<Node> n2children = n2.getChildren().keySet();
-                    // Check if they have the same set of parents
-                    if (n1parents.equals(n2parents)) {
-                        // Check if they have the same set of children
-                        if (n1children.equals(n2children)) {
-                            // Check if all incoming edges have same weight
-                            for (Node p : n1parents) {
-                                if (!(p.getPathWeightToChild(n1) == p.getPathWeightToChild(n2))) {
-                                    sameDependencies = false;
-                                }
-                            }
-                            // Check if all outgoing edges have same weight
-                            for (Node p: n1children) {
-                                if (!(n1.getPathWeightToParent(p) == n2.getPathWeightToParent(p))) {
-                                    sameDependencies = false;
-                                }
-                            }
-
-                        }
-                    }
-                }
-                if (sameDependencies) {
-                    if  (!(nodesToRemove.contains(n2))) {
-                        nodesToRemove.add(n2);
-                    }
-
-                }
+        for (Node parent : node.getParents().keySet()){
+            if (visited.getParents().keySet().contains(parent) &&
+                    node.getPathWeightToParent(parent) == visited.getPathWeightToParent(parent)){
+                ;
+            }else{ //The communication cost for every parent has to be the same for both nodes
+                return false;
             }
         }
 
-
-
-        return nodesToRemove;
+        for (Node child : node.getChildren().keySet()){
+            if (visited.getChildren().keySet().contains(child) &&
+                    node.getPathWeightToChild(child) != visited.getPathWeightToParent(child)){
+                ;
+            }else{ //The communication cost for every child has to be the same for both nodes
+                return false;
+            }
+        }
+        return true;
     }
+
+
 
     /*
         Getter & Setter methods for testing

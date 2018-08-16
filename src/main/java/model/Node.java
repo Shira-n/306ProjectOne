@@ -1,9 +1,6 @@
 package model;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represent a node/task in the input graph. Containing the time this task consumes, references to its parent tasks
@@ -13,6 +10,7 @@ import java.util.Set;
 public class Node {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
+    private List<Node> _equivalentNodes;
 
     private String _id;
     private int _weight;
@@ -28,6 +26,7 @@ public class Node {
         _weight = weight;
         _parents = new HashMap<>();
         _children = new HashMap<>();
+        _equivalentNodes = new ArrayList<>();
     }
 
     /**
@@ -175,8 +174,22 @@ public class Node {
     }
 
 
+    public List<Node> getEquivalentNodes(){
+        return _equivalentNodes;
+    }
+
+    public boolean isEquivalent(Node node){
+        return _equivalentNodes.contains(node);
+    }
+
+    public void addEquivalentNode(Node node){
+        _equivalentNodes.add(node);
+        node.addEquivalentNode(this);
+    }
+
+
     /*
-        Helper methods for topological sorting
+        Helper methods
      */
     public void sortOneParent(){
         _unsortedParents--;
