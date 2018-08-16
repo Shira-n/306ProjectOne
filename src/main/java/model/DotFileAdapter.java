@@ -85,7 +85,6 @@ public class  DotFileAdapter {
 		sc.close();
 	}
 
-
 	public void writeGreedySchedule(Map<String, Node> scheduledNodes, String outputPath) throws IOException{
 		File file = new File(outputPath);
 		FileWriter fw = new FileWriter(file);
