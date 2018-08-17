@@ -1,8 +1,8 @@
 package testModel;
 
+import model.scheduler.GreedyScheduler;
 import model.Node;
 import model.Processor;
-import model.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class TestSchedulerRandomNodes8 {
+public class TestGreedySchedulerRandomNodes8 {
 
     private List<Node> _graph = new ArrayList<>();
 
@@ -90,8 +90,8 @@ public class TestSchedulerRandomNodes8 {
     public void testOneProcessor(){
         System.out.println("\nOne Processor");
 
-        Scheduler scheduler = new Scheduler(_graph, 1);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 1);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -120,8 +120,8 @@ public class TestSchedulerRandomNodes8 {
     public void testTwoProcessor(){
         System.out.println("\nTwo Processors");
 
-        Scheduler scheduler = new Scheduler(_graph, 2);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 2);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -156,8 +156,8 @@ public class TestSchedulerRandomNodes8 {
     public void testThreeProcessor(){
         System.out.println("\nThree Processors");
 
-        Scheduler scheduler = new Scheduler(_graph, 3);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 3);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -193,8 +193,8 @@ public class TestSchedulerRandomNodes8 {
     @Test
     public void testFourProcessor(){
         System.out.println("\nFourProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 4);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 4);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -227,8 +227,8 @@ public class TestSchedulerRandomNodes8 {
     @Test
     public void testEightProcessor() {
         System.out.println("\nEightProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 8);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 8);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
     }
 

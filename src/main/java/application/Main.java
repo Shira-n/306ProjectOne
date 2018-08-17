@@ -4,77 +4,59 @@ package application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import model.DotFileAdapter;
-import model.Node;
-import model.Notification;
-import model.State;
-import model.BranchAndBoundScheduler;
+import model.*;
+import model.scheduler.OptimalScheduler;
+import model.scheduler.ParallelScheduler;
+import model.scheduler.Scheduler;
 
 public class Main {
-    //GUI
-    //extends Application {
-
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
     //By default the output file is INPUT_output.dot.
     private static String _outputFile = "-output.dot";
+    private static String _inputFile;
+    private static DotFileAdapter _reader;
     //By default the execution run sequentially on one core.
-    private static int _noOfCores = 1;
+    private static int _noOfThreads = 1;
 
-    /* No GUI for basic milestone
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../view/sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
-    }
-    */
+    private static Scheduler _scheduler;
+    private static int _noOfProcessors;
 
     public static void main(String[] args) {
+        //Start Timer
         long startTime = System.currentTimeMillis();
-        if (args.length < 2){
-            Notification.message("Error: Please specify the filename and numbers of processors to use");
-            System.exit(1);
-        }else if (args.length > 7){
-            Notification.message("Error: Too many arguments");
-            System.exit(1);
-        }
+
+        //Handle necessary user input
+        checkNecessaryInput(args);
 
         try {
-            //Read input file
-            String filepath = args[0];
-            checkInputFile(filepath);
-            DotFileAdapter reader = new DotFileAdapter(filepath);
-            List<Node> graph = reader.getData();
-
+            //Read input filename
+            _inputFile = args[0];
+            checkInputFile();
+            _reader = new DotFileAdapter(_inputFile);
             //Modify output filename
-            _outputFile = filepath.substring(0, filepath.length() - 4) + _outputFile;
+            _outputFile = _inputFile.substring(0, _inputFile.length() - 4) + _outputFile;
             checkOutputFile(_outputFile);
-
             //Read number of processors.
-            int numberOfProcessor = Integer.parseInt(args[1]);
-
-            //Read optional arguments
+            _noOfProcessors = Integer.parseInt(args[1]);
+            //Read optional arguments to decide visualisation, parallelization, customized output filename
             ReadOptionalArgs(args);
-            /* No GUI for basic milestone
-            if (_visualisation){
-                launch(args);
+
+            if (_noOfThreads > 1){ //Multithreading
+                _scheduler = getParallelScheduler();
+            }else{
+                _scheduler = getSequentialScheduler();
             }
-            */
-            //No multithreading for basic milestone
 
-            //Run Scheduler to calculate the schedule.
-            BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler (graph, numberOfProcessor);
+            //TODO GUI option here
 
-            //scheduler.schedule();
             //Write result
-            //reader.writeScheduleNewNew(scheduler.getScheduledNodes(), _outputFile);
-            State optimalSchedule = scheduler.getOptimalSchedule();
-            reader.writeOptimalSchedule(optimalSchedule, _outputFile);
-
+            _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
             System.exit(1);
@@ -85,6 +67,8 @@ public class Main {
             Notification.message("Error: IO Exception");
             System.exit(1);
         }
+
+        //Stop timer
         long endTime = System.currentTimeMillis();
         System.out.println("That took "+(endTime-startTime)+" milliseconds");
     }
@@ -98,7 +82,7 @@ public class Main {
             //If -p is specified, read how many cores are supplied.
             if (args[i].equals("-p")){
                 try {
-                    _noOfCores = Integer.parseInt(args[i+1]);
+                    _noOfThreads = Integer.parseInt(args[i+1]);
                     i++;
                 }catch(NumberFormatException e){
                     Notification.message("Error: Argument after -p must be an integer");
@@ -134,16 +118,26 @@ public class Main {
         }
     }
 
+    private static void checkNecessaryInput(String[] args){
+        if (args.length < 2){
+            Notification.message("Error: Please specify the filename and numbers of processors to use");
+            System.exit(1);
+        }else if (args.length > 7){
+            Notification.message("Error: Too many arguments");
+            System.exit(1);
+        }
+    }
+
     /**
      * checks if the file has valid type(.dot file) and exists in the directory
      */
-    private static void checkInputFile(String filepath){
-        if (!filepath.endsWith(".dot")){
+    private static void checkInputFile(){
+        if (!_inputFile.endsWith(".dot")){
             Notification.message("Error: input file has wrong suffix");
             System.exit(1);
         }
 
-        File file = new File(filepath);
+        File file = new File(_inputFile);
         boolean fileExists = file.exists();
         if (!fileExists){
             Notification.message("Error: File does not exist");
@@ -155,5 +149,22 @@ public class Main {
     //Ask the user to overwrite the output file if exists
     private static void checkOutputFile(String filepath){
 
+    }
+
+    private static Scheduler getParallelScheduler() throws FileNotFoundException {
+        Map<Integer, ParallelThread> threads = new HashMap<>();
+        List<List<Node>> graphs = new ArrayList<>();
+        for (int i = 0; i <_noOfThreads - 1;i++) {
+            ParallelThread thread = new ParallelThread(i);
+            threads.put(i, thread);
+            graphs.add(_reader.getUniqueData());
+        }
+        graphs.add(_reader.getUniqueData());
+        return new ParallelScheduler(threads, graphs, _noOfProcessors);
+    }
+
+    private static Scheduler getSequentialScheduler() throws FileNotFoundException {
+        List<Node> graph = _reader.getData();
+        return new OptimalScheduler(graph, _noOfProcessors);
     }
 }

@@ -7,19 +7,20 @@ import java.io.IOException;
 import java.util.*;
 
 public class  DotFileAdapter {
-	private List<Node> _data = new ArrayList<Node>();
+	private List<Node> _data = new ArrayList<>();
 	private String[] _words;
 	private File _inputFile;
 
 	public DotFileAdapter(String inputPath) throws FileNotFoundException {
-		readGraph(inputPath);
+		_data = readGraph();
+		_inputFile = new File(inputPath);
 	}
 
 	/**
 	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval from main
 	 */
-	private void readGraph(String inputPath) throws FileNotFoundException{
-		_inputFile = new File(inputPath);
+	private List<Node> readGraph() throws FileNotFoundException{
+		List<Node> data = new ArrayList<>();
 		Scanner sc = new Scanner(_inputFile);
 
 		//		Scans Dot File, converts each line to a String Array to add to _data
@@ -43,7 +44,7 @@ public class  DotFileAdapter {
 					Node child = null;
 					Node parent = null;
 
-					for (Node e: _data) {
+					for (Node e: data) {
 						if (e.getId().equals(parentID)) {
 							parent = e;
 						}
@@ -54,12 +55,12 @@ public class  DotFileAdapter {
 
 					//@ ASSUMES NODES GIVEN BEFORE EDGES
 					try {
-						int parentIndex = _data.indexOf(parent);
-						int childIndex = _data.indexOf(child);
+						int parentIndex = data.indexOf(parent);
+						int childIndex = data.indexOf(child);
 
-						_data.get(parentIndex).addChild(_data.get(childIndex), edgeWeight);
+						data.get(parentIndex).addChild(data.get(childIndex), edgeWeight);
 
-						_data.get(childIndex).addParent(_data.get(parentIndex), edgeWeight);
+						data.get(childIndex).addParent(data.get(parentIndex), edgeWeight);
 					}
 					catch (Exception e) {
 						;
@@ -78,11 +79,12 @@ public class  DotFileAdapter {
 
 					Node e = new Node(weight, nodeID);
 
-					_data.add(e);
+					data.add(e);
 				}
 			}
 		}
 		sc.close();
+		return  data;
 	}
 
 	public void writeGreedySchedule(Map<String, Node> scheduledNodes, String outputPath) throws IOException{
@@ -129,9 +131,12 @@ public class  DotFileAdapter {
 		sc.close();
 	}
 
-
 	public List<Node> getData(){
 		return _data;
+	}
+
+	public List<Node> getUniqueData() throws FileNotFoundException {
+		return readGraph();
 	}
 
 }

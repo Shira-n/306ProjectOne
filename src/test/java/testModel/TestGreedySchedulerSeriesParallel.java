@@ -1,8 +1,8 @@
 package testModel;
 
+import model.scheduler.GreedyScheduler;
 import model.Node;
 import model.Processor;
-import model.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class TestSchedulerSeriesParallel {
+public class TestGreedySchedulerSeriesParallel {
 
     private List<Node> _graph = new ArrayList<>();
 
@@ -80,9 +80,9 @@ public class TestSchedulerSeriesParallel {
     @Test
     public void testOneProcessor(){
         System.out.println("\nOneProcessor");
-        Scheduler scheduler = new Scheduler(_graph, 1);
-        scheduler.schedule();
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 1);
+        greedyScheduler.schedule();
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -112,9 +112,9 @@ public class TestSchedulerSeriesParallel {
     @Test
     public void testTwoProcessor(){
         System.out.println("\nTwoProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 2);
-        scheduler.schedule();
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 2);
+        greedyScheduler.schedule();
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());
@@ -148,9 +148,9 @@ public class TestSchedulerSeriesParallel {
     @Test
     public void testThreeProcessor(){
         System.out.println("\nThreeProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 3);
-        scheduler.schedule();
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 3);
+        greedyScheduler.schedule();
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
         /*
         assertEquals(0, _graph.get(0).getStartTime());

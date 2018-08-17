@@ -1,29 +1,28 @@
-package model;
+package model.scheduler;
+
+import model.Node;
+import model.Processor;
+import model.State;
 
 import java.util.*;
 
-public class ParallelScheduler {
-
+public class OptimalScheduler implements Scheduler{
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
-    public ParallelScheduler(List<Node> graph, int numberOfProcessor) {
+    public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
         //_graph = topologicalSort(graph);
         _graph = graph;
-        //_freeToSchedule = findEntries(graph);
+        _freeToSchedule = findEntries(graph);
         //Calc bottom weight
         for (Node node : _freeToSchedule){
             calcBottomWeight(node);
         }
 
-        _freeToSchedule = new HashSet<>();
-        for (Node node : graph) {
-            if (node.getParents().size() <= 0) {
-                _freeToSchedule.add(node);
-            }
-            //Calc equivalent nodes
+        //Calc equivalent nodes
+        for(Node node : _graph){
             for (Node parent : node.getParents().keySet()){
                 for (Node sibling : parent.getChildren().keySet()){
                     if (node.equals(sibling) && internalOrderingCheck(node, sibling) && node.isEquivalent(sibling)){
@@ -31,9 +30,6 @@ public class ParallelScheduler {
                     }
                 }
             }
-        }
-
-        for(Node node : _graph){
         }
 
 
@@ -51,7 +47,7 @@ public class ParallelScheduler {
 
     /**
      * Find the entry points of a graph, that is, Nodes that initially do not have a parent.
-
+     */
     private Set<Node> findEntries(List<Node> graph){
         Set<Node> entries = new HashSet<>();
         for (Node n : graph) {
@@ -60,7 +56,7 @@ public class ParallelScheduler {
             }
         }
         return  entries;
-    }  */
+    }
 
     /**
      * Recursively calculate Bottom Weight of the input Node. The bottom weight of a Node will be the sum of its
@@ -80,6 +76,7 @@ public class ParallelScheduler {
     }
 
 
+
     /*
         Methods that call schedule and return the final schedule in different forms.
      */
@@ -87,9 +84,9 @@ public class ParallelScheduler {
     /**
      * Return a list of scheduled processors. Used in Basic Milestone
      */
-    public List<Processor> getSchedule() {
-        schedule();
-        return _processors;
+    //TODO Change it to State!
+    public State getSchedule(){
+        return null;
     }
 
     /**
@@ -119,10 +116,10 @@ public class ParallelScheduler {
     /**
      * Return the optimal state from Branch and Bound algorithm.
 
-     public State getOptimalSchedule(){
-     ASchedule();
-     return _optimalState;
-     }*/
+    public State getOptimalSchedule(){
+        ASchedule();
+        return _optimalState;
+    }*/
 
     /*
         Schedule methods
@@ -155,30 +152,40 @@ public class ParallelScheduler {
                         break;
                     }
                 }
+                Set<String> visitedProcessor = new HashSet<>();
                 // Check if node is okay to schedule
                 if (!repeated) {
                     for (Processor processor : _processors) {
-                        //Calculate the earliest Start time of this Node on this Processor.
-                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-                        //Prune:
-                        //Check the minimum potential total weight of schedules after this step.
-                        //If it is greater than the current optimal schedule's weight, skip it
-                        //Otherwise, schedule this Node on this Processor and continue investigating.
-                        if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
-                            //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
-                            Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
-                            processor.addNodeAt(node, startTime);
-                            //Include every Nodes in the original free Node set except for this scheduled Node.
-                            newFreeToSchedule.addAll(freeToSchedule);
-                            newFreeToSchedule.remove(node);
-                            //Recursively investigating
-                            bbOptimalSchedule(newFreeToSchedule);
-                            //Un-schedule this Node to allow it being scheduled on next Processor.
-                            unscheduleNode(node);
+                        boolean equivalentProcessor = false;
+                        for (String s : visitedProcessor) {
+                            if (s.equals(processor.toString())) {
+                                equivalentProcessor = true;
+                                break;
+                            }
+                        }
+                        if (!equivalentProcessor) {
+                            //Calculate the earliest Start time of this Node on this Processor.
+                            int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                            //Prune:
+                            //Check the minimum potential total weight of schedules after this step.
+                            //If it is greater than the current optimal schedule's weight, skip it
+                            //Otherwise, schedule this Node on this Processor and continue investigating.
+                            if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                                //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
+                                Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                                processor.addNodeAt(node, startTime);
+                                //Include every Nodes in the original free Node set except for this scheduled Node.
+                                newFreeToSchedule.addAll(freeToSchedule);
+                                newFreeToSchedule.remove(node);
+                                //Recursively investigating
+                                bbOptimalSchedule(newFreeToSchedule);
+                                //Un-schedule this Node to allow it being scheduled on next Processor.
+                                unscheduleNode(node);
+                            }
                         }
                     }
-                }
-                visitedNodes.add(node);
+               }
+               visitedNodes.add(node);
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
@@ -287,35 +294,35 @@ public class ParallelScheduler {
         for (Node node : freeToSchedule) {
             // Check if node is okay to schedule
             //if (!(nodesToIgnore.contains(node))) {
-            //int bottomeWeight = Integer.MAX_VALUE;
+                //int bottomeWeight = Integer.MAX_VALUE;
 
-            //Calculate Nodes that become free because of scheduling this Node
-            Set<Node> newFreeToSchedule = node.ifSchedule();
-            newFreeToSchedule.addAll(freeToSchedule);
-            newFreeToSchedule.remove(node);
+                //Calculate Nodes that become free because of scheduling this Node
+                Set<Node> newFreeToSchedule = node.ifSchedule();
+                newFreeToSchedule.addAll(freeToSchedule);
+                newFreeToSchedule.remove(node);
                 /*System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
                 for (Node n : newFreeToSchedule){
                     System.out.print(" " + n.getId());
                 }*/
 
-            for (Processor processor : _processors) {
+                for (Processor processor : _processors) {
 
-                //System.out.println("\nNow try to schedule it on P" + processor.getID());
-                int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                    //System.out.println("\nNow try to schedule it on P" + processor.getID());
+                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
 
-                node.schedule(processor, startTime);
-                processor.addNodeAt(node, startTime);
+                    node.schedule(processor, startTime);
+                    processor.addNodeAt(node, startTime);
 
-                //Record this State
-                State state = new State(_processors, newFreeToSchedule);
-                //state.print();
-                //if (state.getBottomWeight() < bottomeWeight){
-                //bottomeWeight = state.getBottomWeight();
-                newStates.add(state);
-                //System.out.println("this state is added to list of states to return");
-                //}
-                unscheduleNode(node);
-            }
+                    //Record this State
+                    State state = new State(_processors, newFreeToSchedule);
+                    //state.print();
+                    //if (state.getBottomWeight() < bottomeWeight){
+                    //bottomeWeight = state.getBottomWeight();
+                    newStates.add(state);
+                    //System.out.println("this state is added to list of states to return");
+                    //}
+                    unscheduleNode(node);
+                }
             //}
         }
         //System.out.println("Finish Call getNewStates\n\n");
@@ -404,4 +411,15 @@ public class ParallelScheduler {
     }
 
 
+
+    /*
+        Getter & Setter methods for testing
+     */
+
+    /**
+     * for test
+     */
+    public List<Node> getGraph() {
+        return _graph;
+    }
 }

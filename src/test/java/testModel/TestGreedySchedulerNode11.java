@@ -1,15 +1,15 @@
 package testModel;
 
+import model.scheduler.GreedyScheduler;
 import model.Node;
 import model.Processor;
-import model.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestSchedulerNode11 {
+public class TestGreedySchedulerNode11 {
     private List<Node> _graph = new ArrayList<>();
 
 
@@ -72,24 +72,24 @@ public class TestSchedulerNode11 {
     @Test
     public void testOneProcessor() {
         System.out.println("\nOneProcessor");
-        Scheduler scheduler = new Scheduler(_graph, 1);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 1);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
     }
 
     @Test
     public void testTwoProcessor() {
         System.out.println("\nTwoProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 2);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 2);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
     }
 
     @Test
     public void testThreeProcessor() {
         System.out.println("\nThreeProcessors");
-        Scheduler scheduler = new Scheduler(_graph, 3);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 3);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         printSchedule(schedule);
     }
 

@@ -18,10 +18,10 @@ Available from August 6 2018, 12pm.
 2. Open command line
 3. Navigate to the folder containing Scheduler.jar
 4. Add the input dot file to the same level as the Scheduler.jar
-5. Run using `java -jar scheduler.jar INPUT.dot 2` where INPUT.dot is the name of the input file and 2 is the number of processors to be used for the schedule. Refer to the manual below for command line options
+5. Run using `java -jar greedyScheduler.jar INPUT.dot 2` where INPUT.dot is the name of the input file and 2 is the number of processors to be used for the schedule. Refer to the manual below for command line options
 
 ~~~~
-java -jar scheduler.jar INPUT.dot P [OPTION]
+java -jar greedyScheduler.jar INPUT.dot P [OPTION]
 INPUT.dot  a task graph with integer weights in dot format
 P          number of processors to schedule the INPUT graph on
 
