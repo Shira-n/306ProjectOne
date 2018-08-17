@@ -25,12 +25,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
  * Controller class for the MainWindow. Initialise all components on the pane.
  */
-public class Controller {
+public class Controller implements Observer {
 
 
     private SingleGraph _graph;
@@ -108,6 +110,7 @@ public class Controller {
             public void run() {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
+                scheduler.addObserver(controller);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
                 _optimalSchedule = optimalSchedule;
 
@@ -224,7 +227,7 @@ public class Controller {
             @Override
             public void run() {
                 _status.setText("Completed");
-                drawGanttChart();
+                //drawGanttChart();
             }
         });
     }
@@ -235,5 +238,16 @@ public class Controller {
         System.exit(0);
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof BranchAndBoundScheduler){
+            BranchAndBoundScheduler scheduler = (BranchAndBoundScheduler) arg;
+            if(scheduler.getCompleteState()){
+                completed(scheduler.getOptimalSchedule().getMaxWeight());
+            }else{
+                update(scheduler.getOptimalState().translate());
+            }
+        }
+    }
 }
 

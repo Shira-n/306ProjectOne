@@ -5,13 +5,16 @@ import controller.GUITimer;
 
 import java.util.*;
 
-public class BranchAndBoundScheduler {
+public class BranchAndBoundScheduler extends Observable{
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
     private Controller _controller;
     private GUITimer _timer;
+
+    private long _endTime;
+    private boolean _complete = false;
 
     private long _startTime;
 
@@ -124,15 +127,25 @@ public class BranchAndBoundScheduler {
         schedule();
 
         if (_controller!=null) {
-            _controller.completed(_optimalState.getMaxWeight());
+            //_controller.completed(_optimalState.getMaxWeight());
+            _complete = true;
             _timer.stopTimer();
             System.out.println("\nGet Schedule: Max Weight: " + _optimalState.getMaxWeight());
-            long endTime = System.currentTimeMillis();
-            System.out.println("That took " + (endTime - _startTime) + " milliseconds");
+            _endTime = System.currentTimeMillis();
+            System.out.println("That took " + (_endTime - _startTime) + " milliseconds");
+            setChanged();
+            notifyObservers(this);
         }
         return _optimalState;
     }
 
+    public State getOptimalState(){
+        return _optimalState;
+    }
+
+    public boolean getCompleteState(){
+        return _complete;
+    }
     //////////////////////////////////////AStar//////////////////////////////////////////////
     /**
      * Return the optimal state from Branch and Bound algorithm.
@@ -220,7 +233,10 @@ public class BranchAndBoundScheduler {
                 if (_controller != null) {
                     //System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
-                    _controller.update(_optimalState.translate());
+                    setChanged();
+                    notifyObservers(this);
+                    //_controller.update(_optimalState.translate());
+                    deleteObservers();
                 }
             }
         }
@@ -446,4 +462,5 @@ public class BranchAndBoundScheduler {
     public List<Node> getGraph() {
         return _graph;
     }
+
 }
