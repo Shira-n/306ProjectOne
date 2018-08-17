@@ -148,9 +148,11 @@ public class BranchAndBoundScheduler {
                         break;
                     }
                 }
+
                 // Check if node is okay to schedule
                 if (!repeated) {
                     for (Processor processor : _processors) {
+
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
                         //Prune:
