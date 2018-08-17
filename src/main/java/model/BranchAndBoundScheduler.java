@@ -135,6 +135,7 @@ public class BranchAndBoundScheduler extends Observable{
             System.out.println("That took " + (_endTime - _startTime) + " milliseconds");
             setChanged();
             notifyObservers(this);
+            deleteObservers();
         }
         return _optimalState;
     }

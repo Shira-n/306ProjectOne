@@ -227,7 +227,7 @@ public class Controller implements Observer {
             @Override
             public void run() {
                 _status.setText("Completed");
-                //drawGanttChart();
+                drawGanttChart();
             }
         });
     }
