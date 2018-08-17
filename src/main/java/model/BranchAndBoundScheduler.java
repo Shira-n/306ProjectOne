@@ -154,15 +154,22 @@ public class BranchAndBoundScheduler {
                     for (Processor processor : _processors) {
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+
                         // Pruning for normalization
+                        /**
+                         * @PROCESSOR NORMALIZATION
+                         */
                         // Check if processor is just a reflection of a previous; if so, skip iteration
                         Boolean reflectedProcessor = false;
+                        Processor p = processor;
                         for (Processor check: uniqueProcessors) {
-                            //Temporary, need to see if this doesn't cover all possibilities;
-                            if (startTime == check.getCurrentAbleToStart()) {
-                                reflectedProcessor = true;
-                                break;
-                            }
+                                p.addNodeAt(node, startTime);
+                                if (p.getCurrentAbleToStart() == check.getCurrentAbleToStart()) {
+                                    reflectedProcessor = true;
+                                    break;
+                                }
+                                unscheduleNode(node);
+
                             //@Need to implement equals method if above ^^ condition doesn't have full coverage
 //                          if (processor.equals(check)) {
 //                                reflectedProcessor = true;
@@ -173,6 +180,7 @@ public class BranchAndBoundScheduler {
                         if (reflectedProcessor) {
                             continue;
                         }
+
                         //Prune:
                         //Check the minimum potential total weight of schedules after this step.
                         //If it is greater than the current optimal schedule's weight, skip it
@@ -181,8 +189,12 @@ public class BranchAndBoundScheduler {
                             //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
                             Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
                             processor.addNodeAt(node, startTime);
+                            /**
+                             * @PROCESSOR NORMALIZATION
+                             */
                             //Current processor is unique so add it to list of processors to check for normalization
                             uniqueProcessors.add(processor);
+
                             //Include every Nodes in the original free Node set except for this scheduled Node.
                             newFreeToSchedule.addAll(freeToSchedule);
                             newFreeToSchedule.remove(node);
