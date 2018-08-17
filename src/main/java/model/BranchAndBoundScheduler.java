@@ -192,6 +192,12 @@ public class BranchAndBoundScheduler {
                     //System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
                     _controller.update(_optimalState.translate());
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch (Exception e) {
+                        //
+                    }
                 }
                 //optimalState.print();
             }

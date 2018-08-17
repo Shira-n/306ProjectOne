@@ -118,7 +118,7 @@ public class Controller {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
-                drawGanttChart(optimalSchedule);
+                //drawGanttChart(optimalSchedule);
 
             }
         };
@@ -211,6 +211,7 @@ public class Controller {
 
     }
 
+    /*
     public void drawGanttChart(State optimalState) {
         final double YAxisStart = 20;
         final double YAxisEnd = 460;
@@ -331,6 +332,7 @@ public class Controller {
         double[] size = {theText.getBoundsInLocal().getHeight(), theText.getBoundsInLocal().getWidth()};
         return size;
     }
+    */
 
     public synchronized  void setTimer(int count) {
         Platform.runLater(new Runnable() {
