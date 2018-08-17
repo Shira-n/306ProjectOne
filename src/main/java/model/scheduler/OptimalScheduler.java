@@ -155,7 +155,10 @@ public class OptimalScheduler implements Scheduler{
                 Set<String> visitedProcessor = new HashSet<>();
                 // Check if node is okay to schedule
                 if (!repeated) {
+                    Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
+/*
+                        <<<<<<< HEAD:src/main/java/model/scheduler/OptimalScheduler.java
                         boolean equivalentProcessor = false;
                         for (String s : visitedProcessor) {
                             if (s.equals(processor.toString())) {
@@ -182,6 +185,57 @@ public class OptimalScheduler implements Scheduler{
                                 //Un-schedule this Node to allow it being scheduled on next Processor.
                                 unscheduleNode(node);
                             }
+=======
+*/
+                        //Calculate the earliest Start time of this Node on this Processor.
+                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+
+                        // Pruning for normalization
+                        /**
+                         * @PROCESSOR NORMALIZATION
+                         */
+                        // Check if processor is just a reflection of a previous; if so, skip iteration
+                        Boolean reflectedProcessor = false;
+                        // make deep copy of processor
+                        Processor p = new Processor(processor);
+                        for (Processor check: uniqueProcessors) {
+                                Set<Node> temp = node.schedule(p, startTime);
+                                p.addNodeAt(node, startTime);
+                                // if (p.equals(check)) {
+                                if (p.getCurrentAbleToStart() == check.getCurrentAbleToStart()) {
+                                    reflectedProcessor = true;
+                                    unscheduleNode(node);
+                                    break;
+                                }
+                                unscheduleNode(node);
+
+                        }
+                        // skip iteration if  processor is just a reflection
+                        if (reflectedProcessor) {
+                            continue;
+                        }
+
+                        //Prune:
+                        //Check the minimum potential total weight of schedules after this step.
+                        //If it is greater than the current optimal schedule's weight, skip it
+                        //Otherwise, schedule this Node on this Processor and continue investigating.
+                        if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                            //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
+                            Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                            processor.addNodeAt(node, startTime);
+                            /**
+                             * @PROCESSOR NORMALIZATION
+                             */
+                            //Current processor is unique so make a deep copy of current state to add to list of processors to check for normalization
+                            uniqueProcessors.add(new Processor(processor));
+
+                            //Include every Nodes in the original free Node set except for this scheduled Node.
+                            newFreeToSchedule.addAll(freeToSchedule);
+                            newFreeToSchedule.remove(node);
+                            //Recursively investigating
+                            bbOptimalSchedule(newFreeToSchedule);
+                            //Un-schedule this Node to allow it being scheduled on next Processor.
+                            unscheduleNode(node);
                         }
                     }
                }
