@@ -161,20 +161,19 @@ public class BranchAndBoundScheduler {
                          */
                         // Check if processor is just a reflection of a previous; if so, skip iteration
                         Boolean reflectedProcessor = false;
-                        Processor p = processor;
+                        // make deep copy of processor
+                        Processor p = new Processor(processor);
                         for (Processor check: uniqueProcessors) {
+                                Set<Node> temp = node.schedule(p, startTime);
                                 p.addNodeAt(node, startTime);
+                                // if (p.equals(check)) {
                                 if (p.getCurrentAbleToStart() == check.getCurrentAbleToStart()) {
                                     reflectedProcessor = true;
+                                    unscheduleNode(node);
                                     break;
                                 }
                                 unscheduleNode(node);
 
-                            //@Need to implement equals method if above ^^ condition doesn't have full coverage
-//                          if (processor.equals(check)) {
-//                                reflectedProcessor = true;
-//                                break;
-//                            }
                         }
                         // skip iteration if  processor is just a reflection
                         if (reflectedProcessor) {
@@ -192,8 +191,8 @@ public class BranchAndBoundScheduler {
                             /**
                              * @PROCESSOR NORMALIZATION
                              */
-                            //Current processor is unique so add it to list of processors to check for normalization
-                            uniqueProcessors.add(processor);
+                            //Current processor is unique so make a deep copy of current state to add to list of processors to check for normalization
+                            uniqueProcessors.add(new Processor(processor));
 
                             //Include every Nodes in the original free Node set except for this scheduled Node.
                             newFreeToSchedule.addAll(freeToSchedule);
