@@ -13,134 +13,171 @@ import java.util.List;
 import java.util.Map;
 
 public class GanttChart {
-    final double YAxisStart = 20;
-    final double YAxisEnd = 460;
-    final double XAxisStart = 80;
-    final double XAxisEnd = 680;
+    final double _YAxisStart = 20;
+    final double _YAxisEnd = 460;
+    final double _XAxisStart = 80;
+    final double _XAxisEnd = 680;
 
-    double _totalHeight;
-    double _totalWidth;
+    final double _totalHeight;
+    final double _totalWidth;
 
     double _horizontalUnit;
     double _verticalUnit;
 
-    final State _optimalState;
-    int _numProcessors;
-    List<Node> _nodes;
+    final int _numProcessors;
+    final List<Node> _nodes;
+    final Group _root;
+    final Map<String, String[]> _schedule;
 
-
+    final Color _lineColor = Color.WHITE;
 
     public GanttChart(State optimalState, int numProcessor, List<Node> nodes){
-        _optimalState = optimalState;
         _numProcessors = numProcessor;
         _nodes = nodes;
+        _schedule = optimalState.translate();
+
+        _totalHeight = _YAxisEnd - _YAxisStart;
+        _totalWidth = _XAxisEnd - _XAxisStart;
+
+        _root = new Group();
     }
 
-    public Group create(){
-        Group root = new Group();
+
+
+    public Group createGraph(){
+        calculateFinishTimeAndUnits();
+        drawAxis();
+        drawNodes();
+        drawLabels();
+        return _root;
+    }
+
+    public void calculateFinishTimeAndUnits(){
         int finishTime = 0;
-        Color lineColor = Color.BLACK;
-        int numberOfProcessors = _numProcessors;
-
-        Map<String, String[]> schedule = _optimalState.translate();
-
         for (Node node : _nodes) {
-            int startTime = Integer.parseInt(schedule.get(node.getId())[1]);
+            int startTime = Integer.parseInt(_schedule.get(node.getId())[1]);
             if (finishTime < startTime + node.getWeight()) {
                 finishTime = startTime + node.getWeight();
             }
         }
 
-        //draw Axis
-        Line verticalLine = new Line(XAxisStart, YAxisStart, XAxisStart, YAxisEnd);
-        verticalLine.setStroke(lineColor);
-        Line horizontalLine = new Line(XAxisStart, YAxisEnd, XAxisEnd, YAxisEnd);
-        horizontalLine.setStroke(lineColor);
-        root.getChildren().addAll(verticalLine, horizontalLine);
-
-        _totalHeight = YAxisEnd - YAxisStart;
-        _totalWidth = XAxisEnd - XAxisStart;
-
         _horizontalUnit = _totalWidth / (double) finishTime;
         _verticalUnit = _totalHeight / (double) (1 + 3 * _numProcessors);
 
-        //draw vertical lines for viewing time on chart
-        for (int i = 0; i <= finishTime; i++) {
-            Line _line = new Line(i * _horizontalUnit + XAxisStart, YAxisEnd, i * _horizontalUnit + XAxisStart, YAxisEnd + 5);
+        drawVerticalLines(finishTime);
+    }
+
+    private void drawVerticalLines(int finishTime){
+        int incrementValue = finishTime/25;
+        for (int i = 0; i <= finishTime; i = i + incrementValue) {
+
+            double xValueStart = i * _horizontalUnit + _XAxisStart;
+            double xValueEnd = i * _horizontalUnit + _XAxisStart;
+
+            // draw lines on axis to indicate time
+            Line axisLine = new Line(xValueStart, _YAxisEnd, xValueEnd, _YAxisEnd + 5);
             if (i % 5 != 0) {
-                _line.setStrokeWidth(0.5);
+                axisLine.setStrokeWidth(0.5);
             }
-            Label _label = new Label(Integer.toString(i));
+            axisLine.setStroke(_lineColor);
 
-            double width = (fontSize(_label))[1];
+            //draw labels for axis
+            Label numberLabel = new Label(Integer.toString(i));
+            double width = (fontSize(numberLabel))[1];
+            numberLabel.setLayoutX(i * _horizontalUnit + _XAxisStart - width / 2);
+            numberLabel.setLayoutY(_YAxisEnd + 5);
+            numberLabel.setTextFill(_lineColor);
 
-            _label.setLayoutX(i * _horizontalUnit + XAxisStart - width / 2);
-            _label.setLayoutY(YAxisEnd + 5);
+            //draw dotted lines for axis
+            Line dottedLine = new Line(xValueStart, _YAxisStart, xValueEnd, _YAxisEnd);
+            dottedLine.getStrokeDashArray().addAll(2d);
+            dottedLine.setStrokeWidth(0.2);
+            dottedLine.setStroke(_lineColor);
 
-            Line line5 = new Line(i * _horizontalUnit + XAxisStart, YAxisStart, i * _horizontalUnit + XAxisStart, YAxisEnd);
-            line5.getStrokeDashArray().addAll(2d);
-            line5.setStrokeWidth(0.2);
-
-            root.getChildren().addAll(_line, _label, line5);
+            _root.getChildren().addAll(axisLine, numberLabel, dottedLine);
         }
+    }
 
+    /**
+     * Draws Axis on chart
+     */
+    private void drawAxis(){
+        //draw Axis
+        Line verticalLine = new Line(_XAxisStart, _YAxisStart, _XAxisStart, _YAxisEnd);
+        verticalLine.setStroke(_lineColor);
+
+        Line horizontalLine = new Line(_XAxisStart, _YAxisEnd, _XAxisEnd, _YAxisEnd);
+        horizontalLine.setStroke(_lineColor);
+
+        _root.getChildren().addAll(verticalLine, horizontalLine);
+    }
+
+    public void drawNodes(){
         //draw nodes and labels
         for (Node node : _nodes) {
-            int processor = Integer.parseInt(schedule.get(node.getId())[0]);
-            int startTime = Integer.parseInt(schedule.get(node.getId())[1]);
-            //double startHeight = VerticalUnit+3*(i-1)*VerticalUnit+YAxisStart;
-            double startHeight = _verticalUnit+3*(processor-1)*_verticalUnit+YAxisStart;
-            Rectangle rectangle = new Rectangle((startTime*_horizontalUnit)+XAxisStart, startHeight, node.getWeight()*_horizontalUnit, 2*_verticalUnit);
-            rectangle.setStroke(Color.WHITE);
+            int processor = Integer.parseInt(_schedule.get(node.getId())[0]);
+            int startTime = Integer.parseInt(_schedule.get(node.getId())[1]);
+
+            double startY = _verticalUnit+3*(processor-1)*_verticalUnit+ _YAxisStart;
+            double startX = startTime*_horizontalUnit + _XAxisStart;
+            double width = node.getWeight()*_horizontalUnit;
+
+            Rectangle rectangle = new Rectangle(startX, startY, width, 2*_verticalUnit);
+            rectangle.setStroke(_lineColor);
 
             Label label = new Label(node.getId());
-            double height = (fontSize(label))[0];
-            double width = (fontSize(label))[1];
-
-            label.setLayoutX((startTime*_horizontalUnit)+XAxisStart+(_horizontalUnit*node.getWeight())/2-width/2);
-            label.setLayoutY(startHeight+0.5*_verticalUnit+height+height/3);
+            double fontHeight = (fontSize(label))[0];
+            double fontWidth = (fontSize(label))[1];
+            label.setLayoutX(startX + (width)/2 - fontWidth/2);
+            label.setLayoutY(startY + 0.5*_verticalUnit + fontHeight + fontHeight/3);
             label.setTextFill(Color.WHITE);
 
             if(startTime!=0) {
                 Label alabel = new Label(Integer.toString(startTime));
-                height = (fontSize(alabel))[0];
-                width = (fontSize(alabel))[1];
-                alabel.setLayoutX(startTime * _horizontalUnit + XAxisStart - width / 2);
-                alabel.setLayoutY(startHeight - height);
-                root.getChildren().add(alabel);
+                fontHeight = (fontSize(alabel))[0];
+                fontWidth = (fontSize(alabel))[1];
+                alabel.setLayoutX(startX - fontWidth / 2);
+                alabel.setLayoutY(startY - fontHeight);
+                alabel.setTextFill(_lineColor);
+                _root.getChildren().add(alabel);
             }
+
             boolean repeat = false;
-            for(String[] node1: schedule.values()) {
+            for(String[] node1: _schedule.values()) {
                 if (startTime + node.getWeight()==Integer.parseInt(node1[1])){
-                    repeat=true;
+                    repeat = true;
                 }
             }
+
             if(!repeat){
                 Label blabel = new Label(Integer.toString(startTime + node.getWeight()));
-                height = (fontSize(blabel))[0];
-                width = (fontSize(blabel))[1];
-                blabel.setLayoutX((startTime + node.getWeight()) * _horizontalUnit + XAxisStart - width / 2);
-                blabel.setLayoutY(startHeight - height);
-                root.getChildren().add(blabel);
+                fontHeight = (fontSize(blabel))[0];
+                fontWidth = (fontSize(blabel))[1];
+                blabel.setLayoutX(startX + width - fontWidth / 2);
+                blabel.setLayoutY(startY - fontHeight);
+                blabel.setTextFill(_lineColor);
+                _root.getChildren().add(blabel);
             }
 
-            root.getChildren().addAll(rectangle, label);
+            _root.getChildren().addAll(rectangle, label);
         }
+    }
 
+    private void drawLabels(){
         //draw labels for processors
-        for (int i = 0; i < numberOfProcessors; i++) {
-            double startHeight = _verticalUnit+3*(i)*_verticalUnit+YAxisStart;
+        for (int i = 0; i < _numProcessors; i++) {
+            double startHeight = _verticalUnit+3*(i)*_verticalUnit+ _YAxisStart;
 
             Label label = new Label("Processor " + (Integer.toString(i+1)));
 
             double height = (fontSize(label))[0];
 
-            label.setLayoutX(XAxisStart-70);
+            label.setLayoutX(_XAxisStart - 70);
             label.setLayoutY(startHeight+0.5*_verticalUnit+height+height/3);
+            label.setTextFill(_lineColor);
 
-            root.getChildren().add(label);
+            _root.getChildren().add(label);
         }
-        return root;
     }
 
     private double[] fontSize(Label label) {
