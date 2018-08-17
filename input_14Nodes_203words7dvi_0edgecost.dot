@@ -1,0 +1,34 @@
+digraph example {
+    a [Weight=12];
+    b [Weight=3];
+    c [Weight=6];
+    d [Weight=9];
+    e [Weight=14];
+    f [Weight=6];
+    g [Weight=8];
+    h [Weight=5];
+    j [Weight=20];
+    k [Weight=15];
+    l [Weight=10];
+    m [Weight=16];
+    n [Weight=12];
+    p [Weight=7];
+    a -> d [Weight=0];
+    b -> d [Weight=0];
+    b -> f [Weight=0];
+    c -> e [Weight=0];
+    c -> f [Weight=0];
+    d -> g [Weight=0];
+    e -> g [Weight=0];
+    e -> h [Weight=0];
+    f -> h [Weight=0];
+    g -> k [Weight=0];
+    g -> m [Weight=0];
+    h -> l [Weight=0];
+    h -> m [Weight=0];
+    k -> n [Weight=0];
+    k -> p [Weight=0];
+    l -> n [Weight=0];
+    m -> n [Weight=0];
+    m -> p [Weight=0];
+}

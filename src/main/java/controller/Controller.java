@@ -9,10 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.BranchAndBoundScheduler;
 import model.State;
@@ -27,12 +25,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
  * Controller class for the MainWindow. Initialise all components on the pane.
  */
-public class Controller {
+public class Controller implements Observer {
 
 
     private SingleGraph _graph;
@@ -49,6 +49,7 @@ public class Controller {
 
     private GUITimer _timer;
 
+    private State _optimalSchedule;
     @FXML
     private Pane _graphPane;
 
@@ -82,8 +83,6 @@ public class Controller {
     @FXML
     private SwingNode _swingNode;
 
-
-
     @FXML
     public void initialize() {
         _nodes = GUIEntry.getNodes();
@@ -98,12 +97,6 @@ public class Controller {
 
         initGraph();
 
-
-
-
-
-
-
     }
 
 
@@ -117,8 +110,13 @@ public class Controller {
             public void run() {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
+                scheduler.addObserver(controller);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
+<<<<<<< HEAD
                 //drawGanttChart(optimalSchedule);
+=======
+                _optimalSchedule = optimalSchedule;
+>>>>>>> cd675ecc50b29d335aa89401d063f51381245dc4
 
             }
         };
@@ -211,6 +209,7 @@ public class Controller {
 
     }
 
+<<<<<<< HEAD
     /*
     public void drawGanttChart(State optimalState) {
         final double YAxisStart = 20;
@@ -331,6 +330,13 @@ public class Controller {
         theText.setFont(label.getFont());
         double[] size = {theText.getBoundsInLocal().getHeight(), theText.getBoundsInLocal().getWidth()};
         return size;
+=======
+    public void drawGanttChart() {
+        GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes);
+        _ganttPane.getChildren().add(chart.createGraph());
+        _ganttPane.setBackground(Background.EMPTY);
+        _ganttPane.setVisible(true);
+>>>>>>> cd675ecc50b29d335aa89401d063f51381245dc4
     }
     */
 
@@ -349,6 +355,7 @@ public class Controller {
             @Override
             public void run() {
                 _status.setText("Completed");
+                drawGanttChart();
             }
         });
     }
@@ -359,5 +366,16 @@ public class Controller {
         System.exit(0);
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof BranchAndBoundScheduler){
+            BranchAndBoundScheduler scheduler = (BranchAndBoundScheduler) arg;
+            if(scheduler.getCompleteState()){
+                completed(scheduler.getOptimalSchedule().getMaxWeight());
+            }else{
+                update(scheduler.getOptimalState().translate());
+            }
+        }
+    }
 }
 
