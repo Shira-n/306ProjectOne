@@ -1,0 +1,25 @@
+digraph "test" {
+	0	 [Weight=108];
+	2	 [Weight=76];
+	0 -> 2	 [Weight=9];
+	3	 [Weight=43];
+	0 -> 3	 [Weight=9];
+	4	 [Weight=76];
+	0 -> 4	 [Weight=7];
+	1	 [Weight=65];
+	5	 [Weight=87];
+	2 -> 5	 [Weight=2];
+	6	 [Weight=76];
+	3 -> 6	 [Weight=9];
+	8	 [Weight=76];
+	4 -> 8	 [Weight=3];
+	9	 [Weight=97];
+	4 -> 9	 [Weight=5];
+	5 -> 1	 [Weight=3];
+	6 -> 1	 [Weight=8];
+	7	 [Weight=76];
+	7 -> 1	 [Weight=10];
+	8 -> 7	 [Weight=10];
+	9 -> 7	 [Weight=3];
+}
+

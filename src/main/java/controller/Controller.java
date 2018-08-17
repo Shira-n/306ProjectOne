@@ -97,12 +97,6 @@ public class Controller {
 
         initGraph();
 
-
-
-
-
-
-
     }
 
 
@@ -211,6 +205,10 @@ public class Controller {
     }
 
     public void drawGanttChart(State optimalState) {
+        GanttChart chart = new GanttChart(optimalState, Integer.parseInt(_numProcessor.getText()), _nodes);
+        _ganttPane.getChildren().add(chart.create());
+        _ganttPane.setVisible(true);
+        /*
         final double YAxisStart = 20;
         final double YAxisEnd = 460;
         final double XAxisStart = 80;
@@ -322,6 +320,7 @@ public class Controller {
         }
 
         _ganttPane.setVisible(true);
+        */
     }
 
     private double[] fontSize(Label label) {
