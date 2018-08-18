@@ -1,5 +1,7 @@
 package model.scheduler;
 
+import controller.Controller;
+import controller.GUIEntry;
 import model.Node;
 import model.State;
 import model.Processor;
@@ -12,8 +14,12 @@ public class OptimalScheduler implements Scheduler{
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
+    private Controller _controller;
+
     public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
         //_graph = topologicalSort(graph);
+        _controller = GUIEntry.getController();
+
         _graph = graph;
         _freeToSchedule = findEntries(graph);
         //Calc bottom weight
@@ -249,9 +255,16 @@ public class OptimalScheduler implements Scheduler{
             }
             if (max < optimalState.getMaxWeight()){
                 _optimalState = new State(_processors);
+                _controller.update(_optimalState.translate());
                 //optimalState.print();
             }
         }
+        //update GUI state to complete if there is visualisation
+        if(_controller != null) {
+            _controller.completed();
+        }
+
+        System.out.println("completed");
         return _optimalState;
     }
 

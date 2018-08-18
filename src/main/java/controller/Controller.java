@@ -1,6 +1,7 @@
 package controller;
 
 
+import application.Main;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.tilesfx.Tile;
@@ -17,8 +18,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import model.BranchAndBoundScheduler;
 import model.State;
+import model.scheduler.Scheduler;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -28,6 +29,7 @@ import org.hyperic.sigar.SigarException;
 
 
 import javax.management.ObjectName;
+import javax.script.ScriptException;
 import javax.swing.*;
 
 import java.awt.*;
@@ -35,6 +37,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 
 /**
@@ -62,6 +67,8 @@ public class Controller{
     private Gauge _gauge;
 
     private Tile _tile;
+
+    private FutureTask _futureTask;
 
     private ChartData _data1 = new ChartData("D1",0,Tile.LIGHT_GREEN);
     private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
@@ -137,7 +144,7 @@ public class Controller{
                 .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
                 .prefHeight(200)
                 .prefWidth(200)
-                .unit("UNIT")
+                .unit("%")
                 .chartData(_data1,_data2,_data3,_data4)
                 .animated(true)
                 .value(20)
@@ -167,19 +174,17 @@ public class Controller{
         _timer.startTimer();
         _ganttPane.setVisible(false);
         Controller controller = this;
-        Thread thread = new Thread() {
-            public void run() {
+        Scheduler scheduler = GUIEntry.getScheduler();
+        Callable task = new Callable() {
+            @Override
+            public State call() throws ScriptException {
                 System.out.print("IN THREAD");
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
-                model.State optimalSchedule = scheduler.getOptimalSchedule();
-
-                //drawGanttChart(optimalSchedule);
-
-                _optimalSchedule = optimalSchedule;
-
+                return scheduler.getSchedule();
             }
         };
-        thread.start();
+        _futureTask = new FutureTask<State>(task);
+        Thread algorithmThread = new Thread(_futureTask);
+        algorithmThread.start();
     }
 
     /**
@@ -306,7 +311,7 @@ public class Controller{
 
     }
 
-    public synchronized void completed(int maxWeight) {
+    public synchronized void completed() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -314,6 +319,15 @@ public class Controller{
                 //drawGanttChart();
             }
         });
+        try {
+            State state = (State)_futureTask.get();
+            Main.writeResult(state);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }catch (ExecutionException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -321,6 +335,7 @@ public class Controller{
         Platform.exit();
         System.exit(0);
     }
+
 
 }
 

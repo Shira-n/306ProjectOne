@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.management.OperatingSystemMXBean;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
 import javafx.application.Platform;
@@ -8,8 +9,8 @@ import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
+
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,8 +29,8 @@ public class SystemInfoVisualisation extends Thread {
         super();
         _controller = controller;
         _timer = new Timer();
-        _bean = ManagementFactory.getOperatingSystemMXBean();
-    }
+        _bean = ManagementFactory.getPlatformMXBean(com.sun.management.OperatingSystemMXBean.class);
+}
 
     @Override
     public void run() {
@@ -38,7 +39,7 @@ public class SystemInfoVisualisation extends Thread {
                                       public void run() {
                                           Platform.runLater(() ->
                                           {
-                                              double newcpu = _bean.getSystemLoadAverage();
+                                              double newcpu = _bean.getProcessCpuLoad() * 100;
                                               cpu1 = cpu2;
                                               cpu2 = cpu3;
                                               cpu3 = cpu4;
@@ -47,7 +48,7 @@ public class SystemInfoVisualisation extends Thread {
                                           });
                                       }
                                   },
-                100, 1000);
+                10, 100);
     }
 
     public void stopTimer() {

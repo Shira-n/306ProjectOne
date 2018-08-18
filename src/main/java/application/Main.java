@@ -24,6 +24,7 @@ public class Main {
     private static String _outputFile = "-output.dot";
     private static String _inputFile;
     private static DotFileAdapter _reader;
+    private static List<Node> _graph;
     //By default the execution run sequentially on one core.
 
     private static int _noOfThreads = 1;
@@ -50,10 +51,7 @@ public class Main {
             _noOfProcessors = Integer.parseInt(args[1]);
             //Read optional arguments to decide visualisation, parallelization, customized output filename
             ReadOptionalArgs(args);
-
-
-
-
+            _graph = _reader.getData();
 
             if (_noOfThreads > 1){ //Multithreading
                 _scheduler = getParallelScheduler();
@@ -63,10 +61,18 @@ public class Main {
 
             //TODO GUI option here
             if (_visualisation) {
-                GUIEntry entry = new GUIEntry(graph,"S", _noOfProcessors, false);
+                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, false);
+            }
+            else {
+                _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
             }
 
-            _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
+
+
+
+
+
+
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
             System.exit(1);
@@ -170,8 +176,20 @@ public class Main {
         return new ParaTest(_noOfThreads, graphs, _noOfProcessors);
     }
 
-    private static Scheduler getSequentialScheduler() throws FileNotFoundException {
-        List<Node> graph = _reader.getData();
-        return new OptimalScheduler(graph, _noOfProcessors);
+    private static Scheduler getSequentialScheduler() {
+        return new OptimalScheduler(_graph, _noOfProcessors);
+    }
+
+    public static Scheduler getScheduler() {
+        return _scheduler;
+    }
+
+    public static void writeResult(State state) {
+        try {
+            _reader.writeOptimalSchedule(state, _outputFile);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

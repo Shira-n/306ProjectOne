@@ -2,6 +2,7 @@ package controller;
 
 import javafx.application.Application;
 import model.Node;
+import model.scheduler.Scheduler;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
@@ -21,12 +22,14 @@ public class GUIEntry {
     private static SingleGraph _graph = new SingleGraph("graph");
     private static Controller _controller;
     private static GUITimer _timer;
+    private static Scheduler _scheduler;
 
-    public GUIEntry(List<Node> nodes, String filename, int numProcessor, boolean parallelised) {
+    public GUIEntry(List<Node> nodes, Scheduler scheduler, String filename, int numProcessor, boolean parallelised) {
         _nodes = nodes;
         _filename = filename;
         _numProcessor = numProcessor;
         _parallelised = parallelised;
+        _scheduler = scheduler;
         createGraph();
 
         _timer = new GUITimer();
@@ -73,6 +76,10 @@ public class GUIEntry {
 
     public static GUITimer getTimer() {
         return _timer;
+    }
+
+    public static Scheduler getScheduler() {
+        return _scheduler;
     }
 
     //TODO
