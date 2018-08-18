@@ -11,6 +11,7 @@ import java.util.Map;
 
 import model.*;
 import model.scheduler.OptimalScheduler;
+import model.scheduler.ParaTest;
 import model.scheduler.ParallelScheduler;
 import model.scheduler.Scheduler;
 
@@ -152,15 +153,11 @@ public class Main {
     }
 
     private static Scheduler getParallelScheduler() throws FileNotFoundException {
-        Map<Integer, ParallelThread> threads = new HashMap<>();
-        List<List<Node>> graphs = new ArrayList<>();
-        for (int i = 0; i <_noOfThreads - 1;i++) {
-            ParallelThread thread = new ParallelThread(i);
-            threads.put(i, thread);
-            graphs.add(_reader.getUniqueData());
+        List<Map<String, Node>> graphs = new ArrayList<>();
+        for (int i = 0; i <_noOfThreads; i++) {
+            graphs.add(_reader.getMap());
         }
-        graphs.add(_reader.getUniqueData());
-        return new ParallelScheduler(threads, graphs, _noOfProcessors);
+        return new ParaTest(_noOfThreads, graphs, _noOfProcessors);
     }
 
     private static Scheduler getSequentialScheduler() throws FileNotFoundException {

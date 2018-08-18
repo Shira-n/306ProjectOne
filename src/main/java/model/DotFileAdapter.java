@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.*;
 
 public class  DotFileAdapter {
-	private List<Node> _data = new ArrayList<>();
+	//private List<Node> _data = new ArrayList<>();
 	private String[] _words;
 	private File _inputFile;
 
-	public DotFileAdapter(String inputPath) throws FileNotFoundException {
-		_data = readGraph();
+	public DotFileAdapter(String inputPath){
+		//_data = readGraph();
 		_inputFile = new File(inputPath);
 	}
 
@@ -87,25 +87,38 @@ public class  DotFileAdapter {
 		return  data;
 	}
 
-	public void writeGreedySchedule(Map<String, Node> scheduledNodes, String outputPath) throws IOException{
-		File file = new File(outputPath);
-		FileWriter fw = new FileWriter(file);
+
+	private Map<String, Node> readMap() throws FileNotFoundException {
+		Map<String, Node> map = new HashMap<>();
 		Scanner sc = new Scanner(_inputFile);
-		String processLine, node, weight, start, processor;
-		while (sc.hasNext()){
-			processLine = sc.nextLine();
-			if (processLine.contains("Weight=") && !processLine.contains("->")){
-				node = processLine.split(" ")[0].trim();
-				weight = " [Weight=" + scheduledNodes.get(node).getWeight() + ",";
-				start = "Start=" + scheduledNodes.get(node).getStartTime() + ",";
-				processor =  "Processor=" + scheduledNodes.get(node).getProcessor().getID() + "];";
-				processLine = processLine.split(" ")[0] + weight + start + processor;
+		String read, parent, child, weight;
+		while (sc.hasNextLine()) {
+			read = sc.nextLine();
+			if (read.toLowerCase().contains("weight=")) {
+				if (read.toLowerCase().contains("->")) {
+					//Edges
+					parent = read.split("->")[0].trim();
+					child = read.split("->")[1].trim().split("\\[")[0].trim();
+					weight = read.split("=")[1].split("]")[0].trim();
+					map.get(parent).addParent(map.get(child), Integer.parseInt(weight));
+				}else{
+					//Nodes
+					parent = read.split("\\[")[0].trim();
+					weight = read.split("=")[1].split("]")[0].trim();
+					map.put(parent, new Node(Integer.parseInt(weight), parent));
+				}
 			}
-			fw.write(processLine + "\n");
-			fw.flush();
 		}
-		fw.close();
 		sc.close();
+		return  map;
+	}
+
+	public List<Node> getData() throws FileNotFoundException {
+		return readGraph();
+	}
+
+	public Map<String, Node> getMap() throws FileNotFoundException {
+		return readMap();
 	}
 
 	public void writeOptimalSchedule(State optimalState, String outputPath) throws IOException {
@@ -131,12 +144,28 @@ public class  DotFileAdapter {
 		sc.close();
 	}
 
-	public List<Node> getData(){
-		return _data;
-	}
-
-	public List<Node> getUniqueData() throws FileNotFoundException {
-		return readGraph();
+	/**
+	 * Used in Basic milestone
+	 */
+	public void writeGreedySchedule(Map<String, Node> scheduledNodes, String outputPath) throws IOException{
+		File file = new File(outputPath);
+		FileWriter fw = new FileWriter(file);
+		Scanner sc = new Scanner(_inputFile);
+		String processLine, node, weight, start, processor;
+		while (sc.hasNext()){
+			processLine = sc.nextLine();
+			if (processLine.contains("Weight=") && !processLine.contains("->")){
+				node = processLine.split(" ")[0].trim();
+				weight = " [Weight=" + scheduledNodes.get(node).getWeight() + ",";
+				start = "Start=" + scheduledNodes.get(node).getStartTime() + ",";
+				processor =  "Processor=" + scheduledNodes.get(node).getProcessor().getID() + "];";
+				processLine = processLine.split(" ")[0] + weight + start + processor;
+			}
+			fw.write(processLine + "\n");
+			fw.flush();
+		}
+		fw.close();
+		sc.close();
 	}
 
 }

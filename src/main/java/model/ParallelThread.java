@@ -1,11 +1,24 @@
 package model;
 
+import java.util.List;
+import java.util.Map;
+
 public class ParallelThread extends Thread{
     private int _parallelId;
+    private Map<String, Node> _graph;
+    private Map<Integer, Processor> _processors;
+
     private Runnable _parallelRunnable;
 
-    public ParallelThread(int id) {
+    //Parameters: assigned Node list and Processor list
+    public ParallelThread(int id, List<Node> graph, List<Processor> processors) {
         _parallelId = id;
+        for (Node node : graph){
+            _graph.put(node.getId(), node);
+        }
+        for (Processor processor : processors){
+            _processors.put(processor.getID(), processor);
+        }
     }
 
     public int getParallelId() {
@@ -20,4 +33,7 @@ public class ParallelThread extends Thread{
     public void run(){
         _parallelRunnable.run();
     }
+
+
+
 }

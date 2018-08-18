@@ -5,7 +5,7 @@ import model.*;
 import java.util.*;
 
 public class ParallelScheduler implements Scheduler{
-    private List<List<Node>>  _graphs;
+    private List<List<Node>> _graphs;
     private List<List<Processor>> _processors;
     private Map<Integer, ParallelThread> _threads;
     private List<ParallelThread> _freeThreads;
@@ -49,7 +49,7 @@ public class ParallelScheduler implements Scheduler{
             //Calculate equivalent nodes
             for (Node parent : node.getParents().keySet()) {
                 for (Node sibling : parent.getChildren().keySet()) {
-                    if (node.equals(sibling) && internalOrderingCheck(node, sibling) && node.isEquivalent(sibling)) {
+                    if (!node.equals(sibling) && node.isEquivalent(sibling)) {
                         node.addEquivalentNode(sibling);
                     }
                 }
@@ -113,10 +113,12 @@ public class ParallelScheduler implements Scheduler{
     }
 
 
-    private void test(){
+    private void test(Set<Node> freeToSchedule){
         //
+        while (!freeToSchedule.isEmpty()){
 
 
+        }
     }
 
 
@@ -231,37 +233,6 @@ public class ParallelScheduler implements Scheduler{
             }
         }
         return limit;
-    }
-
-
-    /**
-     * Return true if two nodes are exchangable, false otherwise.
-     */
-    private boolean internalOrderingCheck(Node node, Node visited){
-        //The number of parents and children of them must be the same
-        if (node.getParents().keySet().size() != visited.getParents().keySet().size()
-                || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
-            return false;
-        }
-
-        for (Node parent : node.getParents().keySet()){
-            if (visited.getParents().keySet().contains(parent) &&
-                    node.getPathWeightToParent(parent) == visited.getPathWeightToParent(parent)){
-                ;
-            }else{ //The communication cost for every parent has to be the same for both nodes
-                return false;
-            }
-        }
-
-        for (Node child : node.getChildren().keySet()){
-            if (visited.getChildren().keySet().contains(child) &&
-                    node.getPathWeightToChild(child) != visited.getPathWeightToParent(child)){
-                ;
-            }else{ //The communication cost for every child has to be the same for both nodes
-                return false;
-            }
-        }
-        return true;
     }
 
 
