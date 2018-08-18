@@ -234,14 +234,8 @@ public class BranchAndBoundScheduler{
                 if (_controller != null) {
                     System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
-<<<<<<< HEAD
-          setChanged();
-                    notifyObservers(this);
-                    //_controller.update(_optimalState.translate());
-                    deleteObservers();
-=======
+
                     _controller.update(_optimalState.translate());
->>>>>>> c46f8bb2db5f018c9ea823ff87acdd23245a89aa
                 }
             }
         }
