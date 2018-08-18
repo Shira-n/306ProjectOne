@@ -57,6 +57,7 @@ public class Main {
                 _scheduler = getParallelScheduler();
             }else{
                 _scheduler = getSequentialScheduler();
+                System.out.println("get sequential scheduler");
             }
 
             //TODO GUI option here
