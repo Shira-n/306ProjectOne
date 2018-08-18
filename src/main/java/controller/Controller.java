@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
@@ -70,7 +71,7 @@ public class Controller{
 
     private FutureTask _futureTask;
 
-    private ChartData _data1 = new ChartData("D1",0,Tile.LIGHT_GREEN);
+    private ChartData _data1 = new ChartData("D1",0,Tile.GRAY);
     private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
     private ChartData _data3 = new ChartData("D3",0,Tile.LIGHT_GREEN);
     private ChartData _data4 = new ChartData("D4",40,Tile.LIGHT_GREEN);
@@ -142,25 +143,20 @@ public class Controller{
 
         _tile = TileBuilder.create()
                 .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
-                .prefHeight(200)
-                .prefWidth(200)
+                .maxHeight(180)
+                .minWidth(300)
                 .unit("%")
                 .chartData(_data1,_data2,_data3,_data4)
                 .animated(true)
                 .value(20)
+                .title("CPU Usage")
+                .barColor(javafx.scene.paint.Color.rgb(255,255,255))
+                .backgroundColor(javafx.scene.paint.Color.rgb(0,0,0,0))
                 .build();
 
-
-
-
-        OperatingSystemMXBean bean = ManagementFactory
-                .getOperatingSystemMXBean();
-
-        OperatingSystemMXBean b = ManagementFactory.getOperatingSystemMXBean();
-
-        double cpu = b.getSystemLoadAverage();
-
         _dataPane.getChildren().add(_tile);
+
+        _tile.setPadding(new Insets(20,0,0,30));
 
         info.run();
     }
