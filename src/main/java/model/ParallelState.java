@@ -14,9 +14,11 @@ public class ParallelState extends State {
         _max = 0;
         _bottomWeight = 0;
         //System.out.print("Free Nodes at this state are: ");
-        for (String id : freeToStart){
-            _freeToScheduleId.add(id);
-            //System.out.print(" " + n.getId());
+        if (freeToStart != null){
+            for (String id : freeToStart){
+                _freeToScheduleId.add(id);
+                //System.out.print(" " + n.getId());
+            }
         }
         //System.out.println(" ");
         for (Processor p : schedule){

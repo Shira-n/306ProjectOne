@@ -144,7 +144,7 @@ public class ParaTest implements Scheduler {
     @Override
     public State getSchedule() {
         try {
-            paraSchedule();
+            paraSchedule(_freeToSchedule);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -155,13 +155,13 @@ public class ParaTest implements Scheduler {
     }
 
 
-    private void paraSchedule() throws InterruptedException, ExecutionException {
+    private void paraSchedule(Set<String> freeNodeId) throws InterruptedException, ExecutionException {
         List<Processor> processors = _processors.get(MAIN_THREAD_ID);
         Map<String, Node> graph = _graphs.get(MAIN_THREAD_ID);
-        Set<Node> freeToSchedule = getNodes(_freeToSchedule, MAIN_THREAD_ID);
+        Set<Node> freeToSchedule = getNodes(freeNodeId, MAIN_THREAD_ID);
 
         //When not all the possible schedules have been explored
-        if (!_freeToSchedule.isEmpty()) {
+        if (!freeToSchedule.isEmpty()) {
             List<ParallelState> states = new ArrayList<>();
 
             //Create tasks for every thread
@@ -173,7 +173,7 @@ public class ParaTest implements Scheduler {
                     if (!equivalentNode(node, uniqueNodes)) {
                         uniqueNodes.add(node);
 
-                        List<Processor> uniqueProcessors = new ArrayList<>();
+                        Set <Processor> uniqueProcessors = new HashSet<>();
                         for (Processor processor : processors){
                             int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
                             if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)){
@@ -199,6 +199,7 @@ public class ParaTest implements Scheduler {
                                             Callable<ParallelState> callable = () -> {
                                                 return branchAndBoundScheduleParallel(thread, state);
                                             };
+
                                             callables.add(callable);
                                         }
 
@@ -210,11 +211,14 @@ public class ParaTest implements Scheduler {
                                             }
                                         }
                                     }
-                                    states.clear();
                                 }
                             }
                         }
                     }
+                }
+                for (ParallelState state: states){
+                    Set<String> temp  = state.rebuild(_graphs.get(MAIN_THREAD_ID), _processors.get(MAIN_THREAD_ID));
+                    paraSchedule(temp);
                 }
             }
         }
@@ -232,6 +236,7 @@ public class ParaTest implements Scheduler {
 
         ParallelState optimalState = new ParallelState();
 
+
         if (freeToSchedule.size() > 0) {
             Set<Node> uniqueNodes = new HashSet<>();
             for (Node node : freeToSchedule) {
@@ -243,10 +248,10 @@ public class ParaTest implements Scheduler {
                     for (Processor processor: _processors.get(threadId)){
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
                         //Check equivalent Processors
-                        if (!equivalentProcessor(processor, _processors.get(threadId), node, startTime)){
+                        if (!equivalentProcessor(processor,uniqueProcessors, node, startTime)){
                             uniqueProcessors.add(processor);
 
-                            if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                            if (node.getBottomWeight() + startTime <= optimalState.getMaxWeight()) {
                                 //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
                                 Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
                                 processor.addNodeAt(node, startTime);
@@ -269,7 +274,7 @@ public class ParaTest implements Scheduler {
                 max = Math.max(max, processor.getCurrentAbleToStart());
             }
             if (max < optimalState.getMaxWeight()){
-                _optimalState = new ParallelState(processors, null);
+                optimalState = new ParallelState(processors, null);
                 //optimalState.print();
             }
         }
@@ -495,12 +500,15 @@ public class ParaTest implements Scheduler {
         return false;
     }
 
-    private boolean equivalentProcessor(Processor processor, List<Processor> uniqueProcessors, Node node, int startTime){
+    private boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
         int anotherStartTime;
         for (Processor uniqueProcessor : uniqueProcessors){
             //Calculate the earliest Start time of this Node on this Processor.
             anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), infulencedByParents(uniqueProcessor, node));
             if (anotherStartTime == startTime && processor.toString().equals(uniqueProcessor.toString())){
+                System.out.println("Node "+ node.getId() + " is the same when schedule at " +  startTime );
+                System.out.println("P" + processor.getID() + ": " + processor);
+                System.out.println("P" + uniqueProcessor.getID() + ": " +  uniqueProcessor);
                 return true;
             }
         }
