@@ -3,6 +3,9 @@ package controller;
 
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
+import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -24,13 +27,14 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 
+import javax.management.ObjectName;
 import javax.swing.*;
 
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
 
 /**
@@ -54,6 +58,16 @@ public class Controller{
     private GUITimer _timer;
 
     private State _optimalSchedule;
+
+    private Gauge _gauge;
+
+    private Tile _tile;
+
+    private ChartData _data1 = new ChartData("D1",0,Tile.LIGHT_GREEN);
+    private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
+    private ChartData _data3 = new ChartData("D3",0,Tile.LIGHT_GREEN);
+    private ChartData _data4 = new ChartData("D4",40,Tile.LIGHT_GREEN);
+
     @FXML
     private Pane _graphPane;
 
@@ -105,25 +119,43 @@ public class Controller{
         initDataPane();
     }
 
+    public void updateCPU(double cpu1, double cpu2, double cpu3, double cpu4) {
+        Platform.runLater(() -> {
+            _data1.setValue(cpu1);
+            _data2.setValue(cpu2);
+            _data3.setValue(cpu3);
+            _data4.setValue(cpu4);
+        });
+    }
+
 
     private void initDataPane() {
-        GaugeBuilder builder = GaugeBuilder.create().skinType(Gauge.SkinType.TILE_SPARK_LINE);
-        Gauge gauge = GaugeBuilder.create()
-                .skinType(Gauge.SkinType.TILE_SPARK_LINE)
+        SystemInfoVisualisation info = new SystemInfoVisualisation(this);
+
+
+        _tile = TileBuilder.create()
+                .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
+                .prefHeight(200)
+                .prefWidth(200)
+                .unit("UNIT")
+                .chartData(_data1,_data2,_data3,_data4)
                 .animated(true)
+                .value(20)
                 .build();
-        _dataPane.getChildren().add(gauge);
 
 
-        Sigar sigar = new Sigar();
-        double cpu = 0;
-        try {
-            cpu = sigar.getCpuPerc().getCombined();
-        }
-        catch (SigarException e) {
-            e.printStackTrace();
-        }
-        gauge.setValue(cpu);
+
+
+        OperatingSystemMXBean bean = ManagementFactory
+                .getOperatingSystemMXBean();
+
+        OperatingSystemMXBean b = ManagementFactory.getOperatingSystemMXBean();
+
+        double cpu = b.getSystemLoadAverage();
+
+        _dataPane.getChildren().add(_tile);
+
+        info.run();
     }
 
     /**
