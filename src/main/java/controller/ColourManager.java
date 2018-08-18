@@ -21,7 +21,10 @@ public class ColourManager {
             "#e0ab18", // mustard
             "#637a91", // dark gray
             "#f092b0", // pink
-            "#b7c0c7");  // light gray
+            "#b7c0c7",//light grey
+            "#FCECC9",//pale yellow
+            "#C8D5B9", // pale green
+            "#3B1C32");
 
 
     public ColourManager (int numProcessor) {

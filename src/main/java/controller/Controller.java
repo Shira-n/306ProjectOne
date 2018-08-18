@@ -215,7 +215,7 @@ public class Controller{
             GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
             _ganttPane.getChildren().add(chart.createGraph());
             _ganttPane.setBackground(Background.EMPTY);
-            //_ganttPane.setVisible(true);
+            _ganttPane.setVisible(true);
         });
 
     }
