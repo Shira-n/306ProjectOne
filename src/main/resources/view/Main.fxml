@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -13,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="850.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<AnchorPane prefHeight="850.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
       <ImageView fx:id="_background" fitHeight="850.0" fitWidth="750.0">
          <image>
@@ -35,7 +42,7 @@
       </Pane>
       <Pane fx:id="_buttonPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="590.0">
          <children>
-            <Label fx:id="_time" alignment="CENTER" prefHeight="130.0" prefWidth="200.0" style="-fx-border-color: grey;" text="0" textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="_time" alignment="CENTER" prefHeight="130.0" prefWidth="200.0" style="-fx-border-color: grey;" text="00:00:00" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Helvetica Neue UltraLight" size="60.0" />
                </font>

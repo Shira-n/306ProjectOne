@@ -12,6 +12,18 @@ public class GUITimer extends Thread{
     private Timer _timer;
 
     public GUITimer () {
+
+    }
+
+    public void setController(Controller controller) {
+        _controller = controller;
+    }
+
+    public void stopTimer() {
+        _timer.cancel();
+    }
+
+    public void startTimer(){
         TimerTask timerTask = new TimerTask() {
 
             @Override
@@ -27,13 +39,5 @@ public class GUITimer extends Thread{
         _timer = new Timer("MyTimer");//create a new Timer
 
         _timer.scheduleAtFixedRate(timerTask, 0, 100);
-    }
-
-    public void setController(Controller controller) {
-        _controller = controller;
-    }
-
-    public void stopTimer() {
-        _timer.cancel();
     }
 }

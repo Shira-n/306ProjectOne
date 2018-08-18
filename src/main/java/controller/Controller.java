@@ -103,6 +103,8 @@ public class Controller{
     */
     @FXML
     public void handlePressStart(ActionEvent event) {
+        _status.setText("Computing");
+        _timer.startTimer();
         _ganttPane.setVisible(false);
         Controller controller = this;
         Thread thread = new Thread() {
@@ -199,7 +201,7 @@ public class Controller{
         _toggle.setVisible(false);
 
         //set labels to values corresponding to the current computation graph
-        _status.setText("Computing");
+        _status.setText("Not Started");
         _currentBestTime.setText("NA");
         _numNode.setText(GUIEntry.getNumNode() + "");
         _numProcessor.setText(GUIEntry.getNumProcessor() + "");
@@ -207,20 +209,36 @@ public class Controller{
 
     }
 
-    public void drawGanttChart() {
-        System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
-        GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes);
-        _ganttPane.getChildren().add(chart.createGraph());
-        _ganttPane.setBackground(Background.EMPTY);
-        _ganttPane.setVisible(true);
+    private void drawGanttChart() {
+        Platform.runLater(() -> {
+            System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
+            GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
+            _ganttPane.getChildren().add(chart.createGraph());
+            _ganttPane.setBackground(Background.EMPTY);
+            //_ganttPane.setVisible(true);
+        });
+
     }
 
     public synchronized  void setTimer(int count) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                _time.setText(count+"");
+
+        Platform.runLater(() -> {
+            String minZeroPlaceholder ="";
+            String secZeroPlaceholder = "";
+            String msZeroPlaceholder = "";
+            long min = count / 60000;
+            long sec = (count - min * 60000) / 1000;
+            long ms = count - min * 60000 - sec * 1000;
+            if (min<10){
+                minZeroPlaceholder = "0";
             }
+            if (sec<10){
+                secZeroPlaceholder = "0";
+            }
+            if (ms<10){
+                msZeroPlaceholder = "0";
+            }
+            _time.setText(minZeroPlaceholder + min + ":" + secZeroPlaceholder+sec + ":" + msZeroPlaceholder+ms);
         });
 
     }

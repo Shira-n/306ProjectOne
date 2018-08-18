@@ -77,7 +77,7 @@ public class GUIEntry {
 
     //TODO
     public static int getNumNode() {
-        return /*_nodes.size()*/3;
+        return _nodes.size();
     }
 
 
