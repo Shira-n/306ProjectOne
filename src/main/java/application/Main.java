@@ -155,7 +155,7 @@ public class Main {
 
     private static Scheduler getParallelScheduler() throws FileNotFoundException {
         List<Map<String, Node>> graphs = new ArrayList<>();
-        for (int i = 0; i <_noOfThreads; i++) {
+        for (int i = 0; i <= _noOfThreads; i++) {
             graphs.add(_reader.getMap());
             System.out.println("Main: One map created");
         }
