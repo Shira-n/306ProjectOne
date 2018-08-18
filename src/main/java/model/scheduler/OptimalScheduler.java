@@ -13,6 +13,7 @@ public class OptimalScheduler implements Scheduler{
     private Set<Node> _freeToSchedule;
 
     public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
+        System.out.println("using optimal scheduler");
         //_graph = topologicalSort(graph);
         _graph = graph;
         _freeToSchedule = findEntries(graph);
@@ -27,11 +28,11 @@ public class OptimalScheduler implements Scheduler{
                 for (Node sibling : parent.getChildren().keySet()){
                     if (node.equals(sibling) && internalOrderingCheck(node, sibling) && node.isEquivalent(sibling)){
                         node.addEquivalentNode(sibling);
+                        sibling.addEquivalentNode(node);
                     }
                 }
             }
         }
-
 
         /*
         for (int i = 0 ;i < _graph.size(); i++){
@@ -86,7 +87,8 @@ public class OptimalScheduler implements Scheduler{
      */
     //TODO Change it to State!
     public State getSchedule(){
-        return null;
+        schedule();
+        return _optimalState;
     }
 
     /**
@@ -143,32 +145,17 @@ public class OptimalScheduler implements Scheduler{
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
             // Get Nodes to ignore when internal order is arbitrary
-            Set<Node> visitedNodes = new HashSet<>();
+            Set<Node> uniqueNodes = new HashSet<>();
             for (Node node : freeToSchedule) {
-                boolean repeated = false;
-                for (Node visited : visitedNodes){
-                    if (node.isEquivalent(visited)){
-                        repeated = true;
-                        break;
-                    }
-                }
-                Set<String> visitedProcessor = new HashSet<>();
-                // Check if node is okay to schedule
-                if (!repeated) {
+                if (!equivalentNode(node, uniqueNodes)){
+                    uniqueNodes.add(node);
+
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
-/*
-                        <<<<<<< HEAD:src/main/java/model/scheduler/OptimalScheduler.java
-                        boolean equivalentProcessor = false;
-                        for (String s : visitedProcessor) {
-                            if (s.equals(processor.toString())) {
-                                equivalentProcessor = true;
-                                break;
-                            }
-                        }
-                        if (!equivalentProcessor) {
-                            //Calculate the earliest Start time of this Node on this Processor.
-                            int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                        //Calculate the earliest Start time of this Node on this Processor.
+                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                        if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
+                            uniqueProcessors.add(processor);
                             //Prune:
                             //Check the minimum potential total weight of schedules after this step.
                             //If it is greater than the current optimal schedule's weight, skip it
@@ -185,61 +172,9 @@ public class OptimalScheduler implements Scheduler{
                                 //Un-schedule this Node to allow it being scheduled on next Processor.
                                 unscheduleNode(node);
                             }
-=======
-*/
-                        //Calculate the earliest Start time of this Node on this Processor.
-                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-
-                        // Pruning for normalization
-                        /**
-                         * @PROCESSOR NORMALIZATION
-                         */
-                        // Check if processor is just a reflection of a previous; if so, skip iteration
-                        Boolean reflectedProcessor = false;
-                        // make deep copy of processor
-                        Processor p = new Processor(processor);
-                        for (Processor check: uniqueProcessors) {
-                                Set<Node> temp = node.schedule(p, startTime);
-                                p.addNodeAt(node, startTime);
-                                // if (p.equals(check)) {
-                                if (p.getCurrentAbleToStart() == check.getCurrentAbleToStart()) {
-                                    reflectedProcessor = true;
-                                    unscheduleNode(node);
-                                    break;
-                                }
-                                unscheduleNode(node);
-
-                        }
-                        // skip iteration if  processor is just a reflection
-                        if (reflectedProcessor) {
-                            continue;
-                        }
-
-                        //Prune:
-                        //Check the minimum potential total weight of schedules after this step.
-                        //If it is greater than the current optimal schedule's weight, skip it
-                        //Otherwise, schedule this Node on this Processor and continue investigating.
-                        if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
-                            //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
-                            Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
-                            processor.addNodeAt(node, startTime);
-                            /**
-                             * @PROCESSOR NORMALIZATION
-                             */
-                            //Current processor is unique so make a deep copy of current state to add to list of processors to check for normalization
-                            uniqueProcessors.add(new Processor(processor));
-
-                            //Include every Nodes in the original free Node set except for this scheduled Node.
-                            newFreeToSchedule.addAll(freeToSchedule);
-                            newFreeToSchedule.remove(node);
-                            //Recursively investigating
-                            bbOptimalSchedule(newFreeToSchedule);
-                            //Un-schedule this Node to allow it being scheduled on next Processor.
-                            unscheduleNode(node);
                         }
                     }
                }
-               visitedNodes.add(node);
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
@@ -438,6 +373,9 @@ public class OptimalScheduler implements Scheduler{
      * Return true if two nodes are exchangable, false otherwise.
      */
     private boolean internalOrderingCheck(Node node, Node visited){
+        if (node.getWeight() != visited.getWeight()){
+            return false;
+        }
         //The number of parents and children of them must be the same
         if (node.getParents().keySet().size() != visited.getParents().keySet().size()
                 || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
@@ -464,7 +402,26 @@ public class OptimalScheduler implements Scheduler{
         return true;
     }
 
+    private boolean equivalentNode(Node node, Set<Node> uniqueNodes){
+        for (Node uniqueNode : uniqueNodes){
+            if (uniqueNode.isEquivalent(node)){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
+        int anotherStartTime;
+        for (Processor uniqueProcessor : uniqueProcessors){
+            //Calculate the earliest Start time of this Node on this Processor.
+            anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), infulencedByParents(uniqueProcessor, node));
+            if (anotherStartTime == startTime && processor.toString().equals(uniqueProcessor.toString())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
         Getter & Setter methods for testing
