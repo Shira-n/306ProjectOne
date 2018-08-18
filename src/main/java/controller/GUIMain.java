@@ -18,7 +18,7 @@ public class GUIMain extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/Main.fxml"));
         primaryStage.setTitle("Visualisation of Computation");
         primaryStage.initStyle(StageStyle.UNDECORATED);
-        primaryStage.setScene(new Scene(root, 750, 850));
+        primaryStage.setScene(new Scene(root, 950, 830));
         primaryStage.show();
     }
 

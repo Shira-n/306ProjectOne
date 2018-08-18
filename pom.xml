@@ -37,6 +37,13 @@
             <version>8.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.fusesource/sigar -->
+        <dependency>
+            <groupId>org.fusesource</groupId>
+            <artifactId>sigar</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -72,6 +79,15 @@
                     <include>**/*.fxml</include>
                     <include>**/*.jpg</include>
                     <include>**/*.png</include>
+                </includes>
+            </resource>
+
+            <resource>
+                <filtering>false</filtering>
+                <directory>${basedir}/sigar-bin/slib</directory>
+                <targetPath>sigar-bin/slib</targetPath>
+                <includes>
+                    <include>*.*</include>
                 </includes>
             </resource>
 

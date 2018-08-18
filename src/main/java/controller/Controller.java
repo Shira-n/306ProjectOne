@@ -1,6 +1,8 @@
 package controller;
 
 
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.GaugeBuilder;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -18,6 +20,8 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
 
 import javax.swing.*;
@@ -60,7 +64,8 @@ public class Controller{
     private Pane _ganttPane;
 
     @FXML
-    private ToggleButton _toggle;
+    private Pane _dataPane;
+
 
     @FXML
     private Label _time;
@@ -96,6 +101,29 @@ public class Controller{
         initLabels();
 
         initGraph();
+
+        initDataPane();
+    }
+
+
+    private void initDataPane() {
+        GaugeBuilder builder = GaugeBuilder.create().skinType(Gauge.SkinType.TILE_SPARK_LINE);
+        Gauge gauge = GaugeBuilder.create()
+                .skinType(Gauge.SkinType.TILE_SPARK_LINE)
+                .animated(true)
+                .build();
+        _dataPane.getChildren().add(gauge);
+
+
+        Sigar sigar = new Sigar();
+        double cpu = 0;
+        try {
+            cpu = sigar.getCpuPerc().getCombined();
+        }
+        catch (SigarException e) {
+            e.printStackTrace();
+        }
+        gauge.setValue(cpu);
     }
 
     /**
@@ -201,7 +229,6 @@ public class Controller{
     private void initLabels() {
         //only show Gatt chart after computation is finished
         _ganttPane.setVisible(false);
-        _toggle.setVisible(false);
 
         //set labels to values corresponding to the current computation graph
         _status.setText("Not Started");
