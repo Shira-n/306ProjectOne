@@ -96,15 +96,14 @@ public class Controller{
         initLabels();
 
         initGraph();
-
     }
-
 
     /**
     *
     */
     @FXML
     public void handlePressStart(ActionEvent event) {
+        _ganttPane.setVisible(false);
         Controller controller = this;
         Thread thread = new Thread() {
             public void run() {
@@ -130,35 +129,33 @@ public class Controller{
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("update in controller :" + Thread.currentThread().getName());
-                System.out.println("UPDATE");
-                for (String nodeID : updatedState.keySet()) {
-                    String[] nodeInfo = updatedState.get(nodeID);
-                    Node node = _graph.getNode(nodeID);
-                    System.out.println(node.getAttribute("startTime") + "");
-                    if (node.hasAttribute("startTime")) {
-                        node.removeAttribute("startTime");
-                    }
-
-                    System.out.println(node.getId() + " Processor: " + node.getAttribute("processor"));
-                    if (node.hasAttribute("processor")) {
-                        node.removeAttribute("processor");
-                    }
-                    node.addAttribute("startTime", nodeInfo[1]);
-                    node.addAttribute("processor", nodeInfo[0]);
-                    if (node.getAttribute("processor") == null) {
-                        System.out.println("hi");
-                    }
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            _viewer.updateNodeColour(node);
-                        }
-                    });
+        System.out.println("update called");
+        //this is running on JavaFx Thread now
+        Platform.runLater(() -> {
+            System.out.println("UPDATE");
+            for (String nodeID : updatedState.keySet()) {
+                String[] nodeInfo = updatedState.get(nodeID);
+                Node node = _graph.getNode(nodeID);
+                System.out.println(node.getAttribute("startTime") + "");
+                if (node.hasAttribute("startTime")) {
+                    node.removeAttribute("startTime");
                 }
+
+                System.out.println(node.getId() + " Processor: " + node.getAttribute("processor"));
+                if (node.hasAttribute("processor")) {
+                    node.removeAttribute("processor");
+                }
+                node.addAttribute("startTime", nodeInfo[1]);
+                node.addAttribute("processor", nodeInfo[0]);
+                if (node.getAttribute("processor") == null) {
+                    System.out.println("hi");
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        _viewer.updateNodeColour(node);
+                    }
+                });
             }
         });
     }
@@ -211,6 +208,7 @@ public class Controller{
     }
 
     public void drawGanttChart() {
+        System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
         GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes);
         _ganttPane.getChildren().add(chart.createGraph());
         _ganttPane.setBackground(Background.EMPTY);

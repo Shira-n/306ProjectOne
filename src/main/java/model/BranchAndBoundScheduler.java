@@ -232,7 +232,7 @@ public class BranchAndBoundScheduler{
                 //System.out.println(_controller);
                 System.out.println("bandb thread: "+Thread.currentThread().getName());
                 if (_controller != null) {
-                    //System.out.println("Call update");
+                    System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
                     _controller.update(_optimalState.translate());
                 }
