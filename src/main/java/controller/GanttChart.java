@@ -45,6 +45,8 @@ public class GanttChart {
 
 
     public Group createGraph(){
+        System.out.println("createGraph running on: "+Thread.currentThread().getName());
+
         calculateFinishTimeAndUnits();
         drawAxis();
         drawNodes();

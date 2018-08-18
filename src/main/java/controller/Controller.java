@@ -32,7 +32,7 @@ import java.util.Observer;
 /**
  * Controller class for the MainWindow. Initialise all components on the pane.
  */
-public class Controller implements Observer {
+public class Controller{
 
 
     private SingleGraph _graph;
@@ -96,21 +96,19 @@ public class Controller implements Observer {
         initLabels();
 
         initGraph();
-
     }
-
 
     /**
     *
     */
     @FXML
     public void handlePressStart(ActionEvent event) {
+        _ganttPane.setVisible(false);
         Controller controller = this;
         Thread thread = new Thread() {
             public void run() {
                 System.out.print("IN THREAD");
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
-                scheduler.addObserver(controller);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
 
                 //drawGanttChart(optimalSchedule);
@@ -134,31 +132,35 @@ public class Controller implements Observer {
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState) {
-        System.out.println("UPDATE");
-        for (String nodeID: updatedState.keySet()) {
-            String[] nodeInfo = updatedState.get(nodeID);
-            Node node = _graph.getNode(nodeID);
-            System.out.println(node.getAttribute("startTime")+"");
-            if (node.hasAttribute("startTime")) {
-                node.removeAttribute("startTime");
-            }
-
-            System.out.println(node.getId()+  " Processor: " + node.getAttribute("processor"));
-            if (node.hasAttribute("processor")) {
-                node.removeAttribute("processor");
-            }
-            node.addAttribute("startTime", nodeInfo[1]);
-            node.addAttribute("processor", nodeInfo[0]);
-            if(node.getAttribute("processor")==null){
-                System.out.println("hi");
-            }
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    _viewer.updateNodeColour(node);
+        System.out.println("update called");
+        //this is running on JavaFx Thread now
+        Platform.runLater(() -> {
+            System.out.println("UPDATE");
+            for (String nodeID : updatedState.keySet()) {
+                String[] nodeInfo = updatedState.get(nodeID);
+                Node node = _graph.getNode(nodeID);
+                System.out.println(node.getAttribute("startTime") + "");
+                if (node.hasAttribute("startTime")) {
+                    node.removeAttribute("startTime");
                 }
-            });
-        }
+
+                System.out.println(node.getId() + " Processor: " + node.getAttribute("processor"));
+                if (node.hasAttribute("processor")) {
+                    node.removeAttribute("processor");
+                }
+                node.addAttribute("startTime", nodeInfo[1]);
+                node.addAttribute("processor", nodeInfo[0]);
+                if (node.getAttribute("processor") == null) {
+                    System.out.println("hi");
+                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        _viewer.updateNodeColour(node);
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -330,6 +332,7 @@ public class Controller implements Observer {
         return size;
 
     public void drawGanttChart() {
+        System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
         GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes);
         _ganttPane.getChildren().add(chart.createGraph());
         _ganttPane.setBackground(Background.EMPTY);
@@ -364,16 +367,5 @@ public class Controller implements Observer {
         System.exit(0);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (o instanceof BranchAndBoundScheduler){
-            BranchAndBoundScheduler scheduler = (BranchAndBoundScheduler) arg;
-            if(scheduler.getCompleteState()){
-                completed(scheduler.getOptimalSchedule().getMaxWeight());
-            }else{
-                update(scheduler.getOptimalState().translate());
-            }
-        }
-    }
 }
 

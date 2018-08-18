@@ -3,9 +3,11 @@ package model;
 import controller.Controller;
 import controller.GUITimer;
 
+import javax.sound.midi.Soundbank;
+import java.sql.SQLOutput;
 import java.util.*;
 
-public class BranchAndBoundScheduler extends Observable{
+public class BranchAndBoundScheduler{
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
@@ -127,15 +129,12 @@ public class BranchAndBoundScheduler extends Observable{
         schedule();
 
         if (_controller!=null) {
-            //_controller.completed(_optimalState.getMaxWeight());
+            _controller.completed(_optimalState.getMaxWeight());
             _complete = true;
             _timer.stopTimer();
             System.out.println("\nGet Schedule: Max Weight: " + _optimalState.getMaxWeight());
             _endTime = System.currentTimeMillis();
             System.out.println("That took " + (_endTime - _startTime) + " milliseconds");
-            setChanged();
-            notifyObservers(this);
-            deleteObservers();
         }
         return _optimalState;
     }
@@ -231,13 +230,18 @@ public class BranchAndBoundScheduler extends Observable{
                 _optimalState = new State(_processors);
                 //if there is visualisation
                 //System.out.println(_controller);
+                System.out.println("bandb thread: "+Thread.currentThread().getName());
                 if (_controller != null) {
-                    //System.out.println("Call update");
+                    System.out.println("Call update");
                     //calls the controller class to update GUI to display newly computed current optimal schedule.
+<<<<<<< HEAD
           setChanged();
                     notifyObservers(this);
                     //_controller.update(_optimalState.translate());
                     deleteObservers();
+=======
+                    _controller.update(_optimalState.translate());
+>>>>>>> c46f8bb2db5f018c9ea823ff87acdd23245a89aa
                 }
             }
         }
