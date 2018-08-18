@@ -130,31 +130,37 @@ public class Controller{
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState) {
-        System.out.println("UPDATE");
-        for (String nodeID: updatedState.keySet()) {
-            String[] nodeInfo = updatedState.get(nodeID);
-            Node node = _graph.getNode(nodeID);
-            System.out.println(node.getAttribute("startTime")+"");
-            if (node.hasAttribute("startTime")) {
-                node.removeAttribute("startTime");
-            }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("update in controller :" + Thread.currentThread().getName());
+                System.out.println("UPDATE");
+                for (String nodeID : updatedState.keySet()) {
+                    String[] nodeInfo = updatedState.get(nodeID);
+                    Node node = _graph.getNode(nodeID);
+                    System.out.println(node.getAttribute("startTime") + "");
+                    if (node.hasAttribute("startTime")) {
+                        node.removeAttribute("startTime");
+                    }
 
-            System.out.println(node.getId()+  " Processor: " + node.getAttribute("processor"));
-            if (node.hasAttribute("processor")) {
-                node.removeAttribute("processor");
-            }
-            node.addAttribute("startTime", nodeInfo[1]);
-            node.addAttribute("processor", nodeInfo[0]);
-            if(node.getAttribute("processor")==null){
-                System.out.println("hi");
-            }
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    _viewer.updateNodeColour(node);
+                    System.out.println(node.getId() + " Processor: " + node.getAttribute("processor"));
+                    if (node.hasAttribute("processor")) {
+                        node.removeAttribute("processor");
+                    }
+                    node.addAttribute("startTime", nodeInfo[1]);
+                    node.addAttribute("processor", nodeInfo[0]);
+                    if (node.getAttribute("processor") == null) {
+                        System.out.println("hi");
+                    }
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            _viewer.updateNodeColour(node);
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
     }
 
     /**
