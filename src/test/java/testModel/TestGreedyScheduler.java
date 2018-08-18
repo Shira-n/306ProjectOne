@@ -1,3 +1,4 @@
+/*
 package testModel;
 
 import model.scheduler.GreedyScheduler;
@@ -16,7 +17,7 @@ public class TestGreedyScheduler {
     private List<Node> _simpleGraph2 = new ArrayList<>();
     private List<Node> _simpleGraph3 = new ArrayList<>();
     private List<Node> _simpleGraph4 = new ArrayList<>();
-    */
+    *
 
     @Before
     public void initialise() {
@@ -71,7 +72,7 @@ public class TestGreedyScheduler {
         _simpleGraph4.add(n1);
         _simpleGraph4.add(n2);
         _simpleGraph4.add(n3);
-        */
+        *
     }
 
     @Test
@@ -96,7 +97,7 @@ public class TestGreedyScheduler {
         assertEquals(0, schedule.get(1).getCurrentAbleToStart());
         assertSame(schedule.get(1).getCurrentSchedule().size(), 0);
         assertTrue(schedule.get(1).getCurrentSchedule().values().isEmpty());
-         */
+         *
     }
 
     @Test
@@ -266,6 +267,7 @@ public class TestGreedyScheduler {
         assertSame(1, schedule.get(2).getCurrentSchedule().size());
         assertTrue(schedule.get(2).getCurrentSchedule().values().contains(_graph.get(5)));
     }
-    */
+
 
 }
+*/

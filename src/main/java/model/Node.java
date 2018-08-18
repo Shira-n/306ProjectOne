@@ -188,8 +188,8 @@ public class Node implements Serializable {
     }
 
     public void addEquivalentNode(Node node){
+        System.out.println("Added Node "+ node.getId()+" as an equivalent Node to Node "+ node.getId());
         _equivalentNodes.add(node);
-        node.addEquivalentNode(this);
     }
 
 

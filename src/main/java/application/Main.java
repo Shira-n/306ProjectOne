@@ -156,7 +156,9 @@ public class Main {
         List<Map<String, Node>> graphs = new ArrayList<>();
         for (int i = 0; i <_noOfThreads; i++) {
             graphs.add(_reader.getMap());
+            System.out.println("Main: One map created");
         }
+        System.out.println("Main: Parallel scheduler created");
         return new ParaTest(_noOfThreads, graphs, _noOfProcessors);
     }
 

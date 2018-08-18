@@ -100,7 +100,8 @@ public class  DotFileAdapter {
 					parent = read.split("->")[0].trim();
 					child = read.split("->")[1].trim().split("\\[")[0].trim();
 					weight = read.split("=")[1].split("]")[0].trim();
-					map.get(parent).addParent(map.get(child), Integer.parseInt(weight));
+					map.get(parent).addChild(map.get(child), Integer.parseInt(weight));
+					map.get(child).addParent(map.get(parent), Integer.parseInt(weight));
 				}else{
 					//Nodes
 					parent = read.split("\\[")[0].trim();

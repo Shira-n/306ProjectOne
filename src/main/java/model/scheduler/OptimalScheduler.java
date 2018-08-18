@@ -1,8 +1,8 @@
 package model.scheduler;
 
 import model.Node;
-import model.Processor;
 import model.State;
+import model.Processor;
 
 import java.util.*;
 
@@ -131,7 +131,7 @@ public class OptimalScheduler implements Scheduler{
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
-        System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
+        System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
     /**
@@ -264,15 +264,15 @@ public class OptimalScheduler implements Scheduler{
 /*
     private void ASchedule(){
         for (State s : getNewStates(_freeToSchedule)){
-            _stateQueue.add(s);
+            _Optimal_stateQueue.add(s);
             //System.out.println("\nPriority queue added a new State");
             //s.print();
         }
-        AStarSchedule(_stateQueue);
+        AStarSchedule(_Optimal_stateQueue);
         System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
 */
-    private PriorityQueue<State> _stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
+    private PriorityQueue<State> _Optimal_stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
         if (s1.getMaxWeight() + s1.getBottomWeight() > s2.getMaxWeight() + s2.getBottomWeight()){
             return 1;
         }else{

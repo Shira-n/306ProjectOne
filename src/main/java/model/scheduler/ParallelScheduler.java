@@ -109,7 +109,7 @@ public class ParallelScheduler implements Scheduler{
         parallelCompute(_freeToSchedule);
 
         // = bbOptimalSchedule(_freeToSchedule);
-        System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
+        System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
 

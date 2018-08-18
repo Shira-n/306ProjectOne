@@ -2,11 +2,10 @@ package model;
 
 import java.util.*;
 
-public class ParallelState extends State{
+public class ParallelState extends State {
     int _max;
     int _bottomWeight;
     Map<Integer, String> _stateStringRep = new HashMap<>();
-    //Map<String, Node> _nodeMap = new HashMap<>();
     Set<String> _scheduledNodeId = new HashSet<>();
     Set<String> _freeToScheduleId = new HashSet<>();
 
