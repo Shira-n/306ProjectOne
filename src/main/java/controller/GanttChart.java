@@ -163,6 +163,10 @@ public class GanttChart {
 
             //adds tha name of the node as a label at the center of the node rectangle
             Label label = new Label(node.getId());
+            if (_numProcessors<10){
+                label.setStyle("-fx-font-size:16px;");
+                fontHeight = 0;
+            }
             double fontWidth = (fontSize(label))[1];
             label.setLayoutX(startX + (width)/2 - fontWidth/2);
             label.setLayoutY(startY + 0.5*_verticalUnit + fontHeight + fontHeight/3);
@@ -214,7 +218,6 @@ public class GanttChart {
             label.setLayoutX(_XAxisStart - 70);
             label.setLayoutY(startHeight+0.5*_verticalUnit+fontHeight + fontHeight/_numProcessors);
             label.setTextFill(_lineColor);
-            //label.setStyle("-fx-font-size:16px;");
 
             Circle circle = new Circle(_XAxisStart, startHeight,1);
 

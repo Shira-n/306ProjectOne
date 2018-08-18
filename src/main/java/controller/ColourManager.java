@@ -13,21 +13,23 @@ public class ColourManager {
     private List<String> _colours = new ArrayList<>();
 
 
-    List<String> colourChoices = new ArrayList() {
-        {
-            add("#39add1");
-            add("#c25975");
-            add("#e15258");
-            add("#f9845b");
-            add("#838cc7");
-            add("#7d669e");
-            add("#53bbb4");
-            add("#51b46d");
-            add("#e0ab18");
-            add("#637a91");
-            add("#f092b0");
-            add("#b7c0c7");
-        }
+    List<String> colourChoices = new ArrayList<String>() {{
+                add("#39add1"), // light blue
+                add("#3079ab"), // dark blue
+                add("#c25975"), // mauve
+                add("#e15258"), // red
+                add("#f9845b"), // orange
+                add("#838cc7"), // lavender
+                add("#7d669e"), // purple
+                add("#53bbb4"), // aqua
+                add("#51b46d"), // green
+                add("#e0ab18"), // mustard
+                add("#637a91"), // dark gray
+                add("#f092b0"), // pink
+                add("#b7c0c7"),//light grey
+                add("#FCECC9"),//pale yellow
+                add("#C8D5B9"), // pale green
+                add("#3B1C32")}
     };
 
     public ColourManager (int numProcessor) {
