@@ -112,11 +112,10 @@ public class Controller implements Observer {
                 BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
                 scheduler.addObserver(controller);
                 model.State optimalSchedule = scheduler.getOptimalSchedule();
-<<<<<<< HEAD
+
                 //drawGanttChart(optimalSchedule);
-=======
+
                 _optimalSchedule = optimalSchedule;
->>>>>>> cd675ecc50b29d335aa89401d063f51381245dc4
 
             }
         };
@@ -209,7 +208,6 @@ public class Controller implements Observer {
 
     }
 
-<<<<<<< HEAD
     /*
     public void drawGanttChart(State optimalState) {
         final double YAxisStart = 20;
@@ -330,13 +328,13 @@ public class Controller implements Observer {
         theText.setFont(label.getFont());
         double[] size = {theText.getBoundsInLocal().getHeight(), theText.getBoundsInLocal().getWidth()};
         return size;
-=======
+
     public void drawGanttChart() {
         GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes);
         _ganttPane.getChildren().add(chart.createGraph());
         _ganttPane.setBackground(Background.EMPTY);
         _ganttPane.setVisible(true);
->>>>>>> cd675ecc50b29d335aa89401d063f51381245dc4
+
     }
     */
 
@@ -355,7 +353,7 @@ public class Controller implements Observer {
             @Override
             public void run() {
                 _status.setText("Completed");
-                drawGanttChart();
+                //drawGanttChart();
             }
         });
     }
