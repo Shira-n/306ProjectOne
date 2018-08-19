@@ -19,36 +19,25 @@
             <Image url="@image/background.jpg" />
          </image>
       </ImageView>
-      <Pane fx:id="_ganttPane" layoutX="25.0" layoutY="25.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: transparent;" />
+      <Pane fx:id="_ganttPane" layoutX="10.0" layoutY="25.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: transparent;">
+         <children>
+            <Button fx:id="_quit1" layoutX="877.0" layoutY="-20.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="26.0" />
+               </font>
+            </Button>
+         </children></Pane>
       <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
-            <Button fx:id="_quit" layoutX="902.0" layoutY="-10.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
+            <Button fx:id="_quit" layoutX="902.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="26.0" />
                </font>
             </Button>
          </children>
       </Pane>
-      <Pane style="-fx-border-color: grey;" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0">
-         <children>
-            <HBox prefHeight="80.0" prefWidth="950.0">
-               <children>
-                  <Button fx:id="_start" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Start" textFill="WHITE" HBox.hgrow="ALWAYS">
-                     <font>
-                        <Font name="Calibri Light" size="40.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Display Gantt Chart" textFill="WHITE">
-                     <font>
-                        <Font name="Calibri Light" size="40.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </Pane>
-      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.8; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="630.0">
+      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.8; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0">
          <children>
             <Label fx:id="_time" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: grey;" text="00:00:00" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -210,6 +199,24 @@
             </HBox>
          </children>
       </Pane>
-      <Pane fx:id="_dataPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="630.0" />
+      <Pane fx:id="_dataPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0" />
+      <Pane style="-fx-border-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="750.0">
+         <children>
+            <HBox prefHeight="80.0" prefWidth="950.0">
+               <children>
+                  <Button fx:id="_start" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Start" textFill="WHITE" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Calibri Light" size="40.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Display Gantt Chart" textFill="WHITE">
+                     <font>
+                        <Font name="Calibri Light" size="40.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

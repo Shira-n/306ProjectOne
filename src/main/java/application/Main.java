@@ -60,7 +60,7 @@ public class Main {
 
             //TODO GUI option here
             if (_visualisation) {
-                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, false);
+                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, _noOfThreads>1);
             }
             else {
                 _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);

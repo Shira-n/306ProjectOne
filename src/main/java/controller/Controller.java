@@ -141,6 +141,7 @@ public class Controller{
         _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#423222"));
 
         //set labels to values corresponding to the current computation graph
+        _isParallel.setText(GUIEntry.getParallelised()+"");
         _status.setText("Not Started");
         _currentBestTime.setText("NA");
         _numNode.setText(GUIEntry.getNumNode() + "");
@@ -163,7 +164,7 @@ public class Controller{
         _graph.addAttribute("ui.stylesheet", "graph {\n" +
                 "fill-mode: gradient-vertical;\n" +
                 "fill-color:  #405d60, #202033;\n" +
-                "padding: 20px;\n" +
+                "padding: 40px;\n" +
                 "}");
         _viewer.enableAutoLayout();
 
@@ -215,9 +216,11 @@ public class Controller{
      * Called by algorithm to update GUI to show newly calculated current optimal schedule.
      * @param updatedState
      */
-    public synchronized void update(Map<String,String[]> updatedState) {
+    public synchronized void update(Map<String,String[]> updatedState, int weight) {
         //this is running on JavaFx Thread now
         Platform.runLater(() -> {
+            _currentBestTime.setText(weight+"");
+
             for (String nodeID : updatedState.keySet()) {
 
                 //update graph with new start time and the processor on which the node is allocated
@@ -389,10 +392,12 @@ public class Controller{
     @FXML
     public void handlePressGantt(ActionEvent event) {
         if(_graphPane.isVisible()) {
+            _gantt.setText("Display Chart");
             _ganttPane.setVisible(true);
             _graphPane.setVisible(false);
         }
         else {
+            _gantt.setText("Display Graph");
             _ganttPane.setVisible(false);
             _graphPane.setVisible(true);
         }

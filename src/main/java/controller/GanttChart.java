@@ -215,7 +215,7 @@ public class GanttChart {
 
             Label label = new Label("Processor " + (Integer.toString(i + 1)));
 
-            label.setLayoutX(_XAxisStart - 70);
+            label.setLayoutX(_XAxisStart - 80);
             label.setLayoutY(startHeight+0.5*_verticalUnit+fontHeight + fontHeight/_numProcessors);
             label.setTextFill(_lineColor);
 
