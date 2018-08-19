@@ -1,25 +1,27 @@
 package controller;
 
 import com.sun.management.OperatingSystemMXBean;
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.GaugeBuilder;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.hyperic.sigar.CpuPerc;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
 
 import java.lang.management.ManagementFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This is a model class in terms of MVC pattern that monitors and stores all the info related to the operating system
+ * environment.
+ *
+ * It is initialised by Controller, and it calls Controller #updateCPU periodically
+ */
 public class SystemInfoVisualisation extends Thread {
     private Pane _pane;
     private Timer _timer;
     private OperatingSystemMXBean _bean;
     private Controller _controller;
 
+    // 4 data values of CPU is stored for the CPU chart
     private double cpu1 = 0;
     private double cpu2 = 0;
     private double cpu3 = 0;
@@ -32,6 +34,9 @@ public class SystemInfoVisualisation extends Thread {
         _bean = ManagementFactory.getPlatformMXBean(com.sun.management.OperatingSystemMXBean.class);
 }
 
+    /**
+     * Updates the CPU periodically, calls Controller #updateCPU()
+     */
     @Override
     public void run() {
         _timer.scheduleAtFixedRate(new TimerTask() {
@@ -51,6 +56,9 @@ public class SystemInfoVisualisation extends Thread {
                 10, 100);
     }
 
+    /**
+     * called to stop monitoring CPU
+     */
     public void stopTimer() {
         _timer.cancel();
     }
