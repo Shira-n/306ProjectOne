@@ -67,7 +67,8 @@ public class OptimalScheduler extends AbstractScheduler {
         schedule();
         //update GUI state to complete if there is visualisation
         if(_controller != null) {
-            _controller.completed();
+            System.out.println("IN COMPLETE");
+            _controller.completed(_optimalState);
         }
         return _optimalState;
     }

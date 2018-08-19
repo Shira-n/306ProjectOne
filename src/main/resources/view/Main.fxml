@@ -19,10 +19,10 @@
             <Image url="@image/background.jpg" />
          </image>
       </ImageView>
+      <Pane fx:id="_ganttPane" layoutX="25.0" layoutY="25.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: transparent;" />
       <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
-            <Pane fx:id="_ganttPane" layoutX="25.0" layoutY="25.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: white;" />
             <Button fx:id="_quit" layoutX="902.0" layoutY="-10.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="26.0" />
