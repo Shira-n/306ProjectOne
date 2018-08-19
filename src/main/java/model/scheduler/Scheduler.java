@@ -7,4 +7,5 @@ public interface Scheduler {
     public State getSchedule();
 
     public void setController(Controller controller);
+
 }

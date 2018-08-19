@@ -51,6 +51,7 @@ public class Controller{
 
     private SingleGraph _graph;
 
+
     private Timeline _timeline;
 
     private int _timeSeconds;
@@ -170,6 +171,7 @@ public class Controller{
         _timer.startTimer();
         _ganttPane.setVisible(false);
         Controller controller = this;
+
         Scheduler scheduler = GUIEntry.getScheduler();
         Callable task = new Callable() {
             @Override
@@ -195,10 +197,10 @@ public class Controller{
      * Called by algorithm to update GUI to show newly calculated current optimal schedule.
      * @param updatedState
      */
-    public synchronized void update(Map<String,String[]> updatedState) {
-        System.out.println("update called");
+    public synchronized void update(Map<String,String[]> updatedState,int weight) {
         //this is running on JavaFx Thread now
         Platform.runLater(() -> {
+            _currentBestTime.setText(weight+"");
             System.out.println("UPDATE");
             for (String nodeID : updatedState.keySet()) {
                 String[] nodeInfo = updatedState.get(nodeID);
@@ -227,6 +229,25 @@ public class Controller{
         });
     }
 
+
+    public synchronized void updateFrequency(String nodeID) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Node node = _graph.getNode(nodeID);
+                int previousCount = node.getAttribute("numAllocation");
+                node.removeAttribute("numAllocation");
+                node.addAttribute("numAllocation",(previousCount+1));
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        _viewer.updateNodeFrequency(node);
+                    }
+                });
+            }
+        });
+    }
+
     /**
      * Initialise the node graph to display the initial state of the graph.
      */
@@ -243,19 +264,23 @@ public class Controller{
                 "fill-color:  #405d60, #202033;\n" +
                 "padding: 20px;\n" +
                 "}");
+        /*
+        _graph.addAttribute("ui.stylesheet","graph {\n" +
+                "fill-color: rgba(0,0,0,0);\n}");
+                */
         //_graph.addAttribute("ui.stylesheet", "node { fill-color: rgba(255,0,0,255); }");
 
         _viewer.enableAutoLayout();
         ViewPanel viewPanel = _viewer.addDefaultView(false);
-        viewPanel.setBackground(Color.blue);
-        viewPanel.setMinimumSize(new Dimension(700, 500));
+        //viewPanel.setBackground(Color.blue);
+        viewPanel.setMinimumSize(new Dimension(900, 500));
         viewPanel.setOpaque(false);
-        viewPanel.setBackground(Color.black);
+        //viewPanel.setBackground(Color.black);
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
         _swingNode.setLayoutX(25);
-        _swingNode.setLayoutY(55);
+        _swingNode.setLayoutY(35);
 
 
     }
@@ -308,11 +333,12 @@ public class Controller{
 
     }
 
-    public synchronized void completed() {
+    public synchronized void completed(int weight) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 _status.setText("Completed");
+                _currentBestTime.setText(weight+"");
                 //drawGanttChart();
             }
         });

@@ -103,6 +103,43 @@ public class GraphViewer extends Viewer {
         */
     }
 
+    public void updateNodeFrequency(Node node) {
+        System.out.println("frequency");
+        String attribute = node.getAttribute("ui.style");
+        node.removeAttribute("ui.style");
+        String processorColour;
+        if (!node.getAttribute("processor").equals("null")) {
+            processorColour = _colourMgr.getColor(Integer.parseInt(node.getAttribute("processor")));
+        }
+        else {
+            processorColour = "rgba(0,0,0,0)";
+        }
+        int frequency = node.getAttribute("numAllocation");
+        int shadowWidth;
+        if (frequency < 20) {
+            shadowWidth = 3;
+        }
+        else if (frequency < 100) {
+            shadowWidth = 5;
+        }
+        else if (frequency < 500) {
+            shadowWidth = 7;
+        }
+        else {
+            shadowWidth = 8;
+        }
+        node.addAttribute("ui.style", "text-alignment: center;\n"
+                +"\tstroke-mode: plain; stroke-color: " + processorColour + "; stroke-width: 3px;"
+                + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
+
+                + "\tsize: 30px, 30px;\n"
+                + "\ttext-size: 20px; text-color: " + processorColour + ";\n"
+                + "\tshadow-mode: gradient-radial;\n"
+                + "\tshadow-color:white,rgba(255,255,255,0);\n"
+                + "\tshadow-offset: 0;\n"
+                + "\tshadow-width:"+ shadowWidth + "px;\n");
+    }
+
     public void setNodeBorderColour() {
 
     }

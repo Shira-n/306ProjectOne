@@ -14,7 +14,7 @@ public class OptimalScheduler implements Scheduler{
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
-    private static Controller _controller;
+    private Controller _controller;
 
     public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
         System.out.println("using optimal scheduler");
@@ -138,6 +138,12 @@ public class OptimalScheduler implements Scheduler{
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
+
+        //update GUI state to complete if there is visualisation
+        if(_controller != null) {
+            _controller.completed(_optimalState.getMaxWeight());
+        }
+        System.out.println("completed");
         System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
@@ -154,7 +160,9 @@ public class OptimalScheduler implements Scheduler{
             for (Node node : freeToSchedule) {
                 if (!equivalentNode(node, uniqueNodes)){
                     uniqueNodes.add(node);
-
+                    if (_controller != null) {
+                        //_controller.updateFrequency(node.getId());
+                    }
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
                         //Calculate the earliest Start time of this Node on this Processor.
@@ -166,6 +174,7 @@ public class OptimalScheduler implements Scheduler{
                             //If it is greater than the current optimal schedule's weight, skip it
                             //Otherwise, schedule this Node on this Processor and continue investigating.
                             if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+
                                 //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
                                 Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
                                 processor.addNodeAt(node, startTime);
@@ -192,18 +201,13 @@ public class OptimalScheduler implements Scheduler{
                 System.out.println(_controller+"");
                 if (_controller != null) {
                     System.out.println("UPDATE");
-                    _controller.update(_optimalState.translate());
+                    _controller.update(_optimalState.translate(),_optimalState.getMaxWeight());
                 }
 
                 //optimalState.print();
             }
         }
-        //update GUI state to complete if there is visualisation
-        if(_controller != null) {
-            _controller.completed();
-        }
 
-        System.out.println("completed");
         return _optimalState;
     }
 
@@ -443,6 +447,7 @@ public class OptimalScheduler implements Scheduler{
     public void setController(Controller controller) {
         _controller = controller;
     }
+
     /*
         Getter & Setter methods for testing
      */

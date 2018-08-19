@@ -104,15 +104,14 @@ public class GUIEntry {
             node.addAttribute("weight", String.valueOf(n.getWeight()));
             node.addAttribute("processor", "null");
             node.addAttribute("startTime", "null");
-
-
+            node.addAttribute("numAllocation", 0);
         }
 
         for (Node parent : _nodes) {
             Set<Node> children = parent.getChildren().keySet();
             for (Node c : children) {
                 String id = parent.getId() + c.getId();
-                Edge edge = _graph.addEdge(id, parent.getId(), c.getId());
+                Edge edge = _graph.addEdge(id, parent.getId(), c.getId(),true);
                 edge.addAttribute("weight", String.valueOf(parent.getPathWeightToChild(c)));
             }
         }
