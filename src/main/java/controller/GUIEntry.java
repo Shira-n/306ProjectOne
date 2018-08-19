@@ -90,15 +90,6 @@ public class GUIEntry {
 
     private void createGraph() {
 
-        /*
-        org.graphstream.graph.Node A = _graph.addNode("A");
-        A.addAttribute("id","A");
-        _graph.addNode("B");
-        _graph.addNode("C");
-        Edge e = _graph.addEdge("a","A","B");
-        e.addAttribute("weight","32");
-        */
-
         for (Node n : _nodes) {
             org.graphstream.graph.Node node = _graph.addNode(n.getId());
             node.addAttribute("weight", String.valueOf(n.getWeight()));
@@ -112,7 +103,7 @@ public class GUIEntry {
             Set<Node> children = parent.getChildren().keySet();
             for (Node c : children) {
                 String id = parent.getId() + c.getId();
-                Edge edge = _graph.addEdge(id, parent.getId(), c.getId());
+                Edge edge = _graph.addEdge(id, parent.getId(), c.getId(), true);
                 edge.addAttribute("weight", String.valueOf(parent.getPathWeightToChild(c)));
             }
         }

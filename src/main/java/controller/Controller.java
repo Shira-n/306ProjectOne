@@ -109,10 +109,15 @@ public class Controller{
     @FXML
     private SwingNode _swingNode;
 
+    /**
+     * Method to initialise all components in JavaFX window
+     */
     @FXML
     public void initialize() {
+        //get raw input nodes and timer instance from GUIEntry
         _nodes = GUIEntry.getNodes();
         _timer = GUIEntry.getTimer();
+        //connect timer to this controller
         _timer.setController(this);
 
         GUIEntry.setController(this);
@@ -126,6 +131,13 @@ public class Controller{
         initDataPane();
     }
 
+    /**
+     * Update the CPU chart by specifying four new data values for the chart.
+     * @param cpu1
+     * @param cpu2
+     * @param cpu3
+     * @param cpu4
+     */
     public void updateCPU(double cpu1, double cpu2, double cpu3, double cpu4) {
         Platform.runLater(() -> {
             _data1.setValue(cpu1);
@@ -136,10 +148,14 @@ public class Controller{
     }
 
 
+    /**
+     * Data pane contains the CPU chart.
+     */
     private void initDataPane() {
+        //create a SystemInfoVisualisation object that monitor system's CPU usage and periodically update controller with new info on another thread
         SystemInfoVisualisation info = new SystemInfoVisualisation(this);
 
-
+        //create CPU chart also styling the colours and size of the chart
         _tile = TileBuilder.create()
                 .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
                 .maxHeight(200)
@@ -152,23 +168,18 @@ public class Controller{
                 .title("CPU Usage")
                 .build();
 
-
-        OperatingSystemMXBean bean = ManagementFactory
-                .getOperatingSystemMXBean();
-
-        OperatingSystemMXBean b = ManagementFactory.getOperatingSystemMXBean();
-
-        double cpu = b.getSystemLoadAverage();
-
+        //add the CPU chart to the pane
         _dataPane.getChildren().add(_tile);
-
+        //set position of CPU chart on the pane
         _tile.setLayoutX(25);
 
+        //start collecting CPU info on another thread
         info.run();
     }
 
     /**
-    *
+    * Method that handles action when user clicks start button. Action includes run algorhtm on a new thread, start
+     * timer, and change appropriate labels
     */
     @FXML
     public void handlePressStart(ActionEvent event) {
@@ -254,14 +265,14 @@ public class Controller{
         _viewer.enableAutoLayout();
         ViewPanel viewPanel = _viewer.addDefaultView(false);
         viewPanel.setBackground(Color.blue);
-        viewPanel.setMinimumSize(new Dimension(700, 500));
+        viewPanel.setMinimumSize(new Dimension(900, 500));
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.black);
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
         _swingNode.setLayoutX(25);
-        _swingNode.setLayoutY(55);
+        _swingNode.setLayoutY(35);
 
 
     }
