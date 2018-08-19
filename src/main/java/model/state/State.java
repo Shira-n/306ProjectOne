@@ -50,7 +50,7 @@ public class State extends AbstractState {
 
     /**
      * Rebuild the input state to the state represented by this State object. Return the set of Nodes that are
-     * free to schedule in the current state.
+     * free to schedule in the current state. Used in an attempt of implementing A Star.
      */
     public Set<Node> rebuild(List<Node> graph, List<Processor> processors){
         Map<String, String[]> translation = translate();
@@ -74,7 +74,6 @@ public class State extends AbstractState {
             n.schedule(processor, startTime);
             processor.addNodeAt(n, startTime);
         }
-
         return  _freeToSchedule;
     }
 }

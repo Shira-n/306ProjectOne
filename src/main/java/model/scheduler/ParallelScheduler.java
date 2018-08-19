@@ -7,6 +7,9 @@ import model.state.ParallelState;
 import java.util.*;
 import java.util.concurrent.*;
 
+/**
+ * Schedule class that can execute Branch and Bound algorithm in parallel
+ */
 public class ParallelScheduler extends AbstractScheduler {
     private final int MAIN_THREAD_ID = 0;
     private List<Map<String, Node>> _graphs;
@@ -23,7 +26,7 @@ public class ParallelScheduler extends AbstractScheduler {
         _graphs = graphs;
         _executorService = Executors.newFixedThreadPool(_threadCount);
 
-        //Set up N processors for each thread
+        //Set up processors for each thread
         _processors = new ArrayList<>();
         for(int i = 0; i < _graphs.size(); i++) {
             List<Processor> processors = new ArrayList<>();
@@ -97,6 +100,9 @@ public class ParallelScheduler extends AbstractScheduler {
         return  _optimalState;
     }
 
+    /**
+     * Explore states and assign threads to execute tasks in parallel
+     */
     private void paraSchedule(Set<String> freeNodeId) throws InterruptedException, ExecutionException {
         List<Processor> processors = _processors.get(MAIN_THREAD_ID);
         Set<Node> freeToSchedule = getNodes(freeNodeId, MAIN_THREAD_ID);
@@ -127,28 +133,28 @@ public class ParallelScheduler extends AbstractScheduler {
                                     //Include every Nodes in the original free Node set except for this scheduled Node.
                                     newFreeToSchedule.addAll(freeToSchedule);
                                     newFreeToSchedule.remove(node);
-
+                                    //Record the current State for parallelisation
                                     ParallelState newState = new ParallelState(processors, getNodesId(newFreeToSchedule));
                                     states.add(newState);
-
+                                    //Restore the schedule for looping to the next Node/Processor
                                     unscheduleNode(node);
 
                                     //Start to send task for parallelisation
                                     if (states.size() == _threadCount ){
                                         List<Callable<Void>> callables = new ArrayList<>();
-
+                                        //Create thread id to each thread
                                         Stack<Integer> threadId = new Stack<>();
                                         for (int i = 1; i <= states.size(); i++){
                                             threadId.push(i);
                                         }
                                         for (ParallelState state : states){
                                             Callable<Void> callable = () -> {
+                                                //Assign thread id to restrict each thread's access to its own data
                                                 int id = threadId.pop();
-
                                                 List<Processor> paraProcessors = _processors.get(id);
                                                 Map<String, Node> paraGraph = _graphs.get(id);
                                                 Set<Node> paraFreeToSchedule = getNodes(state.rebuild(paraGraph, paraProcessors), id);
-
+                                                //Branch and Bound schedule
                                                 branchAndBoundScheduleParallel(paraProcessors, paraFreeToSchedule);
                                                 return null;
                                             };
@@ -253,9 +259,7 @@ public class ParallelScheduler extends AbstractScheduler {
         return  id;
     }
 
-    private synchronized ParallelState getOptimal(){
-        return _optimalState;
-    }
+    private synchronized ParallelState getOptimal(){ return _optimalState; }
 
     private synchronized void setOptimal(ParallelState optimal) {
         if (_controller != null) {

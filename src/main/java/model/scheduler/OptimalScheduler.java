@@ -8,7 +8,7 @@ import model.Processor;
 import java.util.*;
 
 /**
- * AbstractScheduler class that implements Branch and Bound algorithm and guarantees to find an optimal schedule
+ * Scheduler class that implements Branch and Bound algorithm and guarantees to find an optimal schedule
  */
 public class OptimalScheduler extends AbstractScheduler {
     private List<Node> _graph;
@@ -65,7 +65,7 @@ public class OptimalScheduler extends AbstractScheduler {
     @Override
     public AbstractState getSchedule(){
         schedule();
-        //update GUI state to complete if there is visualisation
+        //Update GUI state to complete if there is visualisation
         if(_controller != null) {
             _controller.completed(_optimalState);
         }
@@ -81,7 +81,6 @@ public class OptimalScheduler extends AbstractScheduler {
      * Schedules the Nodes in the list to Processors using greedy algorithm
      */
     public void schedule() {
-        //Manually schedule the first Node on the first Processor
         branchAndBoundOptimalSchedule(_freeToSchedule);
     }
 
@@ -135,7 +134,7 @@ public class OptimalScheduler extends AbstractScheduler {
             }
             if (max < _optimalState.getMaxWeight()){
                 _optimalState = new State(_processors);
-
+                //Update GUI
                 if (_controller != null) {
                     _controller.update(_optimalState.translate(),_optimalState.getMaxWeight());
                 }
@@ -144,10 +143,8 @@ public class OptimalScheduler extends AbstractScheduler {
         return optimalState;
     }
 
-    /**
-     * for test
+    /*
+        Helper method for testing
      */
-    public List<Node> getGraph() {
-        return _graph;
-    }
+    public List<Node> getGraph() { return _graph; }
 }

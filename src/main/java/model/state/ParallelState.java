@@ -5,6 +5,9 @@ import model.Processor;
 
 import java.util.*;
 
+/**
+ * Represent a state in parallel computing. Use Id (String) instead of reference of Nodes to record and rebuild one state.
+ */
 public class ParallelState extends AbstractState {
     Set<String> _scheduledNodeId = new HashSet<>();
     Set<String> _freeToScheduleId = new HashSet<>();
@@ -48,10 +51,9 @@ public class ParallelState extends AbstractState {
             n.reset();
         }
 
+        //Reschedule the input to this State
         Processor processor;
         int startTime;
-
-        //Reschedule the input to this State
         for (String nodeId : _scheduledNodeId){
             processor =  processorMap.get(translation.get(nodeId)[0]);
             startTime = Integer.parseInt(translation.get(nodeId)[1]);
