@@ -7,17 +7,19 @@ import java.io.IOException;
 import java.util.*;
 
 public class  DotFileAdapter {
-	//private List<Node> _data = new ArrayList<>();
 	private String[] _words;
 	private File _inputFile;
 
 	public DotFileAdapter(String inputPath){
-		//_data = readGraph();
 		_inputFile = new File(inputPath);
 	}
 
+	/*
+		File Input
+	 */
 	/**
-	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval from main
+	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval
+	 * from main
 	 */
 	private List<Node> readGraph() throws FileNotFoundException{
 		List<Node> data = new ArrayList<>();
@@ -87,7 +89,6 @@ public class  DotFileAdapter {
 		return  data;
 	}
 
-
 	private Map<String, Node> readMap() throws FileNotFoundException {
 		Map<String, Node> map = new HashMap<>();
 		Scanner sc = new Scanner(_inputFile);
@@ -122,7 +123,11 @@ public class  DotFileAdapter {
 		return readMap();
 	}
 
-	public void writeOptimalSchedule(State optimalState, String outputPath) throws IOException {
+
+	/*
+		File Output
+	 */
+	public void writeOptimalSchedule(AbstractState optimalState, String outputPath) throws IOException {
 		File file = new File(outputPath);
 		FileWriter fw = new FileWriter(file);
 		Scanner sc = new Scanner(_inputFile);
@@ -168,5 +173,4 @@ public class  DotFileAdapter {
 		fw.close();
 		sc.close();
 	}
-
 }

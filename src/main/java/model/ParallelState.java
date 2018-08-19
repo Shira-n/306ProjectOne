@@ -13,14 +13,11 @@ public class ParallelState extends State {
     public ParallelState(List<Processor> schedule, Set<String> freeToStart){
         _max = 0;
         _bottomWeight = 0;
-        //System.out.print("Free Nodes at this state are: ");
         if (freeToStart != null){
             for (String id : freeToStart){
                 _freeToScheduleId.add(id);
-                //System.out.print(" " + n.getId());
             }
         }
-        //System.out.println(" ");
         for (Processor p : schedule){
             //Store the schedule on a processor by a String
             _stateStringRep.put(p.getID(), p.toString());
@@ -80,16 +77,13 @@ public class ParallelState extends State {
             Map<String, String[]> translation = translate();
             Map<String, Processor> processorMap = new HashMap<>();
 
-            //System.out.println("Step 1: Try to clean current state");
             //Clear all the schedule in the input state.
             for (Processor p : processors){
                 p.clear();
                 processorMap.put(Integer.toString(p.getID()), p);
-                //System.out.println("P" + p.getID() + " put in map: size = " + p.getCurrentSchedule().size());
             }
             for (Node n : graph.values()) {
                 n.reset();
-                //System.out.println("Node" + n.getId() + ": start time= " + n.getStartTime());
             }
 
             Processor processor;
@@ -97,16 +91,11 @@ public class ParallelState extends State {
 
             //Reschedule the input to this State
             for (String nodeId : _scheduledNodeId){
-                //System.out.println("Rescheduling Node "+ n.getId());
                 processor =  processorMap.get(translation.get(nodeId)[0]);
-                //System.out.println("It was at P"+ translation.get(n.getId())[0]);
                 startTime = Integer.parseInt(translation.get(nodeId)[1]);
                 graph.get(nodeId).schedule(processor, startTime);
                 processor.addNodeAt(graph.get(nodeId), startTime);
-                //System.out.println("It was scheduled to start at "+ startTime);
-                //System.out.println("Newer P start time "+ processor.getCurrentAbleToStart());
             }
-
             return  _freeToScheduleId;
         }
 
@@ -115,7 +104,7 @@ public class ParallelState extends State {
     /*
         Helper methods for testing & debugging
      */
-    //Used in debugging
+    //Print the current schedule of this State
     public void print(){
         for (Integer i : _stateStringRep.keySet()){
             if (_stateStringRep.get(i).length() > 0) {

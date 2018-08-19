@@ -6,15 +6,16 @@ import model.Processor;
 
 import java.util.*;
 
-public class OptimalScheduler implements Scheduler{
+/**
+ * AbstractScheduler class that implements Branch and Bound algorithm and guarantees to find an optimal schedule
+ */
+public class OptimalAbstractScheduler extends AbstractScheduler {
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
-    public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
-        System.out.println("using optimal scheduler");
-        //_graph = topologicalSort(graph);
+    public OptimalAbstractScheduler(List<Node> graph, int numberOfProcessor) {
         _graph = graph;
         _freeToSchedule = findEntries(graph);
         //Calc bottom weight
@@ -33,12 +34,6 @@ public class OptimalScheduler implements Scheduler{
                 }
             }
         }
-
-        /*
-        for (int i = 0 ;i < _graph.size(); i++){
-            System.out.print(" " + _graph.get(i).getId());
-        }
-        */
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++) {
             _processors.add(new Processor(i));
@@ -79,49 +74,15 @@ public class OptimalScheduler implements Scheduler{
 
 
     /*
-        Methods that call schedule and return the final schedule in different forms.
+        Methods that call schedule and return the final schedule.
      */
-///////////////////////////////////NOT USED IN MAIN/////////////////////////////////////////////////////////
     /**
      * Return a list of scheduled processors. Used in Basic Milestone
      */
-    //TODO Change it to State!
     public State getSchedule(){
         schedule();
         return _optimalState;
     }
-
-    /**
-     * Return a list of scheduled nodes. Used in Basic Milestone
-     */
-    public Map<String, Node> getScheduledNodes() {
-        schedule();
-        Map<String, Node> schedule = new HashMap<>();
-        for (Node n : _graph) {
-            schedule.put(n.getId(), n);
-        }
-        return schedule;
-    }
-///////////////////////////////////NOT USED IN MAIN/////////////////////////////////////////////////////////
-
-
-    ///////////////////////////////////original/////////////////////////////////////////////////
-    /**
-     * Return the optimal state from Branch and Bound algorithm.
-     */
-    public State getOptimalSchedule(){
-        schedule();
-        return _optimalState;
-    }
-
-    //////////////////////////////////////AStar//////////////////////////////////////////////
-    /**
-     * Return the optimal state from Branch and Bound algorithm.
-
-    public State getOptimalSchedule(){
-        ASchedule();
-        return _optimalState;
-    }*/
 
     /*
         Schedule methods
@@ -154,7 +115,7 @@ public class OptimalScheduler implements Scheduler{
                     for (Processor processor : _processors) {
 
                         //Calculate the earliest Start time of this Node on this Processor.
-                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                        int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
                         if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
                             uniqueProcessors.add(processor);
                             //Prune:
@@ -191,23 +152,21 @@ public class OptimalScheduler implements Scheduler{
         return _optimalState;
     }
 
-
-
-
     /*
-        A*
-    */
-/*
+        A*. A Star implementation.
+
+   public State getOptimalSchedule(){
+        ASchedule();
+        return _optimalState;
+    }
+
     private void ASchedule(){
         for (State s : getNewStates(_freeToSchedule)){
             _Optimal_stateQueue.add(s);
-            //System.out.println("\nPriority queue added a new State");
-            //s.print();
         }
         AStarSchedule(_Optimal_stateQueue);
-        System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
-*/
+
     private PriorityQueue<State> _Optimal_stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
         if (s1.getMaxWeight() + s1.getBottomWeight() > s2.getMaxWeight() + s2.getBottomWeight()){
             return 1;
@@ -220,39 +179,19 @@ public class OptimalScheduler implements Scheduler{
         State state;
         Set<Node> freeToSchedule;
         while (stateQueue.size() > 1){
-
-            //System.out.println("\nQueue not empty, first state is");
             state = stateQueue.peek();
-            //state.print();
-
-            //System.out.println("Try to rebuild the state");
             freeToSchedule = state.rebuild(_graph, _processors);
-            //System.out.println("Finished rebuilding");
-
             if (freeToSchedule.size() < 1){
-                //System.out.println("it is a optimal!");
                 _optimalState = state;
-                //_optimalState.print();
                 return;
             }
-
-            //System.out.println("it is not a optimal. continue");
             stateQueue.remove(state);
-            //System.out.println("Removed this state from queue");
-
-
-            /*System.out.print("Free Nodes are for exploring its children are");
-            for (Node n : freeToSchedule){
-                System.out.print(" " + n.getId());
-            }*/
             for (State s : getNewStates(freeToSchedule)){
                 stateQueue.add(s);
             }
-
             if (Runtime.getRuntime().freeMemory() < 600_000_00L){
                 break;
             }
-
         }
         System.out.println(stateQueue.size());
         System.out.println("Switched to B&B");
@@ -266,62 +205,32 @@ public class OptimalScheduler implements Scheduler{
         }
     }
 
-    /**
+    **
      * Given a set of Nodes that are free to schedule in the current state, calculate the possible states that can be
      * generated from this state.
-     */
+     *
     private List<State> getNewStates(Set<Node> freeToSchedule){
-/*/////////////////////////////////////////////////////
-        System.out.println("\n\nCall getNewStates");
-        System.out.print("Based on free nodes");
-        for (Node node : freeToSchedule) {
-            System.out.print(" " + node.getId());
-        }
-/////////////////////////////////////////////////////*/
-
         List<State> newStates = new ArrayList<>();
-        //Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
+
         for (Node node : freeToSchedule) {
-            // Check if node is okay to schedule
-            //if (!(nodesToIgnore.contains(node))) {
-                //int bottomeWeight = Integer.MAX_VALUE;
+            //Calculate Nodes that become free because of scheduling this Node
+            Set<Node> newFreeToSchedule = node.ifSchedule();
+            newFreeToSchedule.addAll(freeToSchedule);
+            newFreeToSchedule.remove(node);
+            for (Processor processor : _processors) {
+                int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
+                node.schedule(processor, startTime);
+                processor.addNodeAt(node, startTime);
 
-                //Calculate Nodes that become free because of scheduling this Node
-                Set<Node> newFreeToSchedule = node.ifSchedule();
-                newFreeToSchedule.addAll(freeToSchedule);
-                newFreeToSchedule.remove(node);
-                /*System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
-                for (Node n : newFreeToSchedule){
-                    System.out.print(" " + n.getId());
-                }*/
-
-                for (Processor processor : _processors) {
-
-                    //System.out.println("\nNow try to schedule it on P" + processor.getID());
-                    int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-
-                    node.schedule(processor, startTime);
-                    processor.addNodeAt(node, startTime);
-
-                    //Record this State
-                    State state = new State(_processors, newFreeToSchedule);
-                    //state.print();
-                    //if (state.getBottomWeight() < bottomeWeight){
-                    //bottomeWeight = state.getBottomWeight();
-                    newStates.add(state);
-                    //System.out.println("this state is added to list of states to return");
-                    //}
-                    unscheduleNode(node);
-                }
-            //}
+                //Record this State
+                State state = new State(_processors, newFreeToSchedule);
+                newStates.add(state);
+                unscheduleNode(node);
+            }
         }
-        //System.out.println("Finish Call getNewStates\n\n");
         return newStates;
     }
-
-
-
-
+  */
 
 
 
@@ -335,29 +244,13 @@ public class OptimalScheduler implements Scheduler{
         processor.addNodeAt(node, startTime);
     }
 
-    private void unscheduleNode(Node node){
-        if (node.getProcessor() != null) {
-            node.getProcessor().removeNodeAt(node.getStartTime());
-        }
-        node.unSchedule();
-    }
 
-    private void unscheduleAfter(int pointer){
-        for (int i = pointer; i < _graph.size(); i++){
-            unscheduleNode(_graph.get(i));
-        }
-    }
 
-    private void unscheduleNode(Processor processor, Node node){
-        node.unSchedule();
-        processor.removeNodeAt(node.getStartTime());
-    }
-
-    /**
+    /*
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
-     */
-    private int infulencedByParents(Processor target, Node n) {
+
+    private int influencedByParents(Processor target, Node n) {
         int limit = 0;
         for (Node parent : n.getParents().keySet()) {
             if (parent.getProcessor().getID() == target.getID()) {
@@ -370,9 +263,8 @@ public class OptimalScheduler implements Scheduler{
     }
 
 
-    /**
      * Return true if two nodes are exchangable, false otherwise.
-     */
+     *
     private boolean internalOrderingCheck(Node node, Node visited){
         if (node.getWeight() != visited.getWeight()){
             return false;
@@ -416,7 +308,7 @@ public class OptimalScheduler implements Scheduler{
         int anotherStartTime;
         for (Processor uniqueProcessor : uniqueProcessors){
             //Calculate the earliest Start time of this Node on this Processor.
-            anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), infulencedByParents(uniqueProcessor, node));
+            anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), influencedByParents(uniqueProcessor, node));
             if (anotherStartTime == startTime && processor.toString().equals(uniqueProcessor.toString())){
                 return true;
             }
@@ -424,6 +316,13 @@ public class OptimalScheduler implements Scheduler{
         return false;
     }
 
+      private void unscheduleNode(Node node){
+        if (node.getProcessor() != null) {
+            node.getProcessor().removeNodeAt(node.getStartTime());
+        }
+        node.unSchedule();
+    }
+  */
     /*
         Getter & Setter methods for testing
      */

@@ -5,7 +5,7 @@ import model.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class ParallelScheduler implements Scheduler {
+public class ParallelAbstractScheduler extends AbstractScheduler {
     private final int MAIN_THREAD_ID = 0;
     private List<Map<String, Node>> _graphs;
     private List<List<Processor>> _processors;
@@ -17,11 +17,11 @@ public class ParallelScheduler implements Scheduler {
     private int _threadCount;
 
 
-    public ParallelScheduler(int numberOfThreads, List<Map<String, Node>> graphs, int numberOfProcessor) {
+    public ParallelAbstractScheduler(int numberOfThreads, List<Map<String, Node>> graphs, int numberOfProcessor) {
         _threadCount = numberOfThreads;
-        System.out.println("ParallelScheduler: threadCount= "+ _threadCount);
+        System.out.println("ParallelAbstractScheduler: threadCount= "+ _threadCount);
         _graphs = graphs;
-        System.out.println("ParallelScheduler: graphs size= "+ _graphs.size());
+        System.out.println("ParallelAbstractScheduler: graphs size= "+ _graphs.size());
         _executorService = Executors.newFixedThreadPool(_threadCount);
 
         //Set up N processors for each thread
@@ -98,43 +98,6 @@ public class ParallelScheduler implements Scheduler {
         return node.getBottomWeight();
     }
 
-    /**
-     * Return true if two nodes are equivalent, false otherwise.
-     * To be equivalent, two Nodes must have the same weight, the same parent set with the same communiciation cost
-     * to each corresponding parent, and the same children set with the same communication cost to each corresponding
-     * child.
-     */
-    private boolean internalOrderingCheck(Node node, Node visited){
-        //The number of parents and children of them must be the same
-        if (node.getWeight() != visited.getWeight()){
-            return false;
-        }
-        if (node.getParents().keySet().size() != visited.getParents().keySet().size()
-                || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
-            return false;
-        }
-
-        for (Node parent : node.getParents().keySet()){
-            if (visited.getParents().keySet().contains(parent) &&
-                    node.getPathWeightToParent(parent) == visited.getPathWeightToParent(parent)){
-                ;
-            }else{ //The communication cost for every parent has to be the same for both nodes
-                return false;
-            }
-        }
-
-        for (Node child : node.getChildren().keySet()){
-            if (visited.getChildren().keySet().contains(child) &&
-                    node.getPathWeightToChild(child) != visited.getPathWeightToParent(child)){
-                ;
-            }else{ //The communication cost for every child has to be the same for both nodes
-                return false;
-            }
-        }
-        return true;
-    }
-
-
 
     /*
         Schedule methods
@@ -184,7 +147,7 @@ public class ParallelScheduler implements Scheduler {
 
                         Set <Processor> uniqueProcessors = new HashSet<>();
                         for (Processor processor : processors){
-                            int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                            int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
                             if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)){
                                 uniqueProcessors.add(processor);
                                 //System.out.println("For uniqueProcessor " + processor.getID() + ": "+processor);
@@ -297,7 +260,7 @@ public class ParallelScheduler implements Scheduler {
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : processors) {
                         //Calculate the earliest Start time of this Node on this Processor.
-                        int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+                        int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
                         if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
                             uniqueProcessors.add(processor);
                             //Prune:
@@ -334,13 +297,13 @@ public class ParallelScheduler implements Scheduler {
     }
 
     /*
-        Scheduler helper methods
+        AbstractScheduler helper methods
      */
 
-    /**
+    /*
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
-     */
+
     private int infulencedByParents(Processor target, Node n) {
         int limit = 0;
         for (Node parent : n.getParents().keySet()) {
@@ -384,6 +347,49 @@ public class ParallelScheduler implements Scheduler {
         return false;
     }
 
+
+    /**
+     * Return true if two nodes are equivalent, false otherwise.
+     * To be equivalent, two Nodes must have the same weight, the same parent set with the same communiciation cost
+     * to each corresponding parent, and the same children set with the same communication cost to each corresponding
+     * child.
+     *
+    private boolean internalOrderingCheck(Node node, Node visited){
+        //The number of parents and children of them must be the same
+        if (node.getWeight() != visited.getWeight()){
+            return false;
+        }
+        if (node.getParents().keySet().size() != visited.getParents().keySet().size()
+                || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
+            return false;
+        }
+
+        for (Node parent : node.getParents().keySet()){
+            if (visited.getParents().keySet().contains(parent) &&
+                    node.getPathWeightToParent(parent) == visited.getPathWeightToParent(parent)){
+                ;
+            }else{ //The communication cost for every parent has to be the same for both nodes
+                return false;
+            }
+        }
+
+        for (Node child : node.getChildren().keySet()){
+            if (visited.getChildren().keySet().contains(child) &&
+                    node.getPathWeightToChild(child) != visited.getPathWeightToParent(child)){
+                ;
+            }else{ //The communication cost for every child has to be the same for both nodes
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    */
+
+    /*
+        Helper methods
+     */
     private Set<Node> getNodes(Set<String> id, int threadId){
         Set<Node> nodes = new HashSet<>();
         for (String s : id){
