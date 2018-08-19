@@ -19,7 +19,7 @@
             <Image url="@image/background.jpg" />
          </image>
       </ImageView>
-      <Pane fx:id="_ganttPane" layoutX="10.0" layoutY="25.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: transparent;">
+      <Pane fx:id="_ganttPane" layoutX="10.0" layoutY="40.0" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: transparent;">
          <children>
             <Button fx:id="_quit1" layoutX="877.0" layoutY="-20.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
                <font>
@@ -27,7 +27,7 @@
                </font>
             </Button>
          </children></Pane>
-      <Pane fx:id="_graphPane" style="-fx-opacity: 0.7; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="_graphPane" style="-fx-opacity: 1; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <SwingNode fx:id="_swingNode" layoutX="0.0" layoutY="0.0" />
             <Button fx:id="_quit" layoutX="902.0" mnemonicParsing="false" onAction="#handlePressQuit" style="-fx-background-color: transparent;" text="X" textFill="WHITE">
@@ -35,6 +35,16 @@
                   <Font name="Arial Bold" size="26.0" />
                </font>
             </Button>
+            <Label layoutX="17.0" layoutY="16.0" text="File: " textFill="WHITE">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="_fileName" layoutX="55.0" layoutY="16.0" text="Nodes_8_Random" textFill="WHITE">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane fx:id="_buttonPane" style="-fx-opacity: 0.8; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0">
@@ -49,11 +59,11 @@
             </Label>
             <HBox layoutX="200.0" prefHeight="100.0" prefWidth="400.0" style="-fx-border-color: grey;">
                <children>
-                  <VBox prefWidth="225.0" HBox.hgrow="ALWAYS">
+                  <VBox prefWidth="255.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label prefWidth="200.0" text="Status" textFill="WHITE">
                            <font>
-                              <Font name="Arial" size="17.0" />
+                              <Font name="Arial" size="15.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -64,7 +74,7 @@
                         </Label>
                         <Label prefHeight="150.0" text="Current best schedule finishing time" textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Arial" size="17.0" />
+                              <Font name="Arial" size="15.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -75,11 +85,11 @@
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="130.0" prefWidth="225.0" HBox.hgrow="ALWAYS">
+                  <VBox prefHeight="130.0" prefWidth="210.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label fx:id="_status" prefHeight="150.0" prefWidth="200.0" text="Computing" textFill="#ffab5d">
                            <font>
-                              <Font name="Arial" size="22.0" />
+                              <Font name="Arial" size="20.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -90,7 +100,7 @@
                         </Label>
                         <Label fx:id="_currentBestTime" prefHeight="150.0" prefWidth="200.0" text="33 Seconds  " textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Arial" size="22.0" />
+                              <Font name="Arial" size="20.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -109,7 +119,7 @@
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Scheduling" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Arial" size="20.0" />
+                              <Font name="Arial" size="18.0" />
                            </font>
                            <padding>
                               <Insets left="20.0" />
@@ -137,7 +147,7 @@
                                     </Label>
                                     <Label fx:id="_numNode1" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="tasks" textFill="WHITE" wrapText="true">
                                        <font>
-                                          <Font name="Arial" size="16.0" />
+                                          <Font name="Arial" size="14.0" />
                                        </font>
                                        <padding>
                                           <Insets left="10.0" />
@@ -156,7 +166,7 @@
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="To allocate to" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Arial" size="20.0" />
+                              <Font name="Arial" size="18.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -181,7 +191,7 @@
                                     </Label>
                                     <Label fx:id="_numNode11" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="processors" textFill="WHITE" wrapText="true">
                                        <font>
-                                          <Font name="Arial" size="16.0" />
+                                          <Font name="Arial" size="14.0" />
                                        </font>
                                        <padding>
                                           <Insets left="10.0" />
@@ -203,7 +213,7 @@
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Using" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Arial" size="20.0" />
+                              <Font name="Arial" size="18.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -231,7 +241,7 @@
                                     </Label>
                                     <Label fx:id="_numNode111" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="threads" textFill="WHITE" wrapText="true">
                                        <font>
-                                          <Font name="Arial" size="16.0" />
+                                          <Font name="Arial" size="14.0" />
                                        </font>
                                        <padding>
                                           <Insets left="10.0" />
@@ -260,12 +270,12 @@
                <children>
                   <Button fx:id="_start" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="70.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Start" textFill="WHITE" HBox.hgrow="ALWAYS">
                      <font>
-                        <Font name="Arial" size="25.0" />
+                        <Font name="Arial" size="23.0" />
                      </font>
                   </Button>
                   <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="70.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Display Chart" textFill="WHITE">
                      <font>
-                        <Font name="Arial" size="25.0" />
+                        <Font name="Arial" size="23.0" />
                      </font>
                   </Button>
                </children>

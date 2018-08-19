@@ -99,6 +99,9 @@ public class Controller{
     @FXML
     private Button _gantt;
 
+    @FXML
+    private Label _fileName;
+
     /**
      * Method to initialise all components in JavaFX window
      */
@@ -148,6 +151,7 @@ public class Controller{
         _numNode.setText(GUIEntry.getNumNode() + "");
         _numProcessor.setText(GUIEntry.getNumProcessor() + "");
         _isParallel.setText(GUIEntry.getParallelised() + "");
+        _fileName.setText(GUIEntry.getFilename()+"");
     }
 
 
