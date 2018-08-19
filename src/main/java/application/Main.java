@@ -53,6 +53,10 @@ public class Main {
             readOptionalArgs(args);
             checkOutputFile(_outputFile);
             _graph = _reader.getData();
+            if (_graph.size() < 1){
+                Notification.message("Input file is empty. No schedule needed.");
+                System.exit(0);
+            }
 
             if (_noOfThreads > 1){ //Multithreading
                 _scheduler = getParallelScheduler();
@@ -153,7 +157,6 @@ public class Main {
         }
     }
 
-    //TODO @Jenny
     //Ask the user to overwrite the output file if exists
     private static void checkOutputFile(String filepath){
         File tmpDir = new File(filepath);
