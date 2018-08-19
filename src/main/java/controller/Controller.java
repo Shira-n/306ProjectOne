@@ -2,39 +2,27 @@ package controller;
 
 
 import application.Main;
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.GaugeBuilder;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.chart.ChartData;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 import model.State;
 import model.scheduler.Scheduler;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
-
-import javax.management.ObjectName;
 import javax.script.ScriptException;
 import javax.swing.*;
 
 import java.awt.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -43,16 +31,11 @@ import java.util.concurrent.FutureTask;
 
 
 /**
- * Controller class for the MainWindow. Initialise all components on the pane.
+ * Controller class for the Main. Initialise and monitors all components in the Window.
  */
 public class Controller{
-
-
+    
     private SingleGraph _graph;
-
-    private Timeline _timeline;
-
-    private int _timeSeconds;
 
     private ColourManager _colourMgr;
 
@@ -62,13 +45,11 @@ public class Controller{
 
     private GUITimer _timer;
 
-    private State _optimalSchedule;
-
-    private Gauge _gauge;
-
     private Tile _tile;
 
     private FutureTask _futureTask;
+
+    private State _optimalState;
 
     private ChartData _data1 = new ChartData("D1",0,Tile.LIGHT_GREEN);
     private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
@@ -183,11 +164,21 @@ public class Controller{
     */
     @FXML
     public void handlePressStart(ActionEvent event) {
+        //set status label to computing
         _status.setText("Computing");
+
+        //start timer
         _timer.startTimer();
+
+        //set gantt chart to invisible, only displays after computation finishes
         _ganttPane.setVisible(false);
+
+
         Controller controller = this;
+        //get the scheduler instance that does the algorithm computation
         Scheduler scheduler = GUIEntry.getScheduler();
+
+        //run the algorithm using Callable which returns an optimal State
         Callable task = new Callable() {
             @Override
             public State call() throws ScriptException {
@@ -198,6 +189,8 @@ public class Controller{
         };
         _futureTask = new FutureTask<State>(task);
         Thread algorithmThread = new Thread(_futureTask);
+
+        //start algorithm on another thread
         algorithmThread.start();
     }
 
@@ -213,11 +206,11 @@ public class Controller{
      * @param updatedState
      */
     public synchronized void update(Map<String,String[]> updatedState) {
-        System.out.println("update called");
         //this is running on JavaFx Thread now
         Platform.runLater(() -> {
-            System.out.println("UPDATE");
             for (String nodeID : updatedState.keySet()) {
+
+                //update graph with new start time and the processor on which the node is allocated
                 String[] nodeInfo = updatedState.get(nodeID);
                 Node node = _graph.getNode(nodeID);
                 System.out.println(node.getAttribute("startTime") + "");
@@ -234,6 +227,7 @@ public class Controller{
                 if (node.getAttribute("processor") == null) {
                     System.out.println("hi");
                 }
+                //update the graph visualisation using the new info
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -249,25 +243,27 @@ public class Controller{
      */
     private void initGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-
+        //get the Single Graph instance of the input graph
         _graph = GUIEntry.getGraph();
 
-        //Viewer viewer = new Viewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         _viewer = new GraphViewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD,_colourMgr);
 
+        //set graph background colour
         _graph.addAttribute("ui.stylesheet", "graph {\n" +
                 "fill-mode: gradient-vertical;\n" +
                 "fill-color:  #405d60, #202033;\n" +
                 "padding: 20px;\n" +
                 "}");
-        //_graph.addAttribute("ui.stylesheet", "node { fill-color: rgba(255,0,0,255); }");
-
         _viewer.enableAutoLayout();
+
+        //set graph to show in existing Javafx window
         ViewPanel viewPanel = _viewer.addDefaultView(false);
         viewPanel.setBackground(Color.blue);
         viewPanel.setMinimumSize(new Dimension(900, 500));
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.black);
+
+        //in order to display graph, it is wrapped in a SwingNode object
         SwingUtilities.invokeLater(() -> {
             _swingNode.setContent(viewPanel);
         });
@@ -277,6 +273,9 @@ public class Controller{
 
     }
 
+    /**
+     * Initialise the Info labels in the GUI
+     */
     private void initLabels() {
         //only show Gatt chart after computation is finished
         _ganttPane.setVisible(false);
@@ -291,10 +290,13 @@ public class Controller{
     }
 
 
+    /**
+     * Method is called to display a Gantt chart at the end of computation.
+     */
     private void drawGanttChart() {
         Platform.runLater(() -> {
             System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
-            GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
+            GanttChart chart = new GanttChart(_optimalState, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
             _ganttPane.getChildren().add(chart.createGraph());
             _ganttPane.setBackground(Background.EMPTY);
             _ganttPane.setVisible(true);
@@ -302,8 +304,13 @@ public class Controller{
 
     }
 
-    public synchronized  void setTimer(int count) {
 
+    /**
+     * Method called to update timer label
+     * @param count
+     */
+    public synchronized  void setTimer(int count) {
+        //calculations so that time displays in the right format
         Platform.runLater(() -> {
             String minZeroPlaceholder ="";
             String secZeroPlaceholder = "";
@@ -325,6 +332,9 @@ public class Controller{
 
     }
 
+    /**
+     * Called by algorithm when computation is complete
+     */
     public synchronized void completed() {
         Platform.runLater(new Runnable() {
             @Override
@@ -334,8 +344,10 @@ public class Controller{
             }
         });
         try {
-            State state = (State)_futureTask.get();
-            Main.writeResult(state);
+            //get the optimal state calculated by the algorithm
+            _optimalState = (State)_futureTask.get();
+            //write the optimal state out to a file
+            Main.writeResult(_optimalState);
         }catch (InterruptedException e) {
             e.printStackTrace();
         }catch (ExecutionException ex) {
@@ -344,6 +356,11 @@ public class Controller{
 
     }
 
+
+    /**
+     * Called when user presses exit on the top right corner
+     * @param event
+     */
     @FXML
     public void handlePressQuit(ActionEvent event) {
         Platform.exit();
