@@ -160,16 +160,18 @@ public class GanttChart {
             Color color = Color.web(colorString);
             rectangle.setFill(color);
             rectangle.setStroke(_lineColor);
+            Label label = new Label(node.getId());
 
             //adds tha name of the node as a label at the center of the node rectangle
-            Label label = new Label(node.getId());
+            double startHeight = _verticalUnit+3 * (processor-1) * _verticalUnit + _YAxisStart;
+            double fontWidth = (fontSize(label))[1];
+
             if (_numProcessors<10){
                 label.setStyle("-fx-font-size:16px;");
-                fontHeight = 0;
+                //fontHeight = 0;
             }
-            double fontWidth = (fontSize(label))[1];
             label.setLayoutX(startX + (width)/2 - fontWidth/2);
-            label.setLayoutY(startY + 0.5*_verticalUnit + fontHeight + fontHeight/3);
+            label.setLayoutY(startHeight+0.5*_verticalUnit+fontHeight);
 
             //adds labels on top right of node to indicate start time
             if(startTime!=0) {
@@ -215,14 +217,11 @@ public class GanttChart {
 
             Label label = new Label("Processor " + (Integer.toString(i + 1)));
 
-            label.setLayoutX(_XAxisStart - 70);
+            label.setLayoutX(_XAxisStart - 80);
             label.setLayoutY(startHeight+0.5*_verticalUnit+fontHeight + fontHeight/_numProcessors);
             label.setTextFill(_lineColor);
 
-            Circle circle = new Circle(_XAxisStart, startHeight,1);
-
             _root.getChildren().add(label);
-            _root.getChildren().add(circle);
         }
     }
 

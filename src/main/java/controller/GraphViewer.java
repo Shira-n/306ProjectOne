@@ -36,9 +36,9 @@ public class GraphViewer extends Viewer {
                      node.getId()+"");
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     +"\tstroke-mode: plain; stroke-color:grey; stroke-width: 3px;"
-                    + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
+                    + "\tfill-mode: plain; fill-color: rgb(255,255,255);\n"
                     + "\tsize: 30px, 30px;\n"
-                    + "\ttext-size: 15px; text-color: white;\n");
+                    + "\ttext-size: 15px; text-color: black;\n");
         }
 
         for(int i =0; i< _graph.getEdgeCount(); i++) {
@@ -75,10 +75,9 @@ public class GraphViewer extends Viewer {
         node.removeAttribute("ui.style");
         node.addAttribute("ui.style", "text-alignment: center;\n"
                 +"\tstroke-mode: plain; stroke-color: " + processorColour + "; stroke-width: 3px;"
-                + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
-
+                + "\tfill-mode: plain; fill-color: " + processorColour +";\n"
                 + "\tsize: 30px, 30px;\n"
-                + "\ttext-size: 20px; text-color: " + processorColour + ";\n");
+                + "\ttext-size: 20px; text-color: black;\n");
         Sprite sprite = _mgr.addSprite("Node" + node.getId());
         sprite.addAttribute("ui.label", "P" + node.getAttribute("processor")
                 + "   Start: " + node.getAttribute("startTime"));
@@ -86,6 +85,8 @@ public class GraphViewer extends Viewer {
                 + "\ttext-background-mode: rounded-box;\n"
                 + "\ttext-alignment: under;\n"
                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
+                + "\tpadding: 2px\n;"
+                + "\ttext-background-color: rgba(255,255,255,120);\n"
                 + "\ttext-size: 16px;\n");
         sprite.attachToNode(node.getId());
 

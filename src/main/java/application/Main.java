@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+
 import model.Node;
 import model.scheduler.AbstractScheduler;
 import controller.Controller;
@@ -49,7 +51,7 @@ public class Main {
 
             //Read optional arguments to decide visualisation, parallelisation and customized output filename
             readOptionalArgs(args);
-
+            checkOutputFile(_outputFile);
             _graph = _reader.getData();
 
             if (_noOfThreads > 1){ //Multithreading
@@ -60,7 +62,7 @@ public class Main {
 
             //TODO GUI option here
             if (_visualisation) {
-                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, false);
+                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, _noOfThreads>1);
             }
             else {
                 _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
@@ -150,6 +152,25 @@ public class Main {
         if (!fileExists){
             Notification.message("Error: File does not exist");
             System.exit(1);
+        }
+    }
+
+    //TODO @Jenny
+    //Ask the user to overwrite the output file if exists
+    private static void checkOutputFile(String filepath){
+        File tmpDir = new File(filepath);
+        boolean exists = tmpDir.exists();
+        if(exists) {
+            StringBuffer s = new StringBuffer("File name exists, do you want to override y/n");
+            System.out.println(s);
+            Scanner scanner = new Scanner(System.in);
+            String response = scanner.nextLine();
+            if (response.contains("y")) {
+                tmpDir.delete();
+            } else {
+                Notification.message("File not overriden, system exiting");
+                System.exit(1);
+            }
         }
     }
 

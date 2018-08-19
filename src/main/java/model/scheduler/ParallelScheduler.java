@@ -91,6 +91,10 @@ public class ParallelScheduler extends AbstractScheduler {
         }
         _executorService.shutdown();
         System.out.println("Weight = "+_optimalState.getMaxWeight());
+
+        if (_controller != null) {
+            _controller.completed(_optimalState);
+        }
         return  _optimalState;
     }
 
@@ -249,6 +253,9 @@ public class ParallelScheduler extends AbstractScheduler {
     }
 
     private synchronized void setOptimal(ParallelState optimal) {
+        if (_controller != null) {
+            _controller.update(optimal.translate(),optimal.getMaxWeight());
+        }
         _optimalState = optimal;
     }
 }

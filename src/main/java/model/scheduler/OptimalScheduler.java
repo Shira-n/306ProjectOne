@@ -139,7 +139,7 @@ public class OptimalScheduler extends AbstractScheduler {
                 _optimalState = new State(_processors);
 
                 if (_controller != null) {
-                    _controller.update(_optimalState.translate());
+                    _controller.update(_optimalState.translate(),_optimalState.getMaxWeight());
                 }
             }
         }
