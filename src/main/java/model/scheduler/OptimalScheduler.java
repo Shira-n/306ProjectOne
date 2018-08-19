@@ -94,6 +94,11 @@ public class OptimalScheduler implements Scheduler{
     //TODO Change it to State!
     public State getSchedule(){
         schedule();
+
+        //update GUI state to complete if there is visualisation
+        if(_controller != null) {
+            _controller.completed();
+        }
         return _optimalState;
     }
 
@@ -199,10 +204,7 @@ public class OptimalScheduler implements Scheduler{
                 //optimalState.print();
             }
         }
-        //update GUI state to complete if there is visualisation
-        if(_controller != null) {
-            _controller.completed();
-        }
+
 
         //System.out.println("completed");
         return _optimalState;

@@ -39,7 +39,7 @@
                         <Font name="Calibri Light" size="40.0" />
                      </font>
                   </Button>
-                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Display Gantt Chart" textFill="WHITE">
+                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Display Gantt Chart" textFill="WHITE">
                      <font>
                         <Font name="Calibri Light" size="40.0" />
                      </font>

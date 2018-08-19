@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
@@ -25,16 +26,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 
 /**
  * Controller class for the Main. Initialise and monitors all components in the Window.
  */
 public class Controller{
-    
+
     private SingleGraph _graph;
 
     private ColourManager _colourMgr;
@@ -50,6 +49,10 @@ public class Controller{
     private FutureTask _futureTask;
 
     private State _optimalState;
+
+    private Future<State> _result;
+
+    private AlgorithmThread _algoThread;
 
     private ChartData _data1 = new ChartData("D1",0,Tile.LIGHT_GREEN);
     private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
@@ -90,6 +93,12 @@ public class Controller{
     @FXML
     private SwingNode _swingNode;
 
+    @FXML
+    private Button _start;
+
+    @FXML
+    private Button _gantt;
+
     /**
      * Method to initialise all components in JavaFX window
      */
@@ -112,22 +121,66 @@ public class Controller{
         initDataPane();
     }
 
+
     /**
-     * Update the CPU chart by specifying four new data values for the chart.
-     * @param cpu1
-     * @param cpu2
-     * @param cpu3
-     * @param cpu4
+     * Create a colour manager instance which generates colour for each of the processors
      */
-    public void updateCPU(double cpu1, double cpu2, double cpu3, double cpu4) {
-        Platform.runLater(() -> {
-            _data1.setValue(cpu1);
-            _data2.setValue(cpu2);
-            _data3.setValue(cpu3);
-            _data4.setValue(cpu4);
-        });
+    private void initColour() {
+        _colourMgr = new ColourManager(GUIEntry.getNumProcessor());
     }
 
+
+
+    /**
+     * Initialise the Info labels in the GUI
+     */
+    private void initLabels() {
+        //only show Gatt chart after computation is finished
+        _ganttPane.setVisible(false);
+        _gantt.setDisable(true);
+        _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#423222"));
+
+        //set labels to values corresponding to the current computation graph
+        _status.setText("Not Started");
+        _currentBestTime.setText("NA");
+        _numNode.setText(GUIEntry.getNumNode() + "");
+        _numProcessor.setText(GUIEntry.getNumProcessor() + "");
+        _isParallel.setText(GUIEntry.getParallelised() + "");
+    }
+
+
+    /**
+     * Initialise the node graph to display the initial state of the graph.
+     */
+    private void initGraph() {
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        //get the Single Graph instance of the input graph
+        _graph = GUIEntry.getGraph();
+
+        _viewer = new GraphViewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD,_colourMgr);
+
+        //set graph background colour
+        _graph.addAttribute("ui.stylesheet", "graph {\n" +
+                "fill-mode: gradient-vertical;\n" +
+                "fill-color:  #405d60, #202033;\n" +
+                "padding: 20px;\n" +
+                "}");
+        _viewer.enableAutoLayout();
+
+        //set graph to show in existing Javafx window
+        ViewPanel viewPanel = _viewer.addDefaultView(false);
+        viewPanel.setBackground(Color.blue);
+        viewPanel.setMinimumSize(new Dimension(900, 500));
+        viewPanel.setOpaque(false);
+        viewPanel.setBackground(Color.black);
+
+        //in order to display graph, it is wrapped in a SwingNode object
+        SwingUtilities.invokeLater(() -> {
+            _swingNode.setContent(viewPanel);
+        });
+        _swingNode.setLayoutX(25);
+        _swingNode.setLayoutY(35);
+    }
 
     /**
      * Data pane contains the CPU chart.
@@ -156,49 +209,6 @@ public class Controller{
 
         //start collecting CPU info on another thread
         info.run();
-    }
-
-    /**
-    * Method that handles action when user clicks start button. Action includes run algorhtm on a new thread, start
-     * timer, and change appropriate labels
-    */
-    @FXML
-    public void handlePressStart(ActionEvent event) {
-        //set status label to computing
-        _status.setText("Computing");
-
-        //start timer
-        _timer.startTimer();
-
-        //set gantt chart to invisible, only displays after computation finishes
-        _ganttPane.setVisible(false);
-
-
-        Controller controller = this;
-        //get the scheduler instance that does the algorithm computation
-        Scheduler scheduler = GUIEntry.getScheduler();
-
-        //run the algorithm using Callable which returns an optimal State
-        Callable task = new Callable() {
-            @Override
-            public State call() throws ScriptException {
-                System.out.print("IN THREAD");
-                scheduler.setController(controller);
-                return scheduler.getSchedule();
-            }
-        };
-        _futureTask = new FutureTask<State>(task);
-        Thread algorithmThread = new Thread(_futureTask);
-
-        //start algorithm on another thread
-        algorithmThread.start();
-    }
-
-    /**
-     * Create a colour manager instance which generates colour for each of the processors
-     */
-    private void initColour() {
-        _colourMgr = new ColourManager(GUIEntry.getNumProcessor());
     }
 
     /**
@@ -238,56 +248,6 @@ public class Controller{
         });
     }
 
-    /**
-     * Initialise the node graph to display the initial state of the graph.
-     */
-    private void initGraph() {
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-        //get the Single Graph instance of the input graph
-        _graph = GUIEntry.getGraph();
-
-        _viewer = new GraphViewer(_graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD,_colourMgr);
-
-        //set graph background colour
-        _graph.addAttribute("ui.stylesheet", "graph {\n" +
-                "fill-mode: gradient-vertical;\n" +
-                "fill-color:  #405d60, #202033;\n" +
-                "padding: 20px;\n" +
-                "}");
-        _viewer.enableAutoLayout();
-
-        //set graph to show in existing Javafx window
-        ViewPanel viewPanel = _viewer.addDefaultView(false);
-        viewPanel.setBackground(Color.blue);
-        viewPanel.setMinimumSize(new Dimension(900, 500));
-        viewPanel.setOpaque(false);
-        viewPanel.setBackground(Color.black);
-
-        //in order to display graph, it is wrapped in a SwingNode object
-        SwingUtilities.invokeLater(() -> {
-            _swingNode.setContent(viewPanel);
-        });
-        _swingNode.setLayoutX(25);
-        _swingNode.setLayoutY(35);
-
-
-    }
-
-    /**
-     * Initialise the Info labels in the GUI
-     */
-    private void initLabels() {
-        //only show Gatt chart after computation is finished
-        _ganttPane.setVisible(false);
-
-        //set labels to values corresponding to the current computation graph
-        _status.setText("Not Started");
-        _currentBestTime.setText("NA");
-        _numNode.setText(GUIEntry.getNumNode() + "");
-        _numProcessor.setText(GUIEntry.getNumProcessor() + "");
-        _isParallel.setText(GUIEntry.getParallelised() + "");
-
-    }
 
 
     /**
@@ -336,24 +296,86 @@ public class Controller{
      * Called by algorithm when computation is complete
      */
     public synchronized void completed() {
+        System.out.println("Get Complete");
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 _status.setText("Completed");
-                //drawGanttChart();
+                _gantt.setDisable(false);
+                _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#FFFFFF"));
             }
         });
-        try {
+
+            System.out.println("HERE");
             //get the optimal state calculated by the algorithm
-            _optimalState = (State)_futureTask.get();
+            //_optimalState = _result.get();
+
+            _optimalState = _algoThread.getOptimalState();
+            System.out.println("THERE" + _optimalState);
             //write the optimal state out to a file
             Main.writeResult(_optimalState);
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        }catch (ExecutionException ex) {
-            ex.printStackTrace();
-        }
+            System.out.println("complete");
+            drawGanttChart();
 
+
+    }
+
+    /**
+     * Update the CPU chart by specifying four new data values for the chart.
+     * @param cpu1
+     * @param cpu2
+     * @param cpu3
+     * @param cpu4
+     */
+    public void updateCPU(double cpu1, double cpu2, double cpu3, double cpu4) {
+        Platform.runLater(() -> {
+            _data1.setValue(cpu1);
+            _data2.setValue(cpu2);
+            _data3.setValue(cpu3);
+            _data4.setValue(cpu4);
+        });
+    }
+
+    /**
+     * Method that handles action when user clicks start button. Action includes run algorhtm on a new thread, start
+     * timer, and change appropriate labels
+     */
+    @FXML
+    public void handlePressStart(ActionEvent event) {
+        //disable start button
+        _start.setDisable(true);
+
+        _start.setTextFill(javafx.scene.paint.Paint.valueOf("#423222"));
+        //set status label to computing
+        _status.setText("Computing");
+
+        //start timer
+        _timer.startTimer();
+
+        //set gantt chart to invisible, only displays after computation finishes
+        _ganttPane.setVisible(false);
+
+
+        Controller controller = this;
+        //get the scheduler instance that does the algorithm computation
+        Scheduler scheduler = GUIEntry.getScheduler();
+
+        /*
+        //run the algorithm using Callable which returns an optimal State
+        Callable task = new Callable() {
+            @Override
+            public State call() throws ScriptException {
+                System.out.print("IN THREAD");
+                scheduler.setController(controller);
+                return scheduler.getSchedule();
+            }
+        };
+
+        ExecutorService service = Executors.newFixedThreadPool(2);
+        _result = service.submit(task);
+        */
+        _algoThread = new AlgorithmThread(scheduler,controller);
+        _algoThread.start();
     }
 
 
@@ -365,6 +387,12 @@ public class Controller{
     public void handlePressQuit(ActionEvent event) {
         Platform.exit();
         System.exit(0);
+    }
+
+
+    @FXML
+    public void handlePressGantt(ActionEvent event) {
+        _ganttPane.setVisible(true);
     }
 
 
