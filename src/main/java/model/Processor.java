@@ -28,18 +28,6 @@ public class Processor {
         _bottomWeight = 0;
     }
 
-    /**
-     * Constructor for making Deep Copy of a processor. Used in processor normalization
-     * @param another - the processor you want to deep copy.
-     */
-    public Processor(Processor another) {
-        this._pid = another._pid;
-        this._currentAbleToStart = another._currentAbleToStart;
-        this._currentSchedule = another._currentSchedule;
-        this._bottomWeight = another._currentAbleToStart;
-    }
-
-
     /*
         Getters
      */

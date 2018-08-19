@@ -83,14 +83,14 @@ public class OptimalScheduler extends AbstractScheduler {
      */
     public void schedule() {
         //Manually schedule the first Node on the first Processor
-        bbOptimalSchedule(_freeToSchedule);
+        branchAndBoundOptimalSchedule(_freeToSchedule);
         System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
     /**
      * Branch and Bound algorithm. Recursively explore all the possible schedule and find the optimal schedule.
      */
-    private State bbOptimalSchedule(Set<Node> freeToSchedule){
+    private State branchAndBoundOptimalSchedule(Set<Node> freeToSchedule){
         State optimalState = new State();
 
         //If there is still a Node to schedule
@@ -101,7 +101,6 @@ public class OptimalScheduler extends AbstractScheduler {
             for (Node node : freeToSchedule) {
                 if (!equivalentNode(node, uniqueNodes)){
                     uniqueNodes.add(node);
-
                     //Prune:
                     //Processor Normalisation
                     Set<Processor> uniqueProcessors = new HashSet<>();
@@ -122,7 +121,7 @@ public class OptimalScheduler extends AbstractScheduler {
                                 newFreeToSchedule.addAll(freeToSchedule);
                                 newFreeToSchedule.remove(node);
                                 //Recursively investigating
-                                bbOptimalSchedule(newFreeToSchedule);
+                                branchAndBoundOptimalSchedule(newFreeToSchedule);
                                 //Un-schedule this Node to allow it being scheduled on next Processor.
                                 unscheduleNode(node);
                             }

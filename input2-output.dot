@@ -1,0 +1,22 @@
+digraph example {
+    a [Weight=2,Start=0,Processor=2];
+    b [Weight=3,Start=0,Processor=1];
+    c [Weight=5,Start=2,Processor=2];
+    d [Weight=6,Start=9,Processor=2];
+    e [Weight=3,Start=5,Processor=1];
+    f [Weight=2,Start=3,Processor=1];
+    g [Weight=2,Start=7,Processor=2];
+    h [Weight=1,Start=15,Processor=2];
+    i [Weight=3,Start=15,Processor=1];
+    j [Weight=7,Start=8,Processor=1];
+    a -> c [Weight=2];
+    a -> d [Weight=5];
+    b -> d [Weight=5];
+    b -> e [Weight=2];
+    b -> f [Weight=7];
+    c -> g [Weight=6];
+    d -> h [Weight=4];
+    e -> j [Weight=3];
+    f -> j [Weight=9];
+    e -> i [Weight=2];
+}

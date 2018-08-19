@@ -1,6 +1,5 @@
 package model.scheduler;
 
-import controller.Controller;
 import model.*;
 import model.state.AbstractState;
 import model.state.ParallelState;
