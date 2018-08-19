@@ -131,10 +131,6 @@ public class State {
         Helper methods for testing & debugging
      */
 
-    public State(Map<Integer, String> state){
-        _stateStringRep = state;
-    }
-
     //Used in debugging
     public void print(){
         for (Integer i : _stateStringRep.keySet()){

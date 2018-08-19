@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import model.*;
 import model.scheduler.OptimalScheduler;
-import model.scheduler.ParaTest;
 import model.scheduler.ParallelScheduler;
 import model.scheduler.Scheduler;
 
@@ -160,7 +158,7 @@ public class Main {
             System.out.println("Main: One map created");
         }
         System.out.println("Main: Parallel scheduler created");
-        return new ParaTest(_noOfThreads, graphs, _noOfProcessors);
+        return new ParallelScheduler(_noOfThreads, graphs, _noOfProcessors);
     }
 
     private static Scheduler getSequentialScheduler() throws FileNotFoundException {
