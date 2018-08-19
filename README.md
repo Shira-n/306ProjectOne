@@ -12,19 +12,17 @@ This project is about using artificial intelligence and parallel processing powe
 |Suying Shen|sshe899|517494842   |sshe899@aucklanduni.ac.nz   |sueyin   |
 
 ## Installation introduction ##
-### Basic Milestone
 
-Basic Milestone release: https://github.com/Shira-n/306ProjectOne/releases
-
-Available from August 6 2018, 12pm.
-1. Download Scheduler.jar
+Basic Milestone release: https://github.com/Shira-n/306ProjectOne/releases/tag/V1.0 Available from August 6 2018, 12pm.
+Final Milestone release: https://github.com/Shira-n/306ProjectOne/releases/tag/v2.0 Available from August 20 2018, 12pm.
+1. Download scheduler.jar
 2. Open command line
-3. Navigate to the folder containing Scheduler.jar
-4. Add the input dot file to the same level as the Scheduler.jar
-5. Run using `java -jar greedyScheduler.jar INPUT.dot 2` where INPUT.dot is the name of the input file and 2 is the number of processors to be used for the schedule. Refer to the manual below for command line options
+3. Navigate to the folder containing scheduler.jar
+4. Add the input dot file to the same level as the scheduler.jar
+5. Run using `java -jar scheduler.jar INPUT.dot 2` where INPUT.dot is the name of the input file and 2 is the number of processors to be used for the schedule. Refer to the manual below for command line options
 
 ~~~~
-java -jar greedyScheduler.jar INPUT.dot P [OPTION]
+java -jar scheduler.jar INPUT.dot P [OPTION]
 INPUT.dot  a task graph with integer weights in dot format
 P          number of processors to schedule the INPUT graph on
 
@@ -33,8 +31,6 @@ Optional:
 -v         visualise the search
 -o OUTPUT  output file is named OUTPUT (default is INPUT-output.dot)
 ~~~~
-
-NOTE: parallisation and visualise is not currently available for basic milestone
 
 Refer to wiki for more information
 Link: https://github.com/Shira-n/306ProjectOne/wiki
