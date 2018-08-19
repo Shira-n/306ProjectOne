@@ -37,11 +37,11 @@
             </Button>
          </children>
       </Pane>
-      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.8; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0">
+      <Pane fx:id="_buttonPane" style="-fx-opacity: 0.8; -fx-background-color: transparent; -fx-border-color: grey;" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0">
          <children>
             <Label fx:id="_time" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-border-color: grey;" text="00:00:00" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font name="Calibri Light" size="42.0" />
+                  <Font name="Arial" size="34.0" />
                </font>
                <padding>
                   <Insets left="10.0" />
@@ -51,20 +51,20 @@
                <children>
                   <VBox prefWidth="225.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label prefHeight="150.0" prefWidth="200.0" text="Status" textFill="WHITE">
+                        <Label prefWidth="200.0" text="Status" textFill="WHITE">
                            <font>
-                              <Font name="Calibri Light" size="19.0" />
+                              <Font name="Arial" size="17.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
                            </padding>
                            <VBox.margin>
-                              <Insets left="15.0" />
+                              <Insets left="15.0" top="15.0" />
                            </VBox.margin>
                         </Label>
-                        <Label prefHeight="150.0" text="Current Best Schedule Time" textFill="WHITE" wrapText="true">
+                        <Label prefHeight="150.0" text="Current best schedule finishing time" textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Calibri Light" size="19.0" />
+                              <Font name="Arial" size="17.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -79,7 +79,7 @@
                      <children>
                         <Label fx:id="_status" prefHeight="150.0" prefWidth="200.0" text="Computing" textFill="#ffab5d">
                            <font>
-                              <Font name="Calibri Light" size="24.0" />
+                              <Font name="Arial" size="22.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -90,7 +90,7 @@
                         </Label>
                         <Label fx:id="_currentBestTime" prefHeight="150.0" prefWidth="200.0" text="33 Seconds  " textFill="WHITE" wrapText="true">
                            <font>
-                              <Font name="Calibri Light" size="24.0" />
+                              <Font name="Arial" size="22.0" />
                            </font>
                            <padding>
                               <Insets left="10.0" />
@@ -103,115 +103,169 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox layoutY="100.0" prefHeight="100.0" prefWidth="600.0" style="-fx-border-color: grey;">
+            <HBox layoutY="100.0" prefHeight="110.0" prefWidth="600.0" style="-fx-border-color: grey;">
                <children>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@image/node.png" />
-                           </image>
-                        </ImageView>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Scheduling" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Arial" size="20.0" />
+                           </font>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets left="15.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Nodes" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
-                              <Label fx:id="_numNode" alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="5" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
+                              <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@image/node.png" />
+                                 </image>
+                              </ImageView>
+                              <HBox alignment="BASELINE_CENTER" fillHeight="false">
+                                 <children>
+                                    <Label fx:id="_numNode" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="99" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="32.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="_numNode1" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="tasks" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                              </HBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </children>
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@image/processor.png" />
-                           </image>
-                        </ImageView>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="To allocate to" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Arial" size="20.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Number of Processors" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
-                              <Label fx:id="_numProcessor" alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="2" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
+                              <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@image/processor.png" />
+                                 </image>
+                              </ImageView>
+                              <HBox alignment="BASELINE_CENTER" fillHeight="false">
+                                 <children>
+                                    <Label fx:id="_numProcessor" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="16" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="32.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="_numNode11" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="processors" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets top="20.0" />
+                                 </opaqueInsets>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                              </HBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="130.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <ImageView fitHeight="70.0" fitWidth="60.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@image/parallel.png" />
-                           </image>
-                        </ImageView>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="200.0" text="Using" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Arial" size="20.0" />
+                           </font>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets left="-10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="Parallelized" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
-                              <Label fx:id="_isParallel" alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="True" textAlignment="CENTER" textFill="WHITE" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Light" size="16.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="10.0" />
-                                 </padding>
-                              </Label>
+                              <ImageView fitHeight="55.0" fitWidth="45.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@image/parallel.png" />
+                                 </image>
+                              </ImageView>
+                              <HBox alignment="BASELINE_CENTER" fillHeight="false">
+                                 <children>
+                                    <Label fx:id="_isParallel" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="2" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="32.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="_numNode111" alignment="TOP_LEFT" contentDisplay="BOTTOM" text="threads" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets top="20.0" />
+                                 </opaqueInsets>
+                                 <HBox.margin>
+                                    <Insets top="20.0" />
+                                 </HBox.margin>
+                              </HBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </children>
-                  </HBox>
+                  </VBox>
                </children>
             </HBox>
          </children>
       </Pane>
-      <Pane fx:id="_dataPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0" />
-      <Pane style="-fx-border-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="750.0">
+      <Pane fx:id="_dataPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="550.0" />
+      <Pane style="-fx-border-color: white;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="760.0">
          <children>
-            <HBox prefHeight="80.0" prefWidth="950.0">
+            <HBox>
                <children>
-                  <Button fx:id="_start" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Start" textFill="WHITE" HBox.hgrow="ALWAYS">
+                  <Button fx:id="_start" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="70.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Start" textFill="WHITE" HBox.hgrow="ALWAYS">
                      <font>
-                        <Font name="Calibri Light" size="40.0" />
+                        <Font name="Arial" size="25.0" />
                      </font>
                   </Button>
-                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Display Gantt Chart" textFill="WHITE">
+                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressGantt" prefHeight="70.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: white;" text="Display Chart" textFill="WHITE">
                      <font>
-                        <Font name="Calibri Light" size="40.0" />
+                        <Font name="Arial" size="25.0" />
                      </font>
                   </Button>
                </children>
