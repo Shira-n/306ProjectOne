@@ -7,12 +7,13 @@ import java.util.List;
 
 
 /**
- *
+ * A class that provides coloring supports for Node graph and gantt chart. A colour value is assigned to every single
+ * processor.
  */
 public class ColourManager {
     private List<String> _colours = new ArrayList<>();
 
-
+    //16 possible colours that could be assigned to the processors
     List<String> colourChoices = new ArrayList<String>() {{
                 add("#39add1"); // light blue
                 add("#3079ab"); // dark blue
@@ -32,6 +33,11 @@ public class ColourManager {
                 add("#3B1C32");}
     };
 
+    /**
+     * Picks @numProcessor number of colours and store them.
+     * This MUST be called first before accessing before accessing any colours.
+     * @param numProcessor
+     */
     public ColourManager (int numProcessor) {
         for (int i = 0; i < numProcessor; i++) {
             int randomPickIndex  = (int)(Math.random() * (colourChoices.size()-1));
@@ -40,6 +46,12 @@ public class ColourManager {
         }
     }
 
+
+    /**
+     * Getter method that returns a String colour value for the processor parameter
+     * @param processorIndex
+     * @return
+     */
     public String getColor(int processorIndex) {
         return _colours.get(processorIndex-1);
     }

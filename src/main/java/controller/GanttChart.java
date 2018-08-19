@@ -13,6 +13,9 @@ import model.state.AbstractState;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class that constructs the Gantt chart when algorithm finishes computation.
+ */
 public class GanttChart {
     final private double _YAxisStart = 20;
     final private double _YAxisEnd = 460;

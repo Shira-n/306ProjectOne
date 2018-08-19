@@ -15,7 +15,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import model.scheduler.AbstractScheduler;
 import model.state.AbstractState;
-import org.apache.commons.math3.analysis.function.Abs;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -302,13 +301,16 @@ public class Controller{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                //change appropriate labels and buttons
                 _status.setText("Completed");
                 _gantt.setDisable(false);
                 _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#FFFFFF"));
+
+                //stops the timer
                 _timer.stopTimer();
             }
         });
-
+            //store optimal state for computing the Gantt Chart
             _optimalState = optimalState;
 
             //write the optimal state out to a file
@@ -320,7 +322,8 @@ public class Controller{
     }
 
     /**
-     * Update the CPU chart by specifying four new data values for the chart.
+     * Update the CPU chart by specifying four new data points on the chart.
+     * Called periodically by SystemInfoVisualisation which runs on another thread
      * @param cpu1
      * @param cpu2
      * @param cpu3
@@ -336,7 +339,7 @@ public class Controller{
     }
 
     /**
-     * Method that handles action when user clicks start button. Action includes run algorhtm on a new thread, start
+     * Method that handles action when user clicks start button. Action includes run algorithm on a new thread, start
      * timer, and change appropriate labels
      */
     @FXML
@@ -359,6 +362,7 @@ public class Controller{
         //get the scheduler instance that does the algorithm computation
         AbstractScheduler scheduler = GUIEntry.getScheduler();
 
+        //start algorithm thread
         _algoThread = new AlgorithmThread(scheduler,controller);
         _algoThread.start();
     }
@@ -375,13 +379,20 @@ public class Controller{
     }
 
 
+    /**
+     * Called when users clicks "Show chart"/"Show Graph" button. Switch between the Gantt chart pane and the Node graph
+     * pane
+     * @param event
+     */
     @FXML
     public void handlePressGantt(ActionEvent event) {
+        //if currently on node graph pane, switch to gantt chart
         if(_graphPane.isVisible()) {
             _gantt.setText("Display Chart");
             _ganttPane.setVisible(true);
             _graphPane.setVisible(false);
         }
+        //if currently on gantt chart pane, switch to node graph pane
         else {
             _gantt.setText("Display Graph");
             _ganttPane.setVisible(false);

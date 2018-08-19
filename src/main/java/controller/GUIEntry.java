@@ -3,7 +3,6 @@ package controller;
 import javafx.application.Application;
 import model.Node;
 import model.scheduler.AbstractScheduler;
-import org.apache.commons.math3.analysis.function.Abs;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.implementations.SingleGraph;
 
@@ -32,8 +31,10 @@ public class GUIEntry {
         _scheduler = scheduler;
         createGraph();
 
+        //creates a new timer instance
         _timer = new GUITimer();
 
+        //displays the JavaFX windwo
         Thread GUI = new Thread() {
             public void run()  {
                 Application.launch(GUIMain.class);
@@ -42,6 +43,10 @@ public class GUIEntry {
         GUI.start();
     }
 
+    /**
+     * Getter methods used by the GUI.
+     * @return
+     */
     public static SingleGraph getGraph() {
         return _graph;
     }
@@ -75,8 +80,14 @@ public class GUIEntry {
     }
 
 
+    /**
+     * Method reads in raw input nodes and transform it into a SingleGraph instance used later for graph visualisation.
+     * Nodes and edges are stored based on their ID. Edges are directed.
+     *
+     * Info such as node weight, processor number, start time is also stored which will be used in visualisation
+     */
     private void createGraph() {
-
+        //add nodes to SingleGraph
         for (Node n : _nodes) {
             org.graphstream.graph.Node node = _graph.addNode(n.getId());
             node.addAttribute("weight", String.valueOf(n.getWeight()));
@@ -85,7 +96,7 @@ public class GUIEntry {
 
 
         }
-
+        //add edges
         for (Node parent : _nodes) {
             Set<Node> children = parent.getChildren().keySet();
             for (Node c : children) {
@@ -96,6 +107,10 @@ public class GUIEntry {
         }
     }
 
+    /**
+     * Getter and setter for controller
+     * @return
+     */
     public static Controller getController() {
         return _controller;
     }
