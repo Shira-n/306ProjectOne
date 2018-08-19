@@ -120,7 +120,7 @@ public class ParallelScheduler extends AbstractScheduler {
                             if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)){
                                 uniqueProcessors.add(processor);
 
-                                if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                                if (node.getBottomWeight() + startTime <= getOptimal().getMaxWeight()) {
                                     //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
                                     Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
                                     processor.addNodeAt(node, startTime);
@@ -164,13 +164,19 @@ public class ParallelScheduler extends AbstractScheduler {
                 }
                 for (ParallelState state: states){
                     Set<String> temp  = state.rebuild(_graphs.get(MAIN_THREAD_ID), _processors.get(MAIN_THREAD_ID));
-                    paraSchedule(temp);
+                    if (temp.size() > 0) {
+                        paraSchedule(temp);
+                    }else{
+                        if (getOptimal().getMaxWeight() > state.getMaxWeight()){
+                            setOptimal(state);
+                        }
+                    }
                 }
             }
         }else{
             for (ParallelState state : states){
-                if (_optimalState.getMaxWeight() > state.getMaxWeight()){
-                    _optimalState = state;
+                if (getOptimal().getMaxWeight() > state.getMaxWeight()){
+                    setOptimal(state);
                 }
             }
         }

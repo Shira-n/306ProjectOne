@@ -10,9 +10,7 @@ import java.util.Scanner;
 
 import model.Node;
 import model.scheduler.AbstractScheduler;
-import controller.Controller;
 import controller.GUIEntry;
-import model.*;
 import model.scheduler.OptimalScheduler;
 import model.scheduler.ParallelScheduler;
 import model.state.AbstractState;
@@ -33,9 +31,6 @@ public class Main {
     private static List<Node> _graph;
 
     public static void main(String[] args) {
-        //Start Timer
-        long startTime = System.currentTimeMillis();
-
         //Handle necessary user input
         checkNecessaryInput(args);
 
@@ -54,7 +49,7 @@ public class Main {
             checkOutputFile(_outputFile);
             _graph = _reader.getData();
             if (_graph.size() < 1){
-                Notification.message("Input file is empty. No schedule needed.");
+                System.out.println("Input file is empty. No schedule needed.");
                 System.exit(0);
             }
 
@@ -64,14 +59,12 @@ public class Main {
                 _scheduler = getSequentialScheduler();
             }
 
-            //TODO GUI option here
             if (_visualisation) {
                 GUIEntry entry = new GUIEntry(_graph, _scheduler,_inputFile, _noOfProcessors, _noOfThreads);
             }
             else {
                 _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
             }
-
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
             System.exit(1);
