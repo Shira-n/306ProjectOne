@@ -1,5 +1,6 @@
 package model.scheduler;
 
+import controller.Controller;
 import model.Node;
 import model.Processor;
 import model.State;
@@ -155,6 +156,11 @@ public class GreedyScheduler implements Scheduler{
             schedule.put(n.getId(), n);
         }
         return schedule;
+    }
+
+    @Override
+    public void setController(Controller controller) {
+
     }
 
     /*

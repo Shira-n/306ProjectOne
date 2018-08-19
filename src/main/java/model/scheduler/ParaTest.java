@@ -1,5 +1,6 @@
 package model.scheduler;
 
+import controller.Controller;
 import model.*;
 
 import java.util.*;
@@ -408,5 +409,10 @@ public class ParaTest implements Scheduler {
         System.out.println(Thread.currentThread().getId() + "found a better schedule:");
         optimal.print();
         _optimalState = optimal;
+    }
+
+    @Override
+    public void setController(Controller controller) {
+
     }
 }

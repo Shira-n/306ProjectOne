@@ -179,6 +179,7 @@ public class Controller{
             @Override
             public State call() throws ScriptException {
                 System.out.print("IN THREAD");
+                scheduler.setController(controller);
                 return scheduler.getSchedule();
             }
         };

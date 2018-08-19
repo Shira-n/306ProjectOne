@@ -1,5 +1,6 @@
 package model.scheduler;
 
+import controller.Controller;
 import model.*;
 
 import java.util.*;
@@ -236,4 +237,8 @@ public class ParallelScheduler implements Scheduler{
     }
 
 
+    @Override
+    public void setController(Controller controller) {
+
+    }
 }
