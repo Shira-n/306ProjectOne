@@ -1,6 +1,7 @@
 package model.scheduler;
 
 import model.Node;
+import model.state.AbstractState;
 import model.state.State;
 import model.Processor;
 
@@ -14,6 +15,7 @@ public class OptimalScheduler extends AbstractScheduler {
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
+
 
     public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
         _graph = graph;
@@ -60,10 +62,16 @@ public class OptimalScheduler extends AbstractScheduler {
     /**
      * Return a list of scheduled processors. Used in Basic Milestone
      */
-    public State getSchedule(){
+    @Override
+    public AbstractState getSchedule(){
         schedule();
+        //update GUI state to complete if there is visualisation
+        if(_controller != null) {
+            _controller.completed();
+        }
         return _optimalState;
     }
+
 
     /*
         Schedule methods
@@ -127,16 +135,36 @@ public class OptimalScheduler extends AbstractScheduler {
             for (Processor processor : _processors){
                 max = Math.max(max, processor.getCurrentAbleToStart());
             }
-            if (max < optimalState.getMaxWeight()){
+            if (max < _optimalState.getMaxWeight()){
                 _optimalState = new State(_processors);
+
+                if (_controller != null) {
+                    _controller.update(_optimalState.translate());
+                }
             }
         }
-        return _optimalState;
+        return optimalState;
     }
+
+
+    /**
+     * for test
+     */
+    public List<Node> getGraph() {
+        return _graph;
+    }
+
 
     /*
         A*. A Star implementation.
 
+    /**
+     * Return the optimal state from Branch and Bound algorithm.
+
+     public State getOptimalSchedule(){
+     ASchedule();
+     return _optimalState;
+     }*
    public State getOptimalSchedule(){
         ASchedule();
         return _optimalState;
@@ -193,6 +221,7 @@ public class OptimalScheduler extends AbstractScheduler {
      *
     private List<State> getNewStates(Set<Node> freeToSchedule){
         List<State> newStates = new ArrayList<>();
+<<<<<<< HEAD
 
         for (Node node : freeToSchedule) {
             //Calculate Nodes that become free because of scheduling this Node
@@ -201,35 +230,54 @@ public class OptimalScheduler extends AbstractScheduler {
             newFreeToSchedule.remove(node);
             for (Processor processor : _processors) {
                 int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
+=======
+        //Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
+        for (Node node : freeToSchedule) {
+            // Check if node is okay to schedule
+            //if (!(nodesToIgnore.contains(node))) {
+            //int bottomeWeight = Integer.MAX_VALUE;
+
+            //Calculate Nodes that become free because of scheduling this Node
+            Set<Node> newFreeToSchedule = node.ifSchedule();
+            newFreeToSchedule.addAll(freeToSchedule);
+            newFreeToSchedule.remove(node);
+                System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
+                for (Node n : newFreeToSchedule){
+                    System.out.print(" " + n.getId());
+                }
+
+            for (Processor processor : _processors) {
+
+                //System.out.println("\nNow try to schedule it on P" + processor.getID());
+                int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
+
                 node.schedule(processor, startTime);
                 processor.addNodeAt(node, startTime);
 
                 //Record this State
                 State state = new State(_processors, newFreeToSchedule);
+<<<<<<< HEAD
                 newStates.add(state);
                 unscheduleNode(node);
             }
+=======
+                //state.print();
+                //if (state.getBottomWeight() < bottomeWeight){
+                //bottomeWeight = state.getBottomWeight();
+                newStates.add(state);
+                //System.out.println("this state is added to list of states to return");
+                //}
+                unscheduleNode(node);
+            }
+            //}
+>>>>>>> ad68d27ee22c9d3b783063c71e89904168736a6a
         }
         return newStates;
     }
   */
 
     /*
-        Schedule Helpers
-     */
-    private void scheduleNode(Processor processor, Node node, int startTime){
-        node.schedule(processor, startTime);
-        processor.addNodeAt(node, startTime);
-    }
-
-    /*
         Getter & Setter methods for testing
      */
 
-    /**
-     * for test
-     */
-    public List<Node> getGraph() {
-        return _graph;
-    }
 }

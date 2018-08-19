@@ -1,0 +1,6 @@
+node {
+    text-alignment: center;
+    text-background-mode: rounded-box;
+    text-background-color: yellow;
+    text-size: 16px;
+}

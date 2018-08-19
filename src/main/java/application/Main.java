@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import model.Node;
 import model.scheduler.AbstractScheduler;
+import controller.Controller;
+import controller.GUIEntry;
+import model.*;
 import model.scheduler.OptimalScheduler;
 import model.scheduler.ParallelScheduler;
+import model.state.AbstractState;
 
 public class Main {
     //By default the visualisation option is not enabled.
@@ -24,6 +27,8 @@ public class Main {
     private static int _noOfProcessors;
     private static DotFileAdapter _reader;
     private static AbstractScheduler _scheduler;
+
+    private static List<Node> _graph;
 
     public static void main(String[] args) {
         //Start Timer
@@ -39,11 +44,13 @@ public class Main {
             _reader = new DotFileAdapter(_inputFile);
             //Modify output filename
             _outputFile = _inputFile.substring(0, _inputFile.length() - 4) + _outputFile;
-            checkOutputFile(_outputFile);
             //Read number of processors.
             _noOfProcessors = Integer.parseInt(args[1]);
+
             //Read optional arguments to decide visualisation, parallelisation and customized output filename
             readOptionalArgs(args);
+
+            _graph = _reader.getData();
 
             if (_noOfThreads > 1){ //Multithreading
                 _scheduler = getParallelScheduler();
@@ -52,9 +59,13 @@ public class Main {
             }
 
             //TODO GUI option here
+            if (_visualisation) {
+                GUIEntry entry = new GUIEntry(_graph, _scheduler,"S", _noOfProcessors, false);
+            }
+            else {
+                _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
+            }
 
-            //Write result
-            _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
             System.exit(1);
@@ -65,7 +76,6 @@ public class Main {
             Notification.message("Error: IO Exception");
             System.exit(1);
         }
-
         //Stop timer
         long endTime = System.currentTimeMillis();
         System.out.println("That took "+(endTime-startTime)+" milliseconds");
@@ -143,15 +153,8 @@ public class Main {
         }
     }
 
-    //TODO @Jenny
-    //Ask the user to overwrite the output file if exists
-    private static void checkOutputFile(String filepath){
-
-    }
-
-    private static AbstractScheduler getSequentialScheduler() throws FileNotFoundException {
-        List<Node> graph = _reader.getData();
-        return new OptimalScheduler(graph, _noOfProcessors);
+    private static AbstractScheduler getSequentialScheduler() {
+        return new OptimalScheduler(_graph, _noOfProcessors);
     }
 
     private static AbstractScheduler getParallelScheduler() throws FileNotFoundException {
@@ -160,5 +163,18 @@ public class Main {
             graphs.add(_reader.getMap());
         }
         return new ParallelScheduler(_noOfThreads, graphs, _noOfProcessors);
+    }
+
+    public static AbstractScheduler getScheduler() {
+        return _scheduler;
+    }
+
+    public static void writeResult(AbstractState state) {
+        try {
+            _reader.writeOptimalSchedule(state, _outputFile);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

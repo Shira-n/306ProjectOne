@@ -1,5 +1,6 @@
 package model.scheduler;
 
+import controller.Controller;
 import model.state.AbstractState;
 import model.Node;
 import model.Processor;
@@ -8,8 +9,13 @@ import java.util.Set;
 
 public abstract class AbstractScheduler {
 
+    protected Controller _controller;
+
     public abstract AbstractState getSchedule();
 
+    public void setController(Controller controller){
+        _controller = controller;
+    }
 
     /*
         Schedule related

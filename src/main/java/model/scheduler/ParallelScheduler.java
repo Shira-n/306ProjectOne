@@ -1,5 +1,6 @@
 package model.scheduler;
 
+import controller.Controller;
 import model.*;
 import model.state.AbstractState;
 import model.state.ParallelState;
@@ -248,7 +249,7 @@ public class ParallelScheduler extends AbstractScheduler {
         return _optimalState;
     }
 
-    private synchronized void setOptimal(ParallelState optimal){
+    private synchronized void setOptimal(ParallelState optimal) {
         _optimalState = optimal;
     }
 }

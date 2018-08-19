@@ -9,9 +9,12 @@ This project is about using artificial intelligence and parallel processing powe
 |Grace Meng|ymen958|809626093   |ymen958@aucklanduni.ac.nz   |Shira-n   |
 |Jenny Lee|jlee923|924698666   |jlee923@aucklanduni.ac.nz   |0608jennylee   |
 |Joshua Rosairo|jtha772|631382102   |jtha772@aucklanduni.ac.nz   |josh-rosairo   |
-|Suying Shen|sshe899|517494842   |sshe899@aucklanduni.ac.nz   |sueyin  |
+|Suying Shen|sshe899|517494842   |sshe899@aucklanduni.ac.nz   |sueyin   |
+
 ## Installation introduction ##
 ### Basic Milestone
+
+Basic Milestone release: https://github.com/Shira-n/306ProjectOne/releases
 
 Available from August 6 2018, 12pm.
 1. Download Scheduler.jar

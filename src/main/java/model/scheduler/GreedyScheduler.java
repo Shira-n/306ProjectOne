@@ -1,6 +1,7 @@
 package model.scheduler;
 
 import model.state.AbstractState;
+import controller.Controller;
 import model.Node;
 import model.Processor;
 import model.state.State;
@@ -31,6 +32,15 @@ public class GreedyScheduler extends AbstractScheduler {
         return new State(_processors);
     }
 
+    @Override
+    public void setController(Controller controller) {
+        return;
+    }
+
+
+    /*
+        Schedule method
+     */
     /**
      * Schedules the Nodes in the list to Processors using greedy algorithm
      */
@@ -42,9 +52,6 @@ public class GreedyScheduler extends AbstractScheduler {
         }
     }
 
-    /*
-        Schedule method
-     */
     /**
      * A simplified greedy scheduling method. Schedule the input Node to the Processor such that has the earliest
      * start time.
