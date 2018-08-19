@@ -42,7 +42,6 @@ public class GanttChart {
      * @param colourMgr the manager for displaying colors on the nodes
      */
     public GanttChart(AbstractState optimalState, int numProcessor, List<Node> nodes, ColourManager colourMgr){
-        System.out.println("constructor");
         _numProcessors = numProcessor;
         _nodes = nodes;
         _schedule = optimalState.translate();
@@ -95,7 +94,7 @@ public class GanttChart {
      * @param finishTime the time that the entire task is finished used for calculating spread and gaps
      */
     private void drawVerticalLines(int finishTime){
-        System.out.println("draw Vertical lines");
+
         int incrementValue = finishTime/25;
         if (incrementValue == 0){
             incrementValue = 1;
@@ -126,7 +125,6 @@ public class GanttChart {
      * Draws Axis on chart
      */
     private void drawAxis(){
-        System.out.println("draw Axis");
         //draw Axis
         Line verticalLine = new Line(_XAxisStart, _YAxisStart, _XAxisStart, _YAxisEnd);
         verticalLine.setStroke(_lineColor);

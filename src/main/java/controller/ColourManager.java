@@ -36,13 +36,11 @@ public class ColourManager {
         for (int i = 0; i < numProcessor; i++) {
             int randomPickIndex  = (int)(Math.random() * (colourChoices.size()-1));
             _colours.add(colourChoices.get(randomPickIndex));
-            System.out.println("Processor " + i + " : " + randomPickIndex + ", "+  _colours.get(i));
             colourChoices.remove(randomPickIndex);
         }
     }
 
     public String getColor(int processorIndex) {
-        //System.out.println("COLOR: " + _colours.get(processorIndex-1));
         return _colours.get(processorIndex-1);
     }
 

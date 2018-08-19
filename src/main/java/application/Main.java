@@ -78,9 +78,7 @@ public class Main {
             Notification.message("Error: IO Exception");
             System.exit(1);
         }
-        //Stop timer
-        long endTime = System.currentTimeMillis();
-        System.out.println("That took "+(endTime-startTime)+" milliseconds");
+
     }
 
     /**

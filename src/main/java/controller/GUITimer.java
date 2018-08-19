@@ -27,7 +27,6 @@ public class GUITimer extends Thread{
 
             @Override
             public void run() {
-                //System.out.println("TimerTask executing counter is: " + _counter);
                 _counter++;//increments the counter
                 if (_controller != null) {
                     _controller.setTimer(_counter);

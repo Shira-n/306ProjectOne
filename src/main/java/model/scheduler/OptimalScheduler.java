@@ -67,7 +67,6 @@ public class OptimalScheduler extends AbstractScheduler {
         schedule();
         //update GUI state to complete if there is visualisation
         if(_controller != null) {
-            System.out.println("IN COMPLETE");
             _controller.completed(_optimalState);
         }
         return _optimalState;
@@ -84,7 +83,6 @@ public class OptimalScheduler extends AbstractScheduler {
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
-        System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
     /**
@@ -154,131 +152,4 @@ public class OptimalScheduler extends AbstractScheduler {
     public List<Node> getGraph() {
         return _graph;
     }
-
-
-    /*
-        A*. A Star implementation.
-
-    /**
-     * Return the optimal state from Branch and Bound algorithm.
-
-     public State getOptimalSchedule(){
-     ASchedule();
-     return _optimalState;
-     }*
-   public State getOptimalSchedule(){
-        ASchedule();
-        return _optimalState;
-    }
-
-    private void ASchedule(){
-        for (State s : getNewStates(_freeToSchedule)){
-            _Optimal_stateQueue.add(s);
-        }
-        AStarSchedule(_Optimal_stateQueue);
-    }
-
-    private PriorityQueue<State> _Optimal_stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
-        if (s1.getMaxWeight() + s1.getBottomWeight() > s2.getMaxWeight() + s2.getBottomWeight()){
-            return 1;
-        }else{
-            return -1;
-        }
-    });
-
-    private void AStarSchedule(PriorityQueue<State> stateQueue){
-        State state;
-        Set<Node> freeToSchedule;
-        while (stateQueue.size() > 1){
-            state = stateQueue.peek();
-            freeToSchedule = state.rebuild(_graph, _processors);
-            if (freeToSchedule.size() < 1){
-                _optimalState = state;
-                return;
-            }
-            stateQueue.remove(state);
-            for (State s : getNewStates(freeToSchedule)){
-                stateQueue.add(s);
-            }
-            if (Runtime.getRuntime().freeMemory() < 600_000_00L){
-                break;
-            }
-        }
-        System.out.println(stateQueue.size());
-        System.out.println("Switched to B&B");
-        State bbOptimal;
-        for (State s : stateQueue){
-            freeToSchedule = s.rebuild(_graph, _processors);
-            bbOptimal = bbOptimalSchedule(freeToSchedule);
-            if (_optimalState.getMaxWeight() > bbOptimal.getMaxWeight()){
-                _optimalState = bbOptimal;
-            }
-        }
-    }
-
-    **
-     * Given a set of Nodes that are free to schedule in the current state, calculate the possible states that can be
-     * generated from this state.
-     *
-    private List<State> getNewStates(Set<Node> freeToSchedule){
-        List<State> newStates = new ArrayList<>();
-<<<<<<< HEAD
-
-        for (Node node : freeToSchedule) {
-            //Calculate Nodes that become free because of scheduling this Node
-            Set<Node> newFreeToSchedule = node.ifSchedule();
-            newFreeToSchedule.addAll(freeToSchedule);
-            newFreeToSchedule.remove(node);
-            for (Processor processor : _processors) {
-                int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
-=======
-        //Set<Node> nodesToIgnore = internalOrderingCheck(freeToSchedule);
-        for (Node node : freeToSchedule) {
-            // Check if node is okay to schedule
-            //if (!(nodesToIgnore.contains(node))) {
-            //int bottomeWeight = Integer.MAX_VALUE;
-
-            //Calculate Nodes that become free because of scheduling this Node
-            Set<Node> newFreeToSchedule = node.ifSchedule();
-            newFreeToSchedule.addAll(freeToSchedule);
-            newFreeToSchedule.remove(node);
-                System.out.print( "\nScheduling Node " + node.getId() + ", current free Nodes are:");
-                for (Node n : newFreeToSchedule){
-                    System.out.print(" " + n.getId());
-                }
-
-            for (Processor processor : _processors) {
-
-                //System.out.println("\nNow try to schedule it on P" + processor.getID());
-                int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-
-                node.schedule(processor, startTime);
-                processor.addNodeAt(node, startTime);
-
-                //Record this State
-                State state = new State(_processors, newFreeToSchedule);
-<<<<<<< HEAD
-                newStates.add(state);
-                unscheduleNode(node);
-            }
-=======
-                //state.print();
-                //if (state.getBottomWeight() < bottomeWeight){
-                //bottomeWeight = state.getBottomWeight();
-                newStates.add(state);
-                //System.out.println("this state is added to list of states to return");
-                //}
-                unscheduleNode(node);
-            }
-            //}
->>>>>>> ad68d27ee22c9d3b783063c71e89904168736a6a
-        }
-        return newStates;
-    }
-  */
-
-    /*
-        Getter & Setter methods for testing
-     */
-
 }

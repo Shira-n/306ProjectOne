@@ -42,18 +42,6 @@ public class GUIEntry {
         GUI.start();
     }
 
-
-    /**
-     * Calls GUIEntry class which starts the visualisation.
-     */
-    /*
-    @Override
-    public void run() {
-        Application.launch(GUIMain.class);
-        System.out.print("In run");
-    }
-*/
-
     public static SingleGraph getGraph() {
         return _graph;
     }
@@ -82,7 +70,6 @@ public class GUIEntry {
         return _scheduler;
     }
 
-    //TODO
     public static int getNumNode() {
         return _nodes.size();
     }
@@ -115,7 +102,6 @@ public class GUIEntry {
 
     public static void setController(Controller controller) {
         _controller = controller;
-        System.out.println("set controller");
     }
 
 }

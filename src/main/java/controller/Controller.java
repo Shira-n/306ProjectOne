@@ -226,20 +226,16 @@ public class Controller{
                 //update graph with new start time and the processor on which the node is allocated
                 String[] nodeInfo = updatedState.get(nodeID);
                 Node node = _graph.getNode(nodeID);
-                System.out.println(node.getAttribute("startTime") + "");
                 if (node.hasAttribute("startTime")) {
                     node.removeAttribute("startTime");
                 }
 
-                System.out.println(node.getId() + " Processor: " + node.getAttribute("processor"));
                 if (node.hasAttribute("processor")) {
                     node.removeAttribute("processor");
                 }
                 node.addAttribute("startTime", nodeInfo[1]);
                 node.addAttribute("processor", nodeInfo[0]);
-                if (node.getAttribute("processor") == null) {
-                    System.out.println("hi");
-                }
+
                 //update the graph visualisation using the new info
                 Platform.runLater(new Runnable() {
                     @Override
@@ -258,7 +254,6 @@ public class Controller{
      */
     private void drawGanttChart() {
         Platform.runLater(() -> {
-            System.out.println("drawGanttChart running on: "+Thread.currentThread().getName());
             GanttChart chart = new GanttChart(_optimalState, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
             _ganttPane.getChildren().add(chart.createGraph());
             _ganttPane.setBackground(Background.EMPTY);
@@ -359,20 +354,6 @@ public class Controller{
         //get the scheduler instance that does the algorithm computation
         AbstractScheduler scheduler = GUIEntry.getScheduler();
 
-        /*
-        //run the algorithm using Callable which returns an optimal State
-        Callable task = new Callable() {
-            @Override
-            public State call() throws ScriptException {
-                System.out.print("IN THREAD");
-                scheduler.setController(controller);
-                return scheduler.getSchedule();
-            }
-        };
-
-        ExecutorService service = Executors.newFixedThreadPool(2);
-        _result = service.submit(task);
-        */
         _algoThread = new AlgorithmThread(scheduler,controller);
         _algoThread.start();
     }

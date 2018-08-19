@@ -91,7 +91,6 @@ public class ParallelScheduler extends AbstractScheduler {
             e.printStackTrace();
         }
         _executorService.shutdown();
-        System.out.println("Weight = "+_optimalState.getMaxWeight());
 
         if (_controller != null) {
             _controller.completed(_optimalState);
