@@ -21,6 +21,9 @@ Final Milestone release: https://github.com/Shira-n/306ProjectOne/releases/tag/v
 4. Add the input dot file to the same level as the scheduler.jar
 5. Run using `java -jar scheduler.jar INPUT.dot 2` where INPUT.dot is the name of the input file and 2 is the number of processors to be used for the schedule. Refer to the manual below for command line options
 
+Requirements:
+Please run on a computer with resolution 1680 x 1050.
+
 ~~~~
 java -jar scheduler.jar INPUT.dot P [OPTION]
 INPUT.dot  a task graph with integer weights in dot format
