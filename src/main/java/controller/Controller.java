@@ -142,15 +142,15 @@ public class Controller{
 
         _tile = TileBuilder.create()
                 .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
-                .prefHeight(200)
-                .prefWidth(200)
+                .maxHeight(200)
+                .minWidth(300)
                 .unit("%")
+                .backgroundColor(javafx.scene.paint.Color.color(0,0,0,0))
                 .chartData(_data1,_data2,_data3,_data4)
                 .animated(true)
                 .value(20)
+                .title("CPU Usage")
                 .build();
-
-
 
 
         OperatingSystemMXBean bean = ManagementFactory
@@ -161,6 +161,8 @@ public class Controller{
         double cpu = b.getSystemLoadAverage();
 
         _dataPane.getChildren().add(_tile);
+
+        _tile.setLayoutX(25);
 
         info.run();
     }

@@ -1,7 +1,6 @@
 package controller;
 
 
-import model.BranchAndBoundScheduler;
 
 import java.util.Timer;
 import java.util.TimerTask;
