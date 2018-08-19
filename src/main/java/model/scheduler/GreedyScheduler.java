@@ -32,6 +32,9 @@ public class GreedyScheduler extends AbstractScheduler {
         return new State(_processors);
     }
 
+    /**
+     * No visualisation for Basic Milestone
+     */
     @Override
     public void setController(Controller controller) {
         return;
