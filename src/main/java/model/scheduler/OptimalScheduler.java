@@ -67,7 +67,6 @@ public class OptimalScheduler extends AbstractScheduler {
         schedule();
         //update GUI state to complete if there is visualisation
         if(_controller != null) {
-            System.out.println("IN COMPLETE");
             _controller.completed(_optimalState);
         }
         return _optimalState;
@@ -84,7 +83,6 @@ public class OptimalScheduler extends AbstractScheduler {
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         branchAndBoundOptimalSchedule(_freeToSchedule);
-        System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
     /**
