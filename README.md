@@ -14,6 +14,8 @@ This project is about using artificial intelligence and parallel processing powe
 ## Installation introduction ##
 ### Basic Milestone
 
+Basic Milestone release: https://github.com/Shira-n/306ProjectOne/releases
+
 Available from August 6 2018, 12pm.
 1. Download Scheduler.jar
 2. Open command line
