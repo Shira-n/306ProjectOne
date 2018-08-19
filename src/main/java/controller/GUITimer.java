@@ -38,6 +38,6 @@ public class GUITimer extends Thread{
 
         _timer = new Timer("MyTimer");//create a new Timer
 
-        _timer.scheduleAtFixedRate(timerTask, 0, 100);
+        _timer.scheduleAtFixedRate(timerTask, 0, 60);
     }
 }
