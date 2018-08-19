@@ -17,7 +17,7 @@ public class GanttChart {
     final private double _YAxisStart = 20;
     final private double _YAxisEnd = 460;
     final private double _XAxisStart = 80;
-    final private double _XAxisEnd = 680;
+    final private double _XAxisEnd = 890;
 
     final private double _totalHeight;
     final private double _totalWidth;

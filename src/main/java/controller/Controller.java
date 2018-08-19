@@ -259,7 +259,7 @@ public class Controller{
             GanttChart chart = new GanttChart(_optimalState, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
             _ganttPane.getChildren().add(chart.createGraph());
             _ganttPane.setBackground(Background.EMPTY);
-            _ganttPane.setVisible(true);
+            //_ganttPane.setVisible(true);
         });
 
     }
@@ -295,26 +295,22 @@ public class Controller{
     /**
      * Called by algorithm when computation is complete
      */
-    public synchronized void completed() {
-        System.out.println("Get Complete");
+    public synchronized void completed(AbstractState optimalState) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 _status.setText("Completed");
                 _gantt.setDisable(false);
                 _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#FFFFFF"));
+                _timer.stopTimer();
             }
         });
 
-            System.out.println("HERE");
-            //get the optimal state calculated by the algorithm
-            //_optimalState = _result.get();
+            _optimalState = optimalState;
 
-            _optimalState = _algoThread.getOptimalState();
-            System.out.println("THERE" + _optimalState);
             //write the optimal state out to a file
-            Main.writeResult(_optimalState);
-            System.out.println("complete");
+            Main.writeResult(optimalState);
+
             drawGanttChart();
 
 
@@ -392,7 +388,14 @@ public class Controller{
 
     @FXML
     public void handlePressGantt(ActionEvent event) {
-        _ganttPane.setVisible(true);
+        if(_graphPane.isVisible()) {
+            _ganttPane.setVisible(true);
+            _graphPane.setVisible(false);
+        }
+        else {
+            _ganttPane.setVisible(false);
+            _graphPane.setVisible(true);
+        }
     }
 
 

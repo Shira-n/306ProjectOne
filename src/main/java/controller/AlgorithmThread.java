@@ -16,7 +16,6 @@ public class AlgorithmThread extends Thread {
 
     @Override
     public void run() {
-        System.out.print("IN THREAD");
         _scheduler.setController(_controller);
         _state =  _scheduler.getSchedule();
     }
