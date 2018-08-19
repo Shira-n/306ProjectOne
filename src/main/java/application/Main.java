@@ -57,6 +57,7 @@ public class Main {
                 _scheduler = getParallelScheduler();
             }else{
                 _scheduler = getSequentialScheduler();
+                System.out.println("get sequential scheduler");
             }
 
             //TODO GUI option here
@@ -168,7 +169,7 @@ public class Main {
 
     private static Scheduler getParallelScheduler() throws FileNotFoundException {
         List<Map<String, Node>> graphs = new ArrayList<>();
-        for (int i = 0; i <_noOfThreads; i++) {
+        for (int i = 0; i <= _noOfThreads; i++) {
             graphs.add(_reader.getMap());
             System.out.println("Main: One map created");
         }
