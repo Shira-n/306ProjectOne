@@ -152,6 +152,7 @@ public class OptimalScheduler implements Scheduler{
 
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
+
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
                         if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
