@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -7,7 +8,7 @@ import java.util.*;
  * that this task depends on, references to its children tasks that depend on this task, and communication costs of
  * connected nodes.
  */
-public class Node {
+public class Node implements Serializable {
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
     private List<Node> _equivalentNodes;
@@ -50,6 +51,10 @@ public class Node {
 
     public int getBottomWeight(){
         return _bottomWeight;
+    }
+
+    public void setEquivalentNodes(Node node){
+        _equivalentNodes.add(node);
     }
 ///////////////////////////////////////////////////////////////////need to be deleted
 //NOTE: Can be used in testing. No longer used in scheduling
@@ -183,8 +188,8 @@ public class Node {
     }
 
     public void addEquivalentNode(Node node){
+        System.out.println("Added Node "+ node.getId()+" as an equivalent Node to Node "+ node.getId());
         _equivalentNodes.add(node);
-        node.addEquivalentNode(this);
     }
 
 
@@ -209,4 +214,7 @@ public class Node {
         _unsortedParents = _parents.keySet().size();
     }
 
+    public boolean equals(Node node){
+        return node.getId() == _id;
+    }
 }

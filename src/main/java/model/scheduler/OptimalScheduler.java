@@ -1,14 +1,19 @@
-package model;
+package model.scheduler;
+
+import model.Node;
+import model.State;
+import model.Processor;
 
 import java.util.*;
 
-public class BranchAndBoundScheduler {
+public class OptimalScheduler implements Scheduler{
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
-    public BranchAndBoundScheduler(List<Node> graph, int numberOfProcessor) {
+    public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
+        System.out.println("using optimal scheduler");
         //_graph = topologicalSort(graph);
         _graph = graph;
         _freeToSchedule = findEntries(graph);
@@ -23,11 +28,11 @@ public class BranchAndBoundScheduler {
                 for (Node sibling : parent.getChildren().keySet()){
                     if (node.equals(sibling) && internalOrderingCheck(node, sibling) && node.isEquivalent(sibling)){
                         node.addEquivalentNode(sibling);
+                        sibling.addEquivalentNode(node);
                     }
                 }
             }
         }
-
 
         /*
         for (int i = 0 ;i < _graph.size(); i++){
@@ -80,9 +85,10 @@ public class BranchAndBoundScheduler {
     /**
      * Return a list of scheduled processors. Used in Basic Milestone
      */
-    public List<Processor> getSchedule() {
+    //TODO Change it to State!
+    public State getSchedule(){
         schedule();
-        return _processors;
+        return _optimalState;
     }
 
     /**
@@ -127,7 +133,7 @@ public class BranchAndBoundScheduler {
     public void schedule() {
         //Manually schedule the first Node on the first Processor
         bbOptimalSchedule(_freeToSchedule);
-        System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
+        System.out.println("\nMax Weight: "+ _optimalState.getMaxWeight());
     }
 
     /**
@@ -139,63 +145,37 @@ public class BranchAndBoundScheduler {
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
             // Get Nodes to ignore when internal order is arbitrary
-            Set<Node> visitedNodes = new HashSet<>();
+            Set<Node> uniqueNodes = new HashSet<>();
             for (Node node : freeToSchedule) {
-                boolean repeated = false;
-                for (Node visited : visitedNodes){
-                    if (node.isEquivalent(visited)){
-                        repeated = true;
-                        break;
-                    }
-                }
+                if (!equivalentNode(node, uniqueNodes)){
+                    uniqueNodes.add(node);
 
-                // Check if node is okay to schedule
-                if (!repeated) {
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
 
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), infulencedByParents(processor, node));
-                        // Pruning for normalization
-                        // Check if processor is just a reflection of a previous; if so, skip iteration
-                        Boolean reflectedProcessor = false;
-                        for (Processor check: uniqueProcessors) {
-                            //Temporary, need to see if this doesn't cover all possibilities;
-                            if (startTime == check.getCurrentAbleToStart()) {
-                                reflectedProcessor = true;
-                                break;
-                            }
-                            //@Need to implement equals method if above ^^ condition doesn't have full coverage
-//                          if (processor.equals(check)) {
-//                                reflectedProcessor = true;
-//                                break;
-//                            }
-                        }
-                        // skip iteration if  processor is just a reflection
-                        if (reflectedProcessor) {
-                            continue;
-                        }
-                        //Prune:
-                        //Check the minimum potential total weight of schedules after this step.
-                        //If it is greater than the current optimal schedule's weight, skip it
-                        //Otherwise, schedule this Node on this Processor and continue investigating.
-                        if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
-                            //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
-                            Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
-                            processor.addNodeAt(node, startTime);
-                            //Current processor is unique so add it to list of processors to check for normalization
+                        if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
                             uniqueProcessors.add(processor);
-                            //Include every Nodes in the original free Node set except for this scheduled Node.
-                            newFreeToSchedule.addAll(freeToSchedule);
-                            newFreeToSchedule.remove(node);
-                            //Recursively investigating
-                            bbOptimalSchedule(newFreeToSchedule);
-                            //Un-schedule this Node to allow it being scheduled on next Processor.
-                            unscheduleNode(node);
+                            //Prune:
+                            //Check the minimum potential total weight of schedules after this step.
+                            //If it is greater than the current optimal schedule's weight, skip it
+                            //Otherwise, schedule this Node on this Processor and continue investigating.
+                            if (node.getBottomWeight() + startTime <= _optimalState.getMaxWeight()) {
+                                //Schedule this Node on this Processor. Get a set of Nodes that became free because of this step.
+                                Set<Node> newFreeToSchedule = node.schedule(processor, startTime);
+                                processor.addNodeAt(node, startTime);
+                                //Include every Nodes in the original free Node set except for this scheduled Node.
+                                newFreeToSchedule.addAll(freeToSchedule);
+                                newFreeToSchedule.remove(node);
+                                //Recursively investigating
+                                bbOptimalSchedule(newFreeToSchedule);
+                                //Un-schedule this Node to allow it being scheduled on next Processor.
+                                unscheduleNode(node);
+                            }
                         }
                     }
                }
-               visitedNodes.add(node);
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
@@ -220,15 +200,15 @@ public class BranchAndBoundScheduler {
 /*
     private void ASchedule(){
         for (State s : getNewStates(_freeToSchedule)){
-            _stateQueue.add(s);
+            _Optimal_stateQueue.add(s);
             //System.out.println("\nPriority queue added a new State");
             //s.print();
         }
-        AStarSchedule(_stateQueue);
+        AStarSchedule(_Optimal_stateQueue);
         System.out.println("\nMax Weight: "+_optimalState.getMaxWeight());
     }
 */
-    private PriorityQueue<State> _stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
+    private PriorityQueue<State> _Optimal_stateQueue = new PriorityQueue<State>(10, (s1, s2) -> {
         if (s1.getMaxWeight() + s1.getBottomWeight() > s2.getMaxWeight() + s2.getBottomWeight()){
             return 1;
         }else{
@@ -394,6 +374,9 @@ public class BranchAndBoundScheduler {
      * Return true if two nodes are exchangable, false otherwise.
      */
     private boolean internalOrderingCheck(Node node, Node visited){
+        if (node.getWeight() != visited.getWeight()){
+            return false;
+        }
         //The number of parents and children of them must be the same
         if (node.getParents().keySet().size() != visited.getParents().keySet().size()
                 || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
@@ -420,7 +403,26 @@ public class BranchAndBoundScheduler {
         return true;
     }
 
+    private boolean equivalentNode(Node node, Set<Node> uniqueNodes){
+        for (Node uniqueNode : uniqueNodes){
+            if (uniqueNode.isEquivalent(node)){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
+        int anotherStartTime;
+        for (Processor uniqueProcessor : uniqueProcessors){
+            //Calculate the earliest Start time of this Node on this Processor.
+            anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), infulencedByParents(uniqueProcessor, node));
+            if (anotherStartTime == startTime && processor.toString().equals(uniqueProcessor.toString())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
         Getter & Setter methods for testing

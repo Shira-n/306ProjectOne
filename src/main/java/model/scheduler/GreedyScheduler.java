@@ -1,13 +1,17 @@
-package model;
+package model.scheduler;
+
+import model.Node;
+import model.Processor;
+import model.State;
 
 import java.util.*;
 
-public class Scheduler {
+public class GreedyScheduler implements Scheduler{
     private List<Node> _graph;
     private int _numberOfProcessor;
     private List<Processor> _processors;
 
-    public Scheduler(List<Node> graph, int numberOfProcessor){
+    public GreedyScheduler(List<Node> graph, int numberOfProcessor){
         _graph = topologicalSort(graph);
         _numberOfProcessor = numberOfProcessor;
         _processors = new ArrayList<>();
@@ -139,9 +143,9 @@ public class Scheduler {
     /**
      * Return a list of scheduled processors
      */
-    public List<Processor> getSchedule() {
+    public State getSchedule() {
         schedule();
-        return _processors;
+        return new State(_processors);
     }
 
     public Map<String, Node> getScheduledNodes(){

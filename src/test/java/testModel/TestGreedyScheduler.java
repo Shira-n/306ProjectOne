@@ -1,13 +1,14 @@
+/*
 package testModel;
 
+import model.scheduler.GreedyScheduler;
 import model.Node;
 import model.Processor;
-import model.Scheduler;
 import org.junit.*;
 
 import java.util.*;
 
-public class TestScheduler {
+public class TestGreedyScheduler {
 
     private List<Node> _graph = new ArrayList<>();
     /*
@@ -16,7 +17,7 @@ public class TestScheduler {
     private List<Node> _simpleGraph2 = new ArrayList<>();
     private List<Node> _simpleGraph3 = new ArrayList<>();
     private List<Node> _simpleGraph4 = new ArrayList<>();
-    */
+    *
 
     @Before
     public void initialise() {
@@ -71,14 +72,14 @@ public class TestScheduler {
         _simpleGraph4.add(n1);
         _simpleGraph4.add(n2);
         _simpleGraph4.add(n3);
-        */
+        *
     }
 
     @Test
     public void testScheduleNewOutputFormat(){
-        Scheduler scheduler = new Scheduler(_graph, 2);
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 2);
 
-        Map<String, Node> test = scheduler.getScheduledNodes();
+        Map<String, Node> test = greedyScheduler.getScheduledNodes();
 
         for (String s : test.keySet()){
             System.out.println("Id: " + s + " is scheduled at P" + test.get(s).getProcessor().getID() + " at time " +
@@ -96,13 +97,13 @@ public class TestScheduler {
         assertEquals(0, schedule.get(1).getCurrentAbleToStart());
         assertSame(schedule.get(1).getCurrentSchedule().size(), 0);
         assertTrue(schedule.get(1).getCurrentSchedule().values().isEmpty());
-         */
+         *
     }
 
     @Test
     public void testSchedule(){
-        Scheduler scheduler = new Scheduler(_graph, 2);
-        List<Processor> schedule = scheduler.getSchedule();
+        GreedyScheduler greedyScheduler = new GreedyScheduler(_graph, 2);
+        List<Processor> schedule = greedyScheduler.getSchedule();
         for (Processor p : schedule){
             System.out.println("Processor: " + p.getID());
             for (int i : p.getCurrentSchedule().keySet()) {
@@ -115,7 +116,7 @@ public class TestScheduler {
     @Test
     public void testScheduleTwoNodesWithDependency(){
 
-        Scheduler scheduler = new Scheduler(_simpleGraph1, 2);
+        GreedyScheduler scheduler = new GreedyScheduler(_simpleGraph1, 2);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _simpleGraph1.get(0).getStartTime());
@@ -134,7 +135,7 @@ public class TestScheduler {
     @Test
     public void testScheduleThreeNodesWithDependency(){
 
-        Scheduler scheduler = new Scheduler(_simpleGraph2, 2);
+        GreedyScheduler scheduler = new GreedyScheduler(_simpleGraph2, 2);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _simpleGraph2.get(0).getStartTime());
@@ -155,7 +156,7 @@ public class TestScheduler {
     @Test
     public void addParentTest() {
         try {
-            Scheduler s = new Scheduler(_graph, 1);
+            GreedyScheduler s = new GreedyScheduler(_graph, 1);
             for (Node n : s.getGraph()){
                 System.out.println(n.getId());
             }
@@ -168,7 +169,7 @@ public class TestScheduler {
 
     public void testScheduleThreeNodesWithOneParent(){
 
-        Scheduler scheduler = new Scheduler(_simpleGraph3, 2);
+        GreedyScheduler scheduler = new GreedyScheduler(_simpleGraph3, 2);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _simpleGraph3.get(0).getStartTime());
@@ -189,7 +190,7 @@ public class TestScheduler {
     @Test
     public void testScheduleFourNodesWithOneParent(){
 
-        Scheduler scheduler = new Scheduler(_simpleGraph4, 2);
+        GreedyScheduler scheduler = new GreedyScheduler(_simpleGraph4, 2);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _simpleGraph4.get(0).getStartTime());
@@ -211,7 +212,7 @@ public class TestScheduler {
     @Test
     public void testScheduleFullNodes7OutTree(){
 
-        Scheduler scheduler = new Scheduler(_graph, 2);
+        GreedyScheduler scheduler = new GreedyScheduler(_graph, 2);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _graph.get(0).getStartTime());
@@ -239,7 +240,7 @@ public class TestScheduler {
     @Test
     public void testSchedule4ProcessorsFullNodes7OutTree(){
 
-        Scheduler scheduler = new Scheduler(_graph, 4);
+        GreedyScheduler scheduler = new GreedyScheduler(_graph, 4);
         scheduler.schedule();
         List<Processor> schedule = scheduler.getSchedule();
         assertEquals(0, _graph.get(0).getStartTime());
@@ -266,6 +267,7 @@ public class TestScheduler {
         assertSame(1, schedule.get(2).getCurrentSchedule().size());
         assertTrue(schedule.get(2).getCurrentSchedule().values().contains(_graph.get(5)));
     }
-    */
+
 
 }
+*/
