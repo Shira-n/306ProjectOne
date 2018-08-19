@@ -1,21 +1,26 @@
 package controller;
 
 
+import application.Main;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
+import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import model.BranchAndBoundScheduler;
 import model.State;
+import model.scheduler.Scheduler;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.swingViewer.ViewPanel;
@@ -24,13 +29,18 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 
+import javax.management.ObjectName;
+import javax.script.ScriptException;
 import javax.swing.*;
 
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 
 /**
@@ -54,6 +64,18 @@ public class Controller{
     private GUITimer _timer;
 
     private State _optimalSchedule;
+
+    private Gauge _gauge;
+
+    private Tile _tile;
+
+    private FutureTask _futureTask;
+
+    private ChartData _data1 = new ChartData("D1",0,Tile.GRAY);
+    private ChartData _data2 = new ChartData("D2",20,Tile.LIGHT_GREEN);
+    private ChartData _data3 = new ChartData("D3",0,Tile.LIGHT_GREEN);
+    private ChartData _data4 = new ChartData("D4",40,Tile.LIGHT_GREEN);
+
     @FXML
     private Pane _graphPane;
 
@@ -105,15 +127,38 @@ public class Controller{
         initDataPane();
     }
 
+    public void updateCPU(double cpu1, double cpu2, double cpu3, double cpu4) {
+        Platform.runLater(() -> {
+            _data1.setValue(cpu1);
+            _data2.setValue(cpu2);
+            _data3.setValue(cpu3);
+            _data4.setValue(cpu4);
+        });
+    }
+
 
     private void initDataPane() {
-        GaugeBuilder builder = GaugeBuilder.create().skinType(Gauge.SkinType.TILE_SPARK_LINE);
-        Gauge gauge = GaugeBuilder.create()
-                .skinType(Gauge.SkinType.TILE_SPARK_LINE)
-                .animated(true)
-                .build();
-        _dataPane.getChildren().add(gauge);
+        SystemInfoVisualisation info = new SystemInfoVisualisation(this);
 
+
+        _tile = TileBuilder.create()
+                .skinType(Tile.SkinType.SMOOTH_AREA_CHART)
+                .maxHeight(180)
+                .minWidth(300)
+                .unit("%")
+                .chartData(_data1,_data2,_data3,_data4)
+                .animated(true)
+                .value(20)
+                .title("CPU Usage")
+                .barColor(javafx.scene.paint.Color.rgb(255,255,255))
+                .backgroundColor(javafx.scene.paint.Color.rgb(0,0,0,0))
+                .build();
+
+        _dataPane.getChildren().add(_tile);
+
+        _tile.setPadding(new Insets(20,0,0,30));
+
+        info.run();
     }
 
     /**
@@ -125,19 +170,18 @@ public class Controller{
         _timer.startTimer();
         _ganttPane.setVisible(false);
         Controller controller = this;
-        Thread thread = new Thread() {
-            public void run() {
+        Scheduler scheduler = GUIEntry.getScheduler();
+        Callable task = new Callable() {
+            @Override
+            public State call() throws ScriptException {
                 System.out.print("IN THREAD");
-                BranchAndBoundScheduler scheduler = new BranchAndBoundScheduler(GUIEntry.getNodes(), GUIEntry.getNumProcessor(), controller,_timer);
-                model.State optimalSchedule = scheduler.getOptimalSchedule();
-
-                //drawGanttChart(optimalSchedule);
-
-                _optimalSchedule = optimalSchedule;
-
+                scheduler.setController(controller);
+                return scheduler.getSchedule();
             }
         };
-        thread.start();
+        _futureTask = new FutureTask<State>(task);
+        Thread algorithmThread = new Thread(_futureTask);
+        algorithmThread.start();
     }
 
     /**
@@ -275,7 +319,7 @@ public class Controller{
 
     }
 
-    public synchronized void completed(int maxWeight) {
+    public synchronized void completed() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -283,6 +327,15 @@ public class Controller{
                 drawGanttChart();
             }
         });
+        try {
+            State state = (State)_futureTask.get();
+            Main.writeResult(state);
+        }catch (InterruptedException e) {
+            e.printStackTrace();
+        }catch (ExecutionException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -295,6 +348,7 @@ public class Controller{
         Platform.exit();
         System.exit(0);
     }
+
 
 }
 
