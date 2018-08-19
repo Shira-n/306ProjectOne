@@ -16,7 +16,7 @@ import java.util.Scanner;
 import org.junit.*;
 
 import org.junit.Test;
-import model.DotFileAdapter;
+import application.DotFileAdapter;
 import model.Node;
 import model.Processor;
 public class TestDFAWriteOutput{

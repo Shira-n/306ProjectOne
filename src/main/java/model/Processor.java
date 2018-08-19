@@ -38,8 +38,27 @@ public class Processor {
         this._currentSchedule = another._currentSchedule;
         this._bottomWeight = another._currentAbleToStart;
     }
+
+
+    /*
+        Getters
+     */
+    public Map<Integer, Node> getCurrentSchedule() { return _currentSchedule; }
+
+    public int getID() { return _pid; }
+
+    public int getCurrentAbleToStart(){ return _currentAbleToStart; }
+
+    public int getBottomWeight() {
+        return _bottomWeight;
+    }
+
+
+    /*
+        Schedule related
+     */
     /**
-     * Add a new node/task to the Processor instance, also updates processor's total path weight.
+     * Add a new node/task to the Processor instance and update processor's total path weight.
      */
     public void addNodeAt(Node node, int start){
         _currentSchedule.put(start, node);
@@ -47,6 +66,9 @@ public class Processor {
         _bottomWeight = Math.max(_bottomWeight, node.getBottomWeight());
     }
 
+    /**
+     * Remove a scheduled Node and recalculate the current weight
+     */
     public void removeNodeAt(int start){
         _currentSchedule.remove(start);
         if(_currentSchedule.size() > 0) {
@@ -60,43 +82,9 @@ public class Processor {
         }
     }
 
-    public Map<Integer, Node> getCurrentSchedule() {
-        return _currentSchedule;
-    }
-
-
-    public int getID() {
-        return _pid;
-    }
-
-    public int getCurrentAbleToStart(){
-        return _currentAbleToStart;
-    }
-
-    public int getBottomWeight() {
-        return _bottomWeight;
-    }
-
-    /*
-    public int getIdleCostFunction(){
-        int idle, totalIdle
-        for (int i : _currentSchedule.keySet()){
-            idle = _currentSchedule.get(i).getStartTime() +
-            if (_currentSchedule.get(i))
-        }
-    }
-    */
-
-
-    /*
-    public boolean equals(Processor p, Node n){
-        for (Node parent : n.getParents().keySet()){
-            if ()
-        }
-    }
-    */
-
-
+    /**
+     * Reset the Processor. Clear all the schedule and restore some values to default
+     */
     public void clear(){
         _currentAbleToStart = 0;
         _currentSchedule = new TreeMap<>();

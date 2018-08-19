@@ -1,7 +1,7 @@
 package model.scheduler;
 
 import model.Node;
-import model.State;
+import model.state.State;
 import model.Processor;
 
 import java.util.*;
@@ -9,13 +9,13 @@ import java.util.*;
 /**
  * AbstractScheduler class that implements Branch and Bound algorithm and guarantees to find an optimal schedule
  */
-public class OptimalAbstractScheduler extends AbstractScheduler {
+public class OptimalScheduler extends AbstractScheduler {
     private List<Node> _graph;
     private List<Processor> _processors;
     private State _optimalState;
     private Set<Node> _freeToSchedule;
 
-    public OptimalAbstractScheduler(List<Node> graph, int numberOfProcessor) {
+    public OptimalScheduler(List<Node> graph, int numberOfProcessor) {
         _graph = graph;
         _freeToSchedule = findEntries(graph);
         //Calc bottom weight
@@ -54,25 +54,6 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
         return  entries;
     }
 
-    /**
-     * Recursively calculate Bottom Weight of the input Node. The bottom weight of a Node will be the sum of its
-     * weight and the maximum bottom weight of its children.
-     */
-    private int calcBottomWeight(Node node){
-        if (node.getChildren().size() > 0){
-            int maxChileBtmWeight = 0;
-            for (Node child: node.getChildren().keySet()){
-                maxChileBtmWeight = Math.max(maxChileBtmWeight,calcBottomWeight(child));
-            }
-            node.setBottomWeight(maxChileBtmWeight + node.getWeight());
-        }else{
-            node.setBottomWeight(node.getWeight());
-        }
-        return node.getBottomWeight();
-    }
-
-
-
     /*
         Methods that call schedule and return the final schedule.
      */
@@ -105,15 +86,17 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
 
         //If there is still a Node to schedule
         if (freeToSchedule.size() > 0){
-            // Get Nodes to ignore when internal order is arbitrary
+            //Prune:
+            //When there are two equivalent Nodes, only schedule one of them.
             Set<Node> uniqueNodes = new HashSet<>();
             for (Node node : freeToSchedule) {
                 if (!equivalentNode(node, uniqueNodes)){
                     uniqueNodes.add(node);
 
+                    //Prune:
+                    //Processor Normalisation
                     Set<Processor> uniqueProcessors = new HashSet<>();
                     for (Processor processor : _processors) {
-
                         //Calculate the earliest Start time of this Node on this Processor.
                         int startTime = Math.max(processor.getCurrentAbleToStart(), influencedByParents(processor, node));
                         if (!equivalentProcessor(processor, uniqueProcessors, node, startTime)) {
@@ -136,7 +119,7 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
                             }
                         }
                     }
-               }
+                }
             }
         }else{ //If all the Nodes have been scheduled
             int max = 0;
@@ -146,7 +129,6 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
             }
             if (max < optimalState.getMaxWeight()){
                 _optimalState = new State(_processors);
-                //optimalState.print();
             }
         }
         return _optimalState;
@@ -232,10 +214,6 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
     }
   */
 
-
-
-
-
     /*
         Schedule Helpers
      */
@@ -244,85 +222,6 @@ public class OptimalAbstractScheduler extends AbstractScheduler {
         processor.addNodeAt(node, startTime);
     }
 
-
-
-    /*
-     * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
-     * of the input Node's parents.
-
-    private int influencedByParents(Processor target, Node n) {
-        int limit = 0;
-        for (Node parent : n.getParents().keySet()) {
-            if (parent.getProcessor().getID() == target.getID()) {
-                limit = Math.max(limit, parent.getStartTime() + parent.getWeight());
-            } else {
-                limit = Math.max(limit, parent.getStartTime() + parent.getWeight() + n.getPathWeightToParent(parent));
-            }
-        }
-        return limit;
-    }
-
-
-     * Return true if two nodes are exchangable, false otherwise.
-     *
-    private boolean internalOrderingCheck(Node node, Node visited){
-        if (node.getWeight() != visited.getWeight()){
-            return false;
-        }
-        //The number of parents and children of them must be the same
-        if (node.getParents().keySet().size() != visited.getParents().keySet().size()
-                || node.getChildren().keySet().size() != visited.getChildren().keySet().size()){
-            return false;
-        }
-
-        for (Node parent : node.getParents().keySet()){
-            if (visited.getParents().keySet().contains(parent) &&
-                    node.getPathWeightToParent(parent) == visited.getPathWeightToParent(parent)){
-                ;
-            }else{ //The communication cost for every parent has to be the same for both nodes
-                return false;
-            }
-        }
-
-        for (Node child : node.getChildren().keySet()){
-            if (visited.getChildren().keySet().contains(child) &&
-                    node.getPathWeightToChild(child) != visited.getPathWeightToParent(child)){
-                ;
-            }else{ //The communication cost for every child has to be the same for both nodes
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean equivalentNode(Node node, Set<Node> uniqueNodes){
-        for (Node uniqueNode : uniqueNodes){
-            if (uniqueNode.isEquivalent(node)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
-        int anotherStartTime;
-        for (Processor uniqueProcessor : uniqueProcessors){
-            //Calculate the earliest Start time of this Node on this Processor.
-            anotherStartTime = Math.max(uniqueProcessor.getCurrentAbleToStart(), influencedByParents(uniqueProcessor, node));
-            if (anotherStartTime == startTime && processor.toString().equals(uniqueProcessor.toString())){
-                return true;
-            }
-        }
-        return false;
-    }
-
-      private void unscheduleNode(Node node){
-        if (node.getProcessor() != null) {
-            node.getProcessor().removeNodeAt(node.getStartTime());
-        }
-        node.unSchedule();
-    }
-  */
     /*
         Getter & Setter methods for testing
      */

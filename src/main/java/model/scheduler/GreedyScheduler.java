@@ -1,24 +1,34 @@
 package model.scheduler;
 
+import model.state.AbstractState;
 import model.Node;
 import model.Processor;
-import model.State;
+import model.state.State;
 
 import java.util.*;
 
 /**
  * AbstractScheduler class implements Greedy algorithm that guarantees to find a valid schedule. Used in Basic Milestone.
  */
-public class GreedyAbstractScheduler extends AbstractScheduler {
+public class GreedyScheduler extends AbstractScheduler {
     private List<Node> _graph;
     private List<Processor> _processors;
 
-    public GreedyAbstractScheduler(List<Node> graph, int numberOfProcessor){
+    public GreedyScheduler(List<Node> graph, int numberOfProcessor){
         _graph = topologicalSort(graph);
         _processors = new ArrayList<>();
         for (int i = 0; i < numberOfProcessor; i++){
             _processors.add(new Processor(i));
         }
+    }
+
+    /**
+     * Return a list of scheduled processors
+     */
+    @Override
+    public AbstractState getSchedule() {
+        schedule();
+        return new State(_processors);
     }
 
     /**
@@ -32,6 +42,9 @@ public class GreedyAbstractScheduler extends AbstractScheduler {
         }
     }
 
+    /*
+        Schedule method
+     */
     /**
      * A simplified greedy scheduling method. Schedule the input Node to the Processor such that has the earliest
      * start time.
@@ -54,6 +67,10 @@ public class GreedyAbstractScheduler extends AbstractScheduler {
         bestProcessor.addNodeAt( node, bestStartTime);
     }
 
+
+    /*
+        Topological sort methods
+     */
     /**
      * Topological sort the input list of Nodes according to their dependencies. Returns a sorted list.
      */
@@ -98,19 +115,16 @@ public class GreedyAbstractScheduler extends AbstractScheduler {
         }
     }
 
+
+
+    /*
+        Methods used for Basic Milestone
+     */
     /**
      * for test
      */
     public List<Node> getGraph() {
         return _graph;
-    }
-
-    /**
-     * Return a list of scheduled processors
-     */
-    public State getSchedule() {
-        schedule();
-        return new State(_processors);
     }
 
     /**
@@ -124,5 +138,4 @@ public class GreedyAbstractScheduler extends AbstractScheduler {
         }
         return schedule;
     }
-
 }

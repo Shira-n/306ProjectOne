@@ -1,11 +1,16 @@
-package model;
+package model.state;
 
+import model.Node;
+import model.Processor;
+import model.state.AbstractState;
 
 import java.util.*;
 
-public class State extends AbstractState{
+public class State extends AbstractState {
     private Map<String, Node> _nodeMap = new HashMap<>();
     private Set<Node> _freeToSchedule = new HashSet<>();
+
+    public State(){ super(); }
 
     public State(List<Processor> schedule, Set<Node> freeToStart){
         _max = 0;
@@ -26,8 +31,6 @@ public class State extends AbstractState{
             }
         }
     }
-
-    public State(){ super(); }
 
     //Old constructor used in basic milestone
     public State(List<Processor> schedule){

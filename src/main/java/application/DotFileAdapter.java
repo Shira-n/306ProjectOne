@@ -1,4 +1,7 @@
-package model;
+package application;
+
+import model.state.AbstractState;
+import model.Node;
 
 import java.io.File;
 import java.io.FileNotFoundException;

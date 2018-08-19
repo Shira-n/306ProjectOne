@@ -1,6 +1,6 @@
 package model.scheduler;
 
-import model.AbstractState;
+import model.state.AbstractState;
 import model.Node;
 import model.Processor;
 
@@ -8,16 +8,13 @@ import java.util.Set;
 
 public abstract class AbstractScheduler {
 
-    /**
-     * Abstract method
-     * @return
-     */
-    abstract AbstractState getSchedule();
+    public abstract AbstractState getSchedule();
+
 
     /*
         Schedule related
      */
-    void unscheduleNode(Node node){
+    protected void unscheduleNode(Node node){
         if (node.getProcessor() != null) {
             node.getProcessor().removeNodeAt(node.getStartTime());
         }
@@ -28,7 +25,7 @@ public abstract class AbstractScheduler {
      * Calculate the earliest start time of the input Node on the input Processor, only considering the schedule
      * of the input Node's parents.
      */
-    int influencedByParents(Processor target, Node n) {
+    protected int influencedByParents(Processor target, Node n) {
         int limit = 0;
         for (Node parent : n.getParents().keySet()) {
             if (parent.getProcessor().getID() == target.getID()) {
@@ -41,7 +38,6 @@ public abstract class AbstractScheduler {
     }
 
 
-
     /*
         Pruning related
      */
@@ -49,7 +45,7 @@ public abstract class AbstractScheduler {
      * Recursively calculate Bottom Weight of the input Node. The bottom weight of a Node will be the sum of its
      * weight and the maximum bottom weight of its children.
      */
-    int calcBottomWeight(Node node){
+    protected int calcBottomWeight(Node node){
         if (node.getChildren().size() > 0){
             int maxChileBtmWeight = 0;
             for (Node child: node.getChildren().keySet()){
@@ -65,7 +61,7 @@ public abstract class AbstractScheduler {
     /**
      * Return true if two nodes are exchangable, false otherwise.
      */
-    boolean internalOrderingCheck(Node node, Node visited){
+    protected boolean internalOrderingCheck(Node node, Node visited){
         if (node.getWeight() != visited.getWeight()){
             return false;
         }
@@ -95,7 +91,7 @@ public abstract class AbstractScheduler {
         return true;
     }
 
-    boolean equivalentNode(Node node, Set<Node> uniqueNodes){
+    protected boolean equivalentNode(Node node, Set<Node> uniqueNodes){
         for (Node uniqueNode : uniqueNodes){
             if (uniqueNode.isEquivalent(node)){
                 return true;
@@ -104,7 +100,7 @@ public abstract class AbstractScheduler {
         return false;
     }
 
-    boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
+    protected boolean equivalentProcessor(Processor processor, Set<Processor> uniqueProcessors, Node node, int startTime){
         int anotherStartTime;
         for (Processor uniqueProcessor : uniqueProcessors){
             //Calculate the earliest Start time of this Node on this Processor.

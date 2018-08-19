@@ -7,25 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import model.DotFileAdapter;
 import model.Node;
-import model.Notification;
 import model.scheduler.AbstractScheduler;
-import model.scheduler.OptimalAbstractScheduler;
-import model.scheduler.ParallelAbstractScheduler;
+import model.scheduler.OptimalScheduler;
+import model.scheduler.ParallelScheduler;
 
 public class Main {
     //By default the visualisation option is not enabled.
     private static boolean _visualisation = false;
-    //By default the output file is INPUT_output.dot.
+    //By default the output file is INPUT-output.dot.
     private static String _outputFile = "-output.dot";
-    private static String _inputFile;
-    private static DotFileAdapter _reader;
     //By default the execution run sequentially on one core.
     private static int _noOfThreads = 1;
 
-    private static AbstractScheduler _Abstract_scheduler;
+    private static String _inputFile;
     private static int _noOfProcessors;
+    private static DotFileAdapter _reader;
+    private static AbstractScheduler _scheduler;
 
     public static void main(String[] args) {
         //Start Timer
@@ -44,19 +42,19 @@ public class Main {
             checkOutputFile(_outputFile);
             //Read number of processors.
             _noOfProcessors = Integer.parseInt(args[1]);
-            //Read optional arguments to decide visualisation, parallelization and customized output filename
-            ReadOptionalArgs(args);
+            //Read optional arguments to decide visualisation, parallelisation and customized output filename
+            readOptionalArgs(args);
 
             if (_noOfThreads > 1){ //Multithreading
-                _Abstract_scheduler = getParallelScheduler();
+                _scheduler = getParallelScheduler();
             }else{//Sequential
-                _Abstract_scheduler = getSequentialScheduler();
+                _scheduler = getSequentialScheduler();
             }
 
             //TODO GUI option here
 
             //Write result
-            _reader.writeOptimalSchedule(_Abstract_scheduler.getSchedule(),_outputFile);
+            _reader.writeOptimalSchedule(_scheduler.getSchedule(),_outputFile);
         }catch(NumberFormatException e){
             Notification.message("Error: second argument must be an integer");
             System.exit(1);
@@ -77,7 +75,7 @@ public class Main {
      * Checks if the user input optional arguments are valid
      * @param args arguments that the user inputted in command line
      */
-    private static void ReadOptionalArgs(String[] args){
+    private static void readOptionalArgs(String[] args){
         for (int i = 2; i < args.length; i++){
             //If -p is specified, read how many cores are supplied.
             if (args[i].equals("-p")){
@@ -151,16 +149,16 @@ public class Main {
 
     }
 
+    private static AbstractScheduler getSequentialScheduler() throws FileNotFoundException {
+        List<Node> graph = _reader.getData();
+        return new OptimalScheduler(graph, _noOfProcessors);
+    }
+
     private static AbstractScheduler getParallelScheduler() throws FileNotFoundException {
         List<Map<String, Node>> graphs = new ArrayList<>();
         for (int i = 0; i <= _noOfThreads; i++) {
             graphs.add(_reader.getMap());
         }
-        return new ParallelAbstractScheduler(_noOfThreads, graphs, _noOfProcessors);
-    }
-
-    private static AbstractScheduler getSequentialScheduler() throws FileNotFoundException {
-        List<Node> graph = _reader.getData();
-        return new OptimalAbstractScheduler(graph, _noOfProcessors);
+        return new ParallelScheduler(_noOfThreads, graphs, _noOfProcessors);
     }
 }

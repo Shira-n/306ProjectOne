@@ -12,7 +12,6 @@ public class NodeTest {
 
 	private Node _baseNode;
 
-	/* TO DO @Josh */
 	@Before
 	public void initialise() {
 		_baseNode = new Node(1, "0");
@@ -73,12 +72,7 @@ public class NodeTest {
 		assertTrue(node.getId().equals("xyz"));
 	}
 
-	@Test
-	public void returnStartTimeTest() {
-		Node node = new Node(4, "xyz");
-		node.setStartTime(4);
-		assertTrue(node.getStartTime() == 4);
-	}
+
 
 	@Test
 	public void returnParentsTest() {

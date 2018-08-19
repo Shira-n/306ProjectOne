@@ -1,12 +1,14 @@
-package model;
+package model.state;
+
+import model.Processor;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractState {
-    int _max;
-    int _bottomWeight;
-    Map<Integer, String> _stateStringRep = new HashMap<>();
+    protected int _max;
+    protected int _bottomWeight;
+    protected Map<Integer, String> _stateStringRep = new HashMap<>();
 
     public AbstractState(){
         _max = Integer.MAX_VALUE;

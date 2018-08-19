@@ -1,6 +1,5 @@
 package model;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -8,7 +7,7 @@ import java.util.*;
  * that this task depends on, references to its children tasks that depend on this task, and communication costs of
  * connected nodes.
  */
-public class Node implements Serializable {
+public class Node{
     private Map<Node, Integer> _parents;
     private Map<Node, Integer> _children;
     private List<Node> _equivalentNodes;
@@ -42,7 +41,7 @@ public class Node implements Serializable {
 
 
     /*
-        Getter & Setter of Schedule related fields
+        Schedule related methods
      */
 
     public void setBottomWeight(int bottomLevel){
@@ -56,12 +55,6 @@ public class Node implements Serializable {
     public void setEquivalentNodes(Node node){
         _equivalentNodes.add(node);
     }
-///////////////////////////////////////////////////////////////////need to be deleted
-//NOTE: Can be used in testing. No longer used in scheduling
-    public void setProcessor(Processor p){ _processor = p; }
-
-    public void setStartTime(int startTime){_startTime = startTime;}
-///////////////////////////////////////////////////////////////////need to be deleted
 
     public Set<Node> schedule(Processor processor, int startTime){
         _processor = processor;
@@ -91,21 +84,14 @@ public class Node implements Serializable {
         return freeChildren;
     }
 
-
     public void unSchedule(){
         _processor = null;
         _startTime = Integer.MAX_VALUE;
         //Set<Node> notFreeChildren = new HashSet<>();
         for (Node child : _children.keySet()){
             child.unsortOneParent();
-            //if (!child.parentsSorted()){
-            //    notFreeChildren.add(child);
-            //}
         }
-        //return notFreeChildren;
     }
-
-
 
     public int getStartTime(){return _startTime;}
 
@@ -114,6 +100,7 @@ public class Node implements Serializable {
     public int getProcessorId(){
         return  _processor.getID();
     }
+
 
     /*
         Parents/Children
@@ -178,23 +165,15 @@ public class Node implements Serializable {
         }
     }
 
+    public List<Node> getEquivalentNodes(){ return _equivalentNodes; }
 
-    public List<Node> getEquivalentNodes(){
-        return _equivalentNodes;
-    }
+    public boolean isEquivalent(Node node){ return _equivalentNodes.contains(node); }
 
-    public boolean isEquivalent(Node node){
-        return _equivalentNodes.contains(node);
-    }
-
-    public void addEquivalentNode(Node node){
-        System.out.println("Added Node "+ node.getId()+" as an equivalent Node to Node "+ node.getId());
-        _equivalentNodes.add(node);
-    }
+    public void addEquivalentNode(Node node){ _equivalentNodes.add(node); }
 
 
     /*
-        Helper methods
+        Helper methods for scheduling
      */
     public void sortOneParent(){
         _unsortedParents--;
