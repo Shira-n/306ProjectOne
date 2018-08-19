@@ -141,6 +141,7 @@ public class Controller{
         _gantt.setTextFill(javafx.scene.paint.Paint.valueOf("#423222"));
 
         //set labels to values corresponding to the current computation graph
+
         _isParallel.setText(GUIEntry.getParallelised()+"");
         _status.setText("Not Started");
         _currentBestTime.setText("NA");
@@ -273,9 +274,9 @@ public class Controller{
             String minZeroPlaceholder ="";
             String secZeroPlaceholder = "";
             String msZeroPlaceholder = "";
-            long min = count / 60000;
-            long sec = (count - min * 60000) / 1000;
-            long ms = count - min * 60000 - sec * 1000;
+            long min = count / 6000;
+            long sec = (count - min * 6000) / 100;
+            long ms = count - min * 6000 - sec * 100;
             if (min<10){
                 minZeroPlaceholder = "0";
             }

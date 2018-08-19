@@ -24,7 +24,7 @@ public class  DotFileAdapter {
 	 * Method that scans through a dot file, retrieves the relevant info and places it in a list of nodes for retrieval
 	 * from main
 	 */
-	private List<Node> readGraph() throws FileNotFoundException{
+	private List<Node> readGraphOld() throws FileNotFoundException{
 		List<Node> data = new ArrayList<>();
 		Scanner sc = new Scanner(_inputFile);
 
@@ -90,6 +90,16 @@ public class  DotFileAdapter {
 		}
 		sc.close();
 		return  data;
+	}
+
+
+	private List<Node> readGraph() throws FileNotFoundException {
+		List<Node> nodes = new ArrayList<>();
+		for (Node node : readMap().values()){
+			nodes.add(node);
+		}
+
+		return  nodes;
 	}
 
 	private Map<String, Node> readMap() throws FileNotFoundException {

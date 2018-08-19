@@ -18,13 +18,13 @@ public class GUIEntry {
     private static List<Node> _nodes;
     private static String _filename;
     private static int _numProcessor;
-    private static boolean _parallelised;
+    private static int _parallelised;
     private static SingleGraph _graph = new SingleGraph("graph");
     private static Controller _controller;
     private static GUITimer _timer;
     private static AbstractScheduler _scheduler;
 
-    public GUIEntry(List<Node> nodes, AbstractScheduler scheduler, String filename, int numProcessor, boolean parallelised) {
+    public GUIEntry(List<Node> nodes, AbstractScheduler scheduler, String filename, int numProcessor, int parallelised) {
         _nodes = nodes;
         _filename = filename;
         _numProcessor = numProcessor;
@@ -54,7 +54,7 @@ public class GUIEntry {
         return _numProcessor;
     }
 
-    public static boolean getParallelised() {
+    public static int getParallelised() {
         return _parallelised;
     }
 
