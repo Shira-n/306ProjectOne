@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -12,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="830.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<AnchorPane prefHeight="830.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
       <ImageView fx:id="_background" fitHeight="830.0" fitWidth="950.0">
          <image>
@@ -39,7 +46,7 @@
                         <Font name="Calibri Light" size="40.0" />
                      </font>
                   </Button>
-                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressStart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Display Gantt Chart" textFill="WHITE">
+                  <Button fx:id="_gantt" mnemonicParsing="false" onAction="#handlePressDisplayGanttChart" prefHeight="80.0" prefWidth="475.0" style="-fx-background-color: transparent; -fx-border-color: grey;" text="Display Gantt Chart" textFill="WHITE">
                      <font>
                         <Font name="Calibri Light" size="40.0" />
                      </font>

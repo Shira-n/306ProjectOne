@@ -200,7 +200,19 @@ public class Controller{
     public synchronized void update(Map<String,String[]> updatedState,int weight) {
         //this is running on JavaFx Thread now
         Platform.runLater(() -> {
-            _currentBestTime.setText(weight+"");
+            int finishTime = 0;
+
+            for (model.Node node : _nodes) {
+
+                int startTime = Integer.parseInt(updatedState.get(node.getId())[1]);
+
+                if (finishTime < startTime + node.getWeight()) {
+                    finishTime = startTime + node.getWeight();
+                }
+
+            }
+            _currentBestTime.setText(finishTime+" sec");
+
             System.out.println("UPDATE");
             for (String nodeID : updatedState.keySet()) {
                 String[] nodeInfo = updatedState.get(nodeID);
@@ -305,7 +317,6 @@ public class Controller{
             GanttChart chart = new GanttChart(_optimalSchedule, Integer.parseInt(_numProcessor.getText()), _nodes, _colourMgr);
             _ganttPane.getChildren().add(chart.createGraph());
             _ganttPane.setBackground(Background.EMPTY);
-            _ganttPane.setVisible(true);
         });
 
     }
@@ -317,8 +328,8 @@ public class Controller{
             String secZeroPlaceholder = "";
             String msZeroPlaceholder = "";
             long min = count / 60000;
-            long sec = (count - min * 60000) / 1000;
-            long ms = count - min * 60000 - sec * 1000;
+            long sec = (count - min * 60000) / 10;
+            long ms = count - min * 60000 - sec * 10;
             if (min<10){
                 minZeroPlaceholder = "0";
             }
@@ -338,8 +349,9 @@ public class Controller{
             @Override
             public void run() {
                 _status.setText("Completed");
-                _currentBestTime.setText(weight+"");
-                //drawGanttChart();
+
+                drawGanttChart();
+
             }
         });
         try {
@@ -351,6 +363,11 @@ public class Controller{
             ex.printStackTrace();
         }
 
+    }
+
+    @FXML
+    public void handlePressDisplayGanttChart(ActionEvent event){
+        _ganttPane.setVisible(true);
     }
 
     @FXML
