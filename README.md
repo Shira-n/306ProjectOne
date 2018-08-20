@@ -35,5 +35,21 @@ Optional:
 -o OUTPUT  output file is named OUTPUT (default is INPUT-output.dot)
 ~~~~
 
+### Example images of Final Milestone
+#### Example not started
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/1.PNG)
+#### Example complete
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/2.PNG)
+#### Example running
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/3.PNG)
+#### Example 2 not started
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/4.PNG)
+#### Example 2 running
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/5.PNG)
+#### Example 2 complete
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/6.PNG)
+#### Example 2 output chart
+![](https://github.com/Shira-n/306ProjectOne/blob/master/Wiki-Resources/7.PNG)
+
 Refer to wiki for more information
 Link: https://github.com/Shira-n/306ProjectOne/wiki
